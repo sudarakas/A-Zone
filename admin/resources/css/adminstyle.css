@@ -1,0 +1,193 @@
+/*Main Styles*/
+
+body{
+	margin-top: 100px;
+}
+
+#wrapper{
+	padding-left: 0;
+}
+
+#page-wrapper{
+	width: 100%;
+	padding: 0;
+	background-color: #ffffff;
+}
+
+/*Navigation Styles*/
+.top-nav{
+	padding: 0 15px;
+}
+.top-nav>li{
+	display: inline-block;
+	float: left;
+}
+.top-nav>li>a{
+	padding-top: 15px;
+	padding-bottom: 15px;
+	margin-top: 15px;
+	line-height: 20px;
+	color: #ffffff;
+	font-weight: 600;
+	
+	
+}
+.top-nav>li>a:hover,
+.top-nav>li>a:focus{
+/*	border: 1px solid;*/
+	background-color: transparent;
+	color: rgb(19, 126, 220);
+	transition: all 0.8s ease-in-out;
+}
+
+
+
+/*Side Panel Styles*/
+
+.side-nav>li>a{
+	width: 220px;
+	}
+
+.side-nav li a:hover,
+.side-nav li a:focus{
+	outline: none;
+	background-color: #ffffff !important;
+	transition: all 0.3s ease-in-out;
+	color: rgb(19, 126, 220) !important;
+}
+
+
+.side-nav>li>ul{
+	padding: 0
+}
+.side-nav>li>ul>li>a{
+	display: block;
+	padding: 10px 15px 10px 35px;
+	text-decoration: none;
+	color: #ffffff;
+	font-size: 13px;
+}
+.side-nav>li>ul>li>a:hover{
+	color: rgb(19, 126, 220) !important;
+	text-decoration: none;
+	background-color: rgba(255, 255, 255, 0.81) !important;
+}
+
+
+/*Dashboard.php Styles*/
+
+.dashHead{
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+.panel-purple > .panel-heading{
+	color: #ffffff;
+	background-color: #ac18ac;
+}
+.panel-purple > a{
+	color: #ac18ac;
+}
+
+.panel-green > .panel-heading{
+	color: #ffffff;
+	background-color: #28A745;
+}
+.panel-green > a{
+	color: #28A745;
+}
+
+.panel-dark > .panel-heading{
+	color: #ffffff;
+	background-color: #272727;
+}
+.panel-dark > a{
+	color: #272727;
+}
+
+.panel-red > .panel-heading{
+	color: #ffffff;
+	background-color: #DC3545;
+}
+.panel-red > a{
+	color: #DC3545;
+}
+
+
+.txt-big{
+	font-size: 55px;
+	line-height: normal;
+	font-weight: 700;
+}
+.txt-sub{
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+/*BootsTrap Modified Buttons*/
+.btn-info{
+	color: #ffffff;
+	background-color: #17A2B8 !important;
+	border-color: #17A2B8 !important;
+}
+
+.btn-danger{
+	color: #ffffff;
+	background-color: #DC3545 !important;
+	border-color: #DC3545 !important;
+}
+.btn-success{
+	color: #ffffff;
+	background-color: #28A745 !important;
+	border-color: #28A745 !important;
+}
+
+.btn-primary{
+	color: #ffffff;
+	background-color: #007BFF !important;
+	border-color: #007BFF !important;
+}
+
+.btn-warning{
+	color: #ffffff;
+	background-color: #FFC107 !important;
+	border-color: #FFC107 !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*Media Queries - Responsive*/
+
+@media(min-width: 768px){
+	
+	body{
+		margin-top: 50px;
+	}
+	#wrapper{
+		padding-left: 220px;
+	}
+	#page-wrapper{
+		padding: 10px;
+		padding-top: 30px;
+	}
+	.side-nav{
+		position: fixed;
+		top: 51px;
+		bottom: 0;
+		width: 200px;
+		overflow-y: auto;
+		overflow-x: hidden;
+		background-color: rgb(19, 126, 220);
+		padding-bottom: 40px;
+	}
+}

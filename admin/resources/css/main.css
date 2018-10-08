@@ -1,0 +1,131 @@
+/* --- Main CSS File --- */
+
+
+/* --- CSS Variables ---*/
+:root{
+    --color-dark: #0E0B16;
+    --color-purple-light: #A239CA;
+    --color-purple-dark: #4717F6;
+    --color-silver: #E7DFDD;
+    --color-white: #fff;
+    --color-black: #000;
+}
+
+/* --- Styles for all ---*/
+html{
+    font-size: 10px;
+    font-weight: 400;
+}
+
+body{
+    font-family: "Nunito", sans-serif;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* --- Start - Login Page Styles ---*/
+
+.signup-box{
+    display: flex;
+    display: -webkit-flex;    /*for old browsers*/
+    width: 100%;
+    height: 100vh;
+}
+
+.rightside{
+    width: 100%;
+    position: relative;
+	background-color: var(--color-dark);
+}
+
+.form-box{
+    width: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+}
+
+.inputbox{
+    margin-bottom: 15px;
+}
+
+.control{
+    width: 100%;
+    display: block;
+    padding: 11px 10px;
+    border-radius: 2.8px;
+    border: 1px solid var(--color-silver);
+    transition: all 1s;
+	background: transparent;
+	color: var(--color-silver);
+}
+
+.control:focus{
+    outline: none;
+    border: 1px solid var(--color-purple-dark);
+}
+
+.btn{
+    display: block;
+    padding: 12px 9px;
+    font-size: 14px;
+    border-radius: 35px;
+    text-transform: uppercase;
+    border: 0px;
+    color: var(--color-white);
+}
+
+.signup-btn{
+    width: 50%;
+    background: linear-gradient(to right, var(--color-purple-light),var(--color-purple-dark));
+    box-shadow: 0 8px 6px -6px rgba(0,0,0,0.3);
+	margin: 0 40% 0 25%;
+}
+.signup-btn:hover{
+    cursor: pointer;
+}
+
+.form-head{
+	text-transform: uppercase;
+	font-size: 20px;
+	font-weight: 600;
+	padding-bottom: 15px;
+	letter-spacing: 2px;
+	color: silver;	
+}
+
+.form-warn{
+	font-size: 10px;
+	font-weight: 600;
+	padding-bottom: 15px;
+	letter-spacing: 2px;
+	color: red;	
+}
+
+.links{
+	display: block;
+	color: silver;
+	font-size: 15px;
+	text-decoration: none;
+	text-align: left!important;
+	font-weight: 300;
+	padding-top: 10px;
+}
+
+
+/* --- Media Queries ---*/
+
+@media (max-width: 765px){
+	.leftside{
+		display: none;
+	}
+	.rightside {
+		width: 100%;
+	}
+}
