@@ -8,7 +8,7 @@
 
 <head>
 	
-	<title>Store</title>
+	<title>EBuy Store</title>
 	
 	
 	<!--Add CSS Files-->
@@ -75,7 +75,7 @@
 					 		<li>
 					 			<a href="index.php">Home</a>
 					 		</li>
-					 		<li  class="active">
+					 		<li>
 					 			<a href="store.php">Store</a>
 					 		</li>
 					 		<li>
@@ -127,98 +127,34 @@
 						<a href="index.php">Home</a>
 					</li>
 					<li>
-						<a href="shop.php">Shop</a>
+						<a href="register.php">Register</a>
 					</li>
 				</ul>
 			</div>
-			<div class="col-md-3">
-				<?php
-					include("include/side.php");
-				?>
-			</div>
-			<div class="col-md-9">
-				<div class="row">
-					<?php
-					
-						if(!isset($_GET['manufacture'])){
-							if(!isset($_GET['category'])){
-								$itemLimit = 6;
-								if(isset($_GET['currentPage'])){
-									$currentPage = $_GET['currentPage'];
-								}
-								else{
-									$currentPage = 1;
-								}
-								$startPage = ($currentPage-1) * $itemLimit;
-								$sql = "SELECT * FROM product ORDER BY 1 DESC LIMIT $startPage,$itemLimit";
-								$getProductList = mysqli_query($conn,$sql);
-								while($rowPageItem = mysqli_fetch_array($getProductList)){
-									
-									$productId = $rowPageItem['productId'];
-									$productName = $rowPageItem['productName'];
-									$productPrice = $rowPageItem['productPrice'];
-									$productImg1 = $rowPageItem['image1'];
-			
-									echo "
-			
-										<!--	One Product Code Start-->
-										<div class='col-sm-4 col-sm-6 center-responsive'>
-											<div class='product' >
-												<a href='details.php?productId=$productId'>
-													<img src='admin/resources/img/product_img/$productImg1' class='img-responsive' alt=''>
-												</a>
-												<div class='text'>
-													<h4><a href='details.php?productId=$productId'>$productName</a></h4>
-													<p class='price'>Rs $productPrice</p>
-													<p class='buttons'>
-														<a href='details.php?productId=$productId' class='btn btn-warning'>More</a>
-														<a href='details.php?productId=$productId' class='btn btn-info'>
-															<i class='fa fa-shopping-cart'> Add to Cart</i>
-														</a>
-													</p>
-												 </div>
-											</div>
-										</div>
-										<!--	One Product Code End-->
-										";
-								}
-						
-					?>
-				</div>
-<!-- 				Page Navigation-->
-				<center>
-					<ul class="pagination">
-						<?php
-								
-									$sql2 = "SELECT * FROM product";
-									$getItems = mysqli_query($conn,$sql2);
-									$totalItems = mysqli_num_rows($getItems);
-									$noOfPages = ceil($totalItems/$itemLimit);
-									
-									echo "
-										<li><a href='store.php?currentPage=1'>".'First Page'."</a></li>
-									";
-								
-									for ($i = 1;$i <= $noOfPages; $i++){
-										echo "
-											<li><a href='store.php?currentPage=".$i."'>".$i."</a></li>
-										";
-									}
-								
-									echo "
-										<li><a href='store.php?currentPage=$noOfPages'>".'Last Page'."</a></li>
-									";
-								
-								
-								}
-							}
-						?>
-					</ul>
-				</center>
-				<div class="row">
-					<?php
-						sortManufacture();
-					?>
+			<div class="col-md-12">
+				<div class="box">
+					<div class="box-header">
+						<center>
+							<img src="resources/img/logo.jpg" alt="" class="logo">
+							<h2>Customer Login</h2>
+							<p class="text-muted">Login to order products</p>
+						</center>
+					</div>
+					<form action="login.php" method="post" enctype="multipart/form-data">
+						<div class="form-group">
+							<label for="">Email</label>
+							<input type="email" class="form-control" name="cus_email" required>
+						</div>
+						<div class="form-group">
+							<label for="">Password</label>
+							<input type="password" class="form-control" name="cus_pass" required>
+						</div>
+						<div class="text-center">
+							<button type="submit" name="register" class="btn btn-success">
+								<i class="fa fa-envelope"></i> Login
+							</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>

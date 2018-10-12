@@ -1,7 +1,7 @@
 <div class="panel panel-primary sidebar-menu">
 	<div class="panel-heading">
 		<center>
-			<img src="resources/img/testpic.jpg" class="img-responsive" alt="profile_pic">
+			<img src="resources/img/profilepc.jpeg" class="img-responsive" alt="profile_pic">
 		</center>
 		<br>
 		<h3 class="panel-title" style="text-align:center;">nanoLK</h3>

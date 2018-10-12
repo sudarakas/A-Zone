@@ -92,5 +92,47 @@
 		
 		
 	}
+
+function sortManufacture(){
+	
+	global $connF;
+	if(isset($_GET['manufacture'])){
+		$manufactureId = $_GET['manufacture'];
+		echo $manufactureId;
+		$sql = "SELECT * FROM product WHERE manufactureId = '$manufactureId'";
+		$sortManufacture = mysqli_query($connF,$sql);
+		
+		while($rowManufactureSort = mysqli_fetch_array($sortManufacture)){
+			$productId = $rowProduct['productId'];
+			$productName = $rowProduct['productName'];
+			$productPrice = $rowProduct['productPrice'];
+			$productImg1 = $rowProduct['image1'];
+			
+			echo"
+			
+			<!--	One Product Code Start-->
+			<div class='col-sm-4 col-sm-6 single'>
+				<div class='product' >
+					<a href='details.php?productId=$productId'>
+						<img src='admin/resources/img/product_img/$productImg1' class='img-responsive' alt=''>
+					</a>
+					<div class='text'>
+						<h4><a href='details.php?productId=$productId'>$productName</a></h4>
+						<p class='price'>Rs $productPrice</p>
+						<p class='buttons'>
+							<a href='details.php?productId=$productId' class='btn btn-warning'>More</a>
+							<a href='details.php?productId=$productId' class='btn btn-info'>
+								<i class='fa fa-shopping-cart'> Add to Cart</i>
+							</a>
+						</p>
+					</div>
+				</div>
+			</div>
+<!--	One Product Code End-->
+			";
+			
+		}
+	}
+}
 	
 ?>
