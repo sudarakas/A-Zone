@@ -127,7 +127,7 @@
 						<a href="index.php">Home</a>
 					</li>
 					<li>
-						<a href="shop.php">Shop</a>
+						<a href="store.php">Shop</a>
 					</li>
 				</ul>
 			</div>
@@ -137,51 +137,67 @@
 				?>
 			</div>
 			<div class="col-md-9">
+				<div class="box">
+					<form action="" class="form-inline" method="post" enctype="multipart/form-data">
+						<label for="">Price Range: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
+						<div class="form-group">
+							<label for="">Min (Rs:)</label>
+							<input type="text" class="form-control" name="minPrice" required pattern="[0-9]*">
+						</div>
+						<div class="form-group">
+							<label for="">&nbsp; Max (Rs:)</label>
+							<input type="text" class="form-control" name="maxPrice" required pattern="[0-9]*">
+						</div>
+						<div class="form-group text-center">
+							<input type="submit" value="Sort" name="priceSort" class="btn btn-success" onclick="window.location.href='store.php?priceSort'">
+						</div>
+					</form>
+				</div>
 				<div class="row">
 					<?php
-					
-						if(!isset($_GET['manufacture'])){
-							if(!isset($_GET['category'])){
-								$itemLimit = 6;
-								if(isset($_GET['currentPage'])){
-									$currentPage = $_GET['currentPage'];
-								}
-								else{
-									$currentPage = 1;
-								}
-								$startPage = ($currentPage-1) * $itemLimit;
-								$sql = "SELECT * FROM product ORDER BY 1 DESC LIMIT $startPage,$itemLimit";
-								$getProductList = mysqli_query($conn,$sql);
-								while($rowPageItem = mysqli_fetch_array($getProductList)){
-									
-									$productId = $rowPageItem['productId'];
-									$productName = $rowPageItem['productName'];
-									$productPrice = $rowPageItem['productPrice'];
-									$productImg1 = $rowPageItem['image1'];
-			
-									echo "
-			
-										<!--	One Product Code Start-->
-										<div class='col-sm-4 col-sm-6 center-responsive'>
-											<div class='product' >
-												<a href='details.php?productId=$productId'>
-													<img src='admin/resources/img/product_img/$productImg1' class='img-responsive' alt=''>
-												</a>
-												<div class='text'>
-													<h4><a href='details.php?productId=$productId'>$productName</a></h4>
-													<p class='price'>Rs $productPrice</p>
-													<p class='buttons'>
-														<a href='details.php?productId=$productId' class='btn btn-warning'>More</a>
-														<a href='details.php?productId=$productId' class='btn btn-info'>
-															<i class='fa fa-shopping-cart'> Add to Cart</i>
-														</a>
-													</p>
-												 </div>
+						if(!isset($_POST['priceSort'])){
+							if(!isset($_GET['manufacture'])){
+								if(!isset($_GET['category'])){
+									$itemLimit = 6;
+									if(isset($_GET['currentPage'])){
+										$currentPage = $_GET['currentPage'];
+									}
+									else{
+										$currentPage = 1;
+									}
+									$startPage = ($currentPage-1) * $itemLimit;
+									$sql = "SELECT * FROM product ORDER BY 1 DESC LIMIT $startPage,$itemLimit";
+									$getProductList = mysqli_query($conn,$sql);
+									while($rowPageItem = mysqli_fetch_array($getProductList)){
+
+										$productId = $rowPageItem['productId'];
+										$productName = $rowPageItem['productName'];
+										$productPrice = $rowPageItem['productPrice'];
+										$productImg1 = $rowPageItem['image1'];
+
+										echo "
+
+											<!--	One Product Code Start-->
+											<div class='col-sm-4 col-sm-6 center-responsive'>
+												<div class='product' >
+													<a href='details.php?productId=$productId'>
+														<img src='admin/resources/img/product_img/$productImg1' class='img-responsive' alt=''>
+													</a>
+													<div class='text'>
+														<h4><a href='details.php?productId=$productId'>$productName</a></h4>
+														<p class='price'>Rs $productPrice</p>
+														<p class='buttons'>
+															<a href='details.php?productId=$productId' class='btn btn-warning'>More</a>
+															<a href='details.php?productId=$productId' class='btn btn-info'>
+																<i class='fa fa-shopping-cart'> Add to Cart</i>
+															</a>
+														</p>
+													 </div>
+												</div>
 											</div>
-										</div>
-										<!--	One Product Code End-->
-										";
-								}
+											<!--	One Product Code End-->
+											";
+									}
 						
 					?>
 				</div>
@@ -190,26 +206,27 @@
 					<ul class="pagination">
 						<?php
 								
-									$sql2 = "SELECT * FROM product";
-									$getItems = mysqli_query($conn,$sql2);
-									$totalItems = mysqli_num_rows($getItems);
-									$noOfPages = ceil($totalItems/$itemLimit);
-									
-									echo "
-										<li><a href='store.php?currentPage=1'>".'First Page'."</a></li>
-									";
-								
-									for ($i = 1;$i <= $noOfPages; $i++){
+										$sql2 = "SELECT * FROM product";
+										$getItems = mysqli_query($conn,$sql2);
+										$totalItems = mysqli_num_rows($getItems);
+										$noOfPages = ceil($totalItems/$itemLimit);
+
 										echo "
-											<li><a href='store.php?currentPage=".$i."'>".$i."</a></li>
+											<li><a href='store.php?currentPage=1'>".'First Page'."</a></li>
 										";
+
+										for ($i = 1;$i <= $noOfPages; $i++){
+											echo "
+												<li><a href='store.php?currentPage=".$i."'>".$i."</a></li>
+											";
+										}
+
+										echo "
+											<li><a href='store.php?currentPage=$noOfPages'>".'Last Page'."</a></li>
+										";
+
+
 									}
-								
-									echo "
-										<li><a href='store.php?currentPage=$noOfPages'>".'Last Page'."</a></li>
-									";
-								
-								
 								}
 							}
 						?>
@@ -218,6 +235,16 @@
 				<div class="row">
 					<?php
 						sortManufacture();
+					?>
+				</div>
+				<div class="row">
+					<?php
+						sortCategory();
+					?>
+				</div>
+				<div class="row">
+					<?php
+						sortPrice();
 					?>
 				</div>
 			</div>
@@ -236,6 +263,4 @@
 	<script src="resources/js/jquery.min.js"></script>	
 	<script src="resources/js/bootstrap.min.js"></script>
 </body>
-	
-	
 </html>
