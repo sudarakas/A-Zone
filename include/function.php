@@ -52,7 +52,7 @@
 	function getManufactures(){
 		
 		global $connF;
-		$sql = "SELECT * FROM manufacture";
+		$sql = "SELECT * FROM manufacture ORDER BY 1 LIMIT 0,10";
 		$getManufacture = mysqli_query($connF,$sql);
 		
 		while($rowManufacture = mysqli_fetch_array($getManufacture)){
@@ -213,5 +213,133 @@ function sortPrice(){
 			";
 	}
 	}
-}	
+}
+
+
+function getUserIP(){
+	switch(true){
+			case(!empty($_SERVER['HTTP_X_REAL_IP'])):
+				return $_SERVER['HTTP_X_REAL_IP'];
+			case(!empty($_SERVER['HTTP_CLIENT_IP'])):
+				return $_SERVER['HTTP_CLIENT_IP'];
+			case(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])):
+				return $_SERVER['HTTP_X_FORWARDED_FOR'];
+			default:
+				return $_SERVER['REMOTE_ADDR'];
+	}
+}
+
+function addCart(){
+	
+	global $connF;
+	if(isset($_GET['addCart'])){
+		$userIP = getUserIP();
+		$productIdCart = $_GET['addCart'];
+		$productQty = $_POST['qty'];
+		$productColor = $_POST['color'];
+		$productWarrenty = $_POST['warrenty'];
+		
+		$cartProductsSql = "SELECT * FROM cart WHERE cartIpAddress='$userIP' AND productId ='$productIdCart'";
+		
+		$checkCart = mysqli_query($connF,$cartProductsSql);
+		
+		if(mysqli_num_rows($checkCart)>0){
+			echo"<script>alert('Product already added to cart')</script>";
+			echo "<script>window.open('details.php?productId=$productIdCart','_self')</script>";
+				
+		}else{
+			$addCartSql = "INSERT INTO cart(productId,cartQty,cartColour,cartWarranty, cartIpAddress) VALUES ('$productIdCart','$productQty','$productColor','$productWarrenty','$userIP')";
+			
+			$addProdutCart = mysqli_query($connF,$addCartSql);
+			echo "<script>window.open('details.php?productId=$productIdCart','_self')</script>";
+			
+		}
+	}
+	 
+}
+
+function countCart(){
+	global $connF;
+	$userIP = getUserIP();
+	$countItemsSql = "SELECT * FROM cart WHERE cartIpAddress='$userIP'";
+	$countItems = mysqli_query($connF,$countItemsSql);
+	$count = mysqli_num_rows($countItems);
+	
+	echo $count;
+}
+
+function priceCart(){
+	
+	global $connF;
+	
+	$totalPrice = 0;
+	$userIP = getUserIP();
+	$cartItemsSql = "SELECT * FROM cart WHERE cartIpAddress='$userIP'";
+	$cartItems = mysqli_query($connF,$cartItemsSql);
+	
+	while($row = mysqli_fetch_array($cartItems)){
+		$productId = $row['productId'];
+		$productQty = $row['cartQty'];
+		$productWarrenty = $row['cartWarranty'];
+		
+		$productPriceSql = "SELECT * FROM product WHERE productId='$productId'";
+		$getProductPrice = mysqli_query($connF,$productPriceSql);
+		
+		while($rowPrice = mysqli_fetch_array($getProductPrice)){
+			$Price = $rowPrice['productPrice'] * $productQty;
+			if($productWarrenty != "Software"){
+				$Price += 3800; 
+			}
+			$totalPrice += $Price;
+		}
+		
+	}
+	
+	echo " " . $totalPrice . " ";
+}
+
+function returnPriceCart(){
+	
+	global $connF;
+	
+	$totalPrice = 0;
+	$userIP = getUserIP();
+	$cartItemsSql = "SELECT * FROM cart WHERE cartIpAddress='$userIP'";
+	$cartItems = mysqli_query($connF,$cartItemsSql);
+	
+	while($row = mysqli_fetch_array($cartItems)){
+		$productId = $row['productId'];
+		$productQty = $row['cartQty'];
+		$productWarrenty = $row['cartWarranty'];
+		
+		$productPriceSql = "SELECT * FROM product WHERE productId='$productId'";
+		$getProductPrice = mysqli_query($connF,$productPriceSql);
+		
+		while($rowPrice = mysqli_fetch_array($getProductPrice)){
+			$Price = $rowPrice['productPrice'] * $productQty;
+			if($productWarrenty != "Software"){
+				$Price += 3800; 
+			}
+			$totalPrice += $Price;
+		}
+		
+	}
+	
+	return round($totalPrice,2);
+}
+
+function cartUpdate(){
+	global $connF;
+	if(isset($_POST['update'])){
+		foreach($_POST['remove'] as $removeItemId){
+			
+			$removeItemSql = "DELETE FROM cart WHERE productId='$removeItemId'";
+			$removeItem = mysqli_query($connF,$removeItemSql);
+			if($removeItem){
+				echo "<script>window.open('cart.php','_self')</script>";
+			}
+		}
+	}
+}
+  
 ?>

@@ -32,7 +32,7 @@
 					Welcome : Guest
 				</a>
 				<a href="#">
-					Cart Total Price : $100, No of items : 2
+					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart(); ?>
 				</a>
 			</div>
 			
@@ -92,7 +92,7 @@
 				
 				<a class="btn btn-info navbar-btn right" href="cart.php">
 					<i class="fa fa-shopping-cart"></i>
-					<span>3 items in cart</span>
+					<span><?php countCart(); ?> items in cart</span>
 				</a>
 				
 				<div class="navbar-collapse collapse right">
@@ -123,7 +123,7 @@
 		<div class="container">
 			<div class="col-md-12">
 				<ul class="breadcrumb">
-					<li>
+						<li>
 						<a href="index.php">Home</a>
 					</li>
 					<li>
@@ -138,7 +138,7 @@
 			</div>
 			<div class="col-md-9">
 				<div class="box">
-					<form action="" class="form-inline" method="post" enctype="multipart/form-data">
+					<form action="store.php?priceSort" class="form-inline" method="post" enctype="multipart/form-data">
 						<label for="">Price Range: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
 						<div class="form-group">
 							<label for="">Min (Rs:)</label>

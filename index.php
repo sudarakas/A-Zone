@@ -33,7 +33,7 @@
 					Welcome : Guest
 				</a>
 				<a href="#">
-					Cart Total Price : $100, No of items : 2
+					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart();?>
 				</a>
 			</div>
 			
@@ -93,7 +93,7 @@
 				
 				<a class="btn btn-info navbar-btn right" href="cart.php">
 					<i class="fa fa-shopping-cart"></i>
-					<span>3 items in cart</span>
+					<span><?php countCart(); ?> items in cart</span>
 				</a>
 				
 				<div class="navbar-collapse collapse right">

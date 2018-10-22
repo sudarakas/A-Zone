@@ -3,6 +3,45 @@
 	include("include/dbcon.php");
 	include("include/function.php");
 ?>
+<?php
+	if(isset($_GET['productId'])){
+		
+		$productId = $_GET['productId'];
+		
+		$sqlDet = "SELECT * FROM product WHERE productId = '$productId'";
+		
+		$getDetail = mysqli_query($conn,$sqlDet);
+		$rowDetails = mysqli_fetch_array($getDetail);
+		
+		$productId = $rowDetails['productId'];
+		$productName = $rowDetails['productName'];
+		$productPrice = $rowDetails['productPrice'];
+		$productImg1 = $rowDetails['image1'];
+		$productImg2 = $rowDetails['image2'];
+		$productImg3 = $rowDetails['image3'];
+		$productImg4 = $rowDetails['image4'];
+		$productPrice = $rowDetails['productPrice'];
+		$productDetails = $rowDetails['productDetails'];
+		$productManu = $rowDetails['manufactureId'];
+		$productCate = $rowDetails['categoryId'];
+		$productKeyword = $rowDetails['productKeywords'];
+		$productFeat = $rowDetails['features'];
+		$productAvailability = $rowDetails['availability'];
+		$productWarranty = $rowDetails['Warranty'];
+		
+		$getManufacureSql = "SELECT * FROM manufacture WHERE  manufactureId='$productManu'";
+		$getManufacureDetails = mysqli_query($conn,$getManufacureSql);
+		$rowGetManufacureDetails = mysqli_fetch_array($getManufacureDetails);
+		
+		$getCategorySql ="SELECT * FROM category WHERE categoryId ='$productCate'";
+		$getCategoryDetails = mysqli_query($conn,$getCategorySql);
+		$rowGetCategoryDetails = mysqli_fetch_array($getCategoryDetails);
+		
+		$manName = $rowGetManufacureDetails['manName'];
+		$cateName = $rowGetCategoryDetails['catName'];
+		
+	}
+?>
 <!DOCTYPE html>
 <html>
 
@@ -32,7 +71,7 @@
 					Welcome : Guest
 				</a>
 				<a href="#">
-					Cart Total Price : $100, No of items : 2
+					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart(); ?>
 				</a>
 			</div>
 			
@@ -92,7 +131,7 @@
 				
 				<a class="btn btn-info navbar-btn right" href="cart.php">
 					<i class="fa fa-shopping-cart"></i>
-					<span>3 items in cart</span>
+					<span><?php countCart(); ?> items in cart</span>
 				</a>
 				
 				<div class="navbar-collapse collapse right">
@@ -127,7 +166,13 @@
 						<a href="index.php">Home</a>
 					</li>
 					<li>
-						<a href="shop.php">Shop</a>
+						<a href="store.php">Shop</a>
+					</li>
+					<li>
+						<a href="store.php?category=<?php echo $productCate;?>"><?php echo $cateName;?></a>
+					</li>
+					<li>
+						<a href="store.php?manufacture=<?php echo $productManu;?>"><?php echo $manName;?></a>
 					</li>
 				</ul>
 			</div>
@@ -150,22 +195,22 @@
 								<div class="carousel-inner">
 									<div class="item active">
 										<center>
-											<img src="admin/resources/img/product_img/mia21.jpg" alt="" class="img-responsive">
+											<img src="admin/resources/img/product_img/<?php echo $productImg1;?>" alt="" class="img-responsive">
 										</center>
 									</div>
 									<div class="item">
 										<center>
-											<img src="admin/resources/img/product_img/mia22.jpg" alt="" class="img-responsive">
+											<img src="admin/resources/img/product_img/<?php echo $productImg2;?>" alt="" class="img-responsive">
 										</center>
 									</div>
 									<div class="item">
 										<center>
-											<img src="admin/resources/img/product_img/mia23.jpg" alt="" class="img-responsive">
+											<img src="admin/resources/img/product_img/<?php echo $productImg3;?>" alt="" class="img-responsive">
 										</center>
 									</div>
 									<div class="item">
 										<center>
-											<img src="admin/resources/img/product_img/mia24.jpg" alt="" class="img-responsive">
+											<img src="admin/resources/img/product_img/<?php echo $productImg4;?>" alt="" class="img-responsive">
 										</center>
 									</div>
 								</div>
@@ -182,20 +227,23 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="box">
-							<h2 class="text-center"> Xiaomi MI A2</h2>
+							<h2 class="text-center"><?php echo $productName;?></h2>
+							<?php
+								addCart();
+							?>
 							<hr>
-							<form action="details.php" method="post" class="form-horizontal">
+							<form action="details.php?addCart=<?php echo $productId;?>" method="post" class="form-horizontal">
 								<div class="form-group">
 									<label for="" class="col-md-5 control-label">
 										Quantity
 									</label>
 									<div class="col-md-7">
 										<select name="qty" id="" class="form-control">
-											<option value="">1</option>
-											<option value="">2</option>
-											<option value="">3</option>
-											<option value="">4</option>
-											<option value="">5</option>
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option>5</option>
 										</select>
 									</div>
 								</div>
@@ -203,11 +251,11 @@
 									<label for="" class="col-md-5 control-label">Color</label>
 									<div class="col-md-7">
 										<select name="color" id="" class="form-control">
-											<option value=""> Black </option>
-											<option value=""> Red </option>
-											<option value=""> Gold </option>
-											<option value=""> Blue </option>
-											<option value=""> Silver </option>
+											<option> Black </option>
+											<option> Red </option>
+											<option> Gold </option>
+											<option> Blue </option>
+											<option> Silver </option>
 										</select>
 									</div>
 								</div>
@@ -215,12 +263,12 @@
 									<label for="" class="col-md-5 control-label">Warrenty</label>
 									<div class="col-md-7">
 										<select name="warrenty" id="" class="form-control">
-											<option value=""> Software </option>
-											<option value=""> Hardware </option>
+											<option> Software </option>
+											<option> Hardware </option>
 										</select>
 									</div>
 								</div>
-								<p class="price"> Rs 48500.00</p>
+								<p class="price">Rs <?php echo $productPrice;?></p>
 								<p class="text-center buttons">
 									<button class="btn btn-info" type="submit">
 										<i class="fa fa-shopping-cart"></i> Add to Cart
@@ -232,28 +280,28 @@
 <!--						One Image Side-->
 							<div class="col-xs-3">
 								<a href="#" class="thumb">
-									<img src="admin/resources/img/product_img/mia21.jpg" alt="" class="img-responsive">
+									<img src="admin/resources/img/product_img/<?php echo $productImg1?>" alt="" class="img-responsive">
 								</a>
 							</div>
 <!--							One Image Side End-->
 <!--						One Image Side-->
 							<div class="col-xs-3">
 								<a href="#" class="thumb">
-									<img src="admin/resources/img/product_img/mia22.jpg" alt="" class="img-responsive">
+									<img src="admin/resources/img/product_img/<?php echo $productImg2?>" alt="" class="img-responsive">
 								</a>
 							</div>
 <!--							One Image Side End-->
 <!--						One Image Side-->
 							<div class="col-xs-3">
 								<a href="#" class="thumb">
-									<img src="admin/resources/img/product_img/mia23.jpg" alt="" class="img-responsive">
+									<img src="admin/resources/img/product_img/<?php echo $productImg3?>" alt="" class="img-responsive">
 								</a>
 							</div>
 <!--							One Image Side End-->
 <!--						One Image Side-->
 							<div class="col-xs-3">
 								<a href="#" class="thumb">
-									<img src="admin/resources/img/product_img/mia24.jpg" alt="" class="img-responsive">
+									<img src="admin/resources/img/product_img/<?php echo $productImg4?>" alt="" class="img-responsive">
 								</a>
 							</div>
 <!--							One Image Side End-->
@@ -262,7 +310,7 @@
 				</div>
 				<div class="box" id="details">
 					<h4>Description</h4>
-					<p>Product Description Here</p>
+					<p><?php echo $productDetails;?></p>
 					<hr>
 				</div>
 				<div id="row same-height-row">
@@ -271,48 +319,37 @@
 							<h3 class="text-center">Check this products out</h3>
 						</div>
 					</div>
-<!--					One Sub Product Start-->
-					<div class="center-responsive col-md-3 col-sm-6">
-						<div class="product same-height">
-							<a href="details.php">
-								<img src="admin/resources/img/product_img/minote5.jpeg" alt="" class="img-responsive">
-							</a>
-							<div class="text">
-								<h4>
-									<a href="details.php">MI Note5</a>
-								</h4>
-								<p class="price"> Rs 35800.00</p>
-							</div>
-						</div>
-					</div>
-<!--					One Sub Product Start-->
-					<div class="center-responsive col-md-3 col-sm-6">
-						<div class="product same-height">
-							<a href="details.php">
-								<img src="admin/resources/img/product_img/minote5.jpeg" alt="" class="img-responsive">
-							</a>
-							<div class="text">
-								<h4>
-									<a href="details.php">MI Note5</a>
-								</h4>
-								<p class="price"> Rs 35800.00</p>
-							</div>
-						</div>
-					</div>
-<!--					One Sub Product Start-->
-					<div class="center-responsive col-md-3 col-sm-6">
-						<div class="product same-height">
-							<a href="details.php">
-								<img src="admin/resources/img/product_img/minote5.jpeg" alt="" class="img-responsive">
-							</a>
-							<div class="text">
-								<h4>
-									<a href="details.php">MI Note5</a>
-								</h4>
-								<p class="price"> Rs 35800.00</p>
-							</div>
-						</div>
-					</div>
+ 					<?php
+						$getRandomProductsSql = "SELECT * FROM product ORDER BY RAND() LIMIT 0,3";
+						$getRandomProducts = mysqli_query($conn,$getRandomProductsSql);
+						while($rowGetRandomProducts = mysqli_fetch_array($getRandomProducts)){
+							$productId = $rowGetRandomProducts['productId'];
+							$productName = $rowGetRandomProducts['productName'];
+							$productPrice = $rowGetRandomProducts['productPrice'];
+							$productImg1Mini = $rowGetRandomProducts['image1'];
+							
+							echo "
+		<!-- 						One Sub Product Start-->
+								<div class='center-responsive col-md-3 col-sm-6'>
+									<div class='product same-height'>
+										<a href='details.php?productId=$productId'>
+											<img src='admin/resources/img/product_img/$productImg1Mini' alt='' class='img-responsive'>
+										</a>
+									<div class='text'>
+										<h4>
+											<a href='details.php?productId=$productId'>$productName</a>
+										</h4>
+										<p class='price'> Rs $productPrice</p>
+									</div>
+									</div>
+								</div>
+		<!--						One Sub Product Start-->
+							
+							
+							
+							";
+						}
+					?>
 				</div>
 			</div>
 		</div>

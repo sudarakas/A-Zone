@@ -32,7 +32,7 @@
 					Welcome : Guest
 				</a>
 				<a href="#">
-					Cart Total Price : $100, No of items : 2
+					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart(); ?>
 				</a>
 			</div>
 			
@@ -92,7 +92,7 @@
 				
 				<a class="btn btn-info navbar-btn right" href="cart.php">
 					<i class="fa fa-shopping-cart"></i>
-					<span>3 items in cart</span>
+					<span><?php countCart(); ?> items in cart</span>
 				</a>
 				
 				<div class="navbar-collapse collapse right">
@@ -136,8 +136,14 @@
 				<div class="box">
 					<form action="cart.php" method="post" enctype="multipart/form-data">
 						<h1>Cart</h1>
+						<?php
+							$userIP = getUserIP();
+							$grabCartItemsSql = "SELECT * FROM cart WHERE cartIpAddress='$userIP'";
+							$grabCartItems = mysqli_query($conn,$grabCartItemsSql);
+							$rowGrab = mysqli_num_rows($grabCartItems);
+						?>
 						<p class="text-muted">
-							3 item(s) in your cart!
+							<?php echo $rowGrab;?> item(s) in your cart!
 						</p>
 						<div class="tabel-responsive">
 							<table class="table">
@@ -153,95 +159,65 @@
 									</tr>
 								</thead>
 								<tbody>
+								<?php
+									
+									while($rowGrabCart = mysqli_fetch_array($grabCartItems)){
+										$productId = $rowGrabCart['productId'];
+										$productQty = $rowGrabCart['cartQty'];
+										$productColor = $rowGrabCart['cartColour'];
+										$productWarr= $rowGrabCart['cartWarranty'];
+										
+										$productPriceSql = "SELECT * FROM product WHERE productId='$productId'";
+										$getProductPrice = mysqli_query($conn,$productPriceSql);
+										$rowPrice = mysqli_fetch_array($getProductPrice);
+										$unitPrice = $rowPrice['productPrice'];
+										$productName = $rowPrice['productName'];
+										$productImg = $rowPrice['image1'];
+										
+										if($productWarr != "Software"){
+												$unitPrice += 3800; 
+										}
+										
+										$subTotal = $unitPrice * $productQty;
+										echo "
 <!--								One Cart Raw-->
 									<tr>
 										<td>
-											<img src="admin/resources/img/product_img/mia24.jpg" alt="">
+											<img src='admin/resources/img/product_img/$productImg' alt=''>
 										</td>
 										<td>
-											<a href="#">Xiamoi MI A2</a>
+											<a href='#'>$productName</a>
 										</td>
 										<td>
-											1
+											$productQty
 										</td>
 										<td>
-											Rs 48500.00
+											$unitPrice
 										</td>
 										<td>
-											Black
+											$productColor
 										</td>
 										<td>
-											Hardware
+											$productWarr
 										</td>
 										<td>
-											<input type="checkbox" name="remove[]">
+											<input type='checkbox' name='remove[]' value='$productId'>
 										</td>
 										<td>
-											Rs 48500.00
+											$subTotal
 										</td>
 									</tr>
 <!--								One Cart Raw End-->
-<!--								One Cart Raw-->
-									<tr>
-										<td>
-											<img src="admin/resources/img/product_img/mia24.jpg" alt="">
-										</td>
-										<td>
-											<a href="#">Xiamoi MI A2</a>
-										</td>
-										<td>
-											1
-										</td>
-										<td>
-											Rs 48500.00
-										</td>
-										<td>
-											Black
-										</td>
-										<td>
-											Hardware
-										</td>
-										<td>
-											<input type="checkbox" name="remove[]">
-										</td>
-										<td>
-											Rs 48500.00
-										</td>
-									</tr>
-<!--								One Cart Raw End-->
-<!--								One Cart Raw-->
-									<tr>
-										<td>
-											<img src="admin/resources/img/product_img/mia24.jpg" alt="">
-										</td>
-										<td>
-											<a href="#">Xiamoi MI A2</a>
-										</td>
-										<td>
-											1
-										</td>
-										<td>
-											Rs 48500.00
-										</td>
-										<td>
-											Black
-										</td>
-										<td>
-											Hardware
-										</td>
-										<td>
-											<input type="checkbox" name="remove[]">
-										</td>
-										<td>
-											Rs 48500.00
-										</td>
-									</tr>
-<!--								One Cart Raw End-->									
+										
+										";
+								
+									}	
+								?>
 								</tbody>
 								<tfoot>
 									<tr>
 										<th colspan="5">Total</th>
-										<th colspan="2">Rs 48500.00</th>
+										<th colspan="2">Rs <?php echo returnPriceCart();?></th>
 									</tr>
 								</tfoot>
 							</table>
@@ -261,6 +237,7 @@
 								</a>
 							</div>
 						</div>
+						<?php cartUpdate();?>
 					</form>
 				</div>
 								<div id="row same-height-row">
