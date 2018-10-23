@@ -1,0 +1,6 @@
+//server details, goes here
+	$server = "fdb23.runhosting.com";
+	$user	= "2851291_azone";
+	$password = "ssl123456";
+	$database	= "2851291_azone";
+	$connF = null;

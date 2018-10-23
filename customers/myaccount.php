@@ -1,5 +1,5 @@
 <?php
-
+	session_start();
 	include("include/dbcon.php");
 	include("include/function.php");
 ?>
@@ -8,7 +8,7 @@
 
 <head>
 	
-	<title>EBuy Store</title>
+	<title>AZONE - Kurunegala</title>
 	
 	
 	<!--Add CSS Files-->
@@ -29,7 +29,9 @@
 			
 			<div class="col-md-6 offer">
 				<a href="#" class="btn btn-primary btn-sm">
-					Welcome : Guest
+					<?php
+						welcomeUser();
+					?>
 				</a>
 				<a href="#">
 					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart(); ?>

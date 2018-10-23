@@ -1,5 +1,5 @@
 <?php
-
+	session_start();
 	include("include/dbcon.php");
 	include("include/function.php");
 ?>
@@ -29,7 +29,9 @@
 			
 			<div class="col-md-6 offer">
 				<a href="#" class="btn btn-primary btn-sm">
-					Welcome : Guest
+					<?php
+						welcomeUser();
+					?>
 				</a>
 				<a href="#">
 					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart(); ?>
@@ -40,7 +42,9 @@
 <!--				Start Menu-->
 				<ul class="menu">
 					<li><a href="register.php">Register</a></li>
-					<li><a href="login.php">Login</a></li>
+					<?php
+						switchLoginLogout();
+					?>
 				</ul>
 				
 			</div>

@@ -1,9 +1,10 @@
-<?php
+ <?php
+	
 	session_start();
 	include("include/dbcon.php");
 	include("include/function.php");
+	include("include/md5salt.php");
 ?>
-
 <!DOCTYPE html>
 <html>
 
@@ -17,6 +18,9 @@
 	<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css">
 	<link rel="stylesheet"  type="text/css" href="resources/font-awesome/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
+	
+	
+
 	
 	
 </head>
@@ -35,7 +39,7 @@
 					?>
 				</a>
 				<a href="#">
-					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart();?>
+					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart(); ?>
 				</a>
 			</div>
 			
@@ -74,10 +78,10 @@
 				</button>
 			</div>
 			
-			<div class="navbar-collapse navbar-default collapse" id="navigation">
+			<div class="navbar-collapse collapse" id="navigation">
 				<div class="padding-nav">
 					 	<ul class="nav navbar-nav navbar-left">
-					 		<li class="active">
+					 		<li>
 					 			<a href="index.php">Home</a>
 					 		</li>
 					 		<li>
@@ -87,7 +91,7 @@
 					 			<a href="cart.php">Cart</a>
 					 		</li>
 					 		<li>
-					 			<a href="customers/myaccount.php">My Account</a>
+					 			<a href="checkout.php">My Account</a>
 					 		</li>
 					 		<li>
 					 			<a href="contact.php">Contact Us</a>
@@ -122,108 +126,34 @@
 			</div>
 		</div>
 	</div>
-		
-<!--		SliderShow Start-->
-	<div class="container" id="slider">
-		<div class="col-md-12">
-			<div id="slideshow1" class="carousel slide" data-ride="carousel">
-				<ol class="carousel-indicators">
-					<li data-target="#slideshow1" data-slide-to="0" class="active"></li>
-					<li data-target="#slideshow1" data-slide-to="1"></li>
-					<li data-target="#slideshow1" data-slide-to="2"></li>
-					<li data-target="#slideshow1" data-slide-to="3"></li>
-					<li data-target="#slideshow1" data-slide-to="4"></li>
-				</ol>
-				<div class="carousel-inner">
-					<?php
-					
-						$sql = "SELECT * FROM slider LIMIT 0,1";
-						$getImg = mysqli_query($conn,$sql);
-						while($rowImg = mysqli_fetch_array($getImg)){
-							$imgLink = $rowImg['sImage'];
-						
-						echo "
-							<div class='item active'>
-								<img src='admin/resources/img/slideshow/$imgLink'>
-							</div>
-						";
-						}
-					?>
-					<?php
-					
-						$sql = "SELECT * FROM slider LIMIT 1,4";
-						$getImg = mysqli_query($conn,$sql);
-						while($rowImg = mysqli_fetch_array($getImg)){
-							$imgLink = $rowImg['sImage'];
-						
-						echo "
-							<div class='item'>
-								<img src='admin/resources/img/slideshow/$imgLink'>
-							</div>
-						";
-						}
-					?>
-				</div>
-				<a class="left carousel-control" href="#slideshow1" data-slide="prev">
-					<span class="glyphicon glyphicon-chevron-left"></span>
-					<span class="sr-only"> Previous </span> 
-				</a>
-				<a class="right carousel-control" href="#slideshow1" data-slide="next">
-					<span class="glyphicon glyphicon-chevron-right"></span>
-					<span class="sr-only"> Next </span> 
-				</a>
-			</div>
-		</div>
-	</div>
 	
-<!--	Ads Section-->
-	<div id="adbox">
-		<div class="container">
-			<div class="same-height-row">
-				<div class="col-sm-4">
-					<div class="box same-height">
-						<h3><a href="#">Summer Discounts</a></h3>
-						<p>Upto 10% Discounts for Summer 2018</p>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="box same-height">
-						<h3><a href="#">Lifetime Tech Support</a></h3>
-						<p>Free lifetime tech support only from us</p>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="box same-height">
-						<h3><a href="#">Original Products</a></h3>
-						<p>We are offering 7 days checking warrenty</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-<!--Trending Section-->
-<div class="trending">
-	<div class="box boxlk">
+	
+	<div id="content">
 		<div class="container">
 			<div class="col-md-12">
-				<h2>New Arraivals</h2>
+				<ul class="breadcrumb">
+					<li>
+						<a href="index.php">Home</a>
+					</li>
+					<li>
+						<a href="register.php">Register</a>
+					</li>
+				</ul>
+			</div>
+			<div class="col-md-12">
+				<?php
+					if(!isset($_SESSION['cusEmail'])){
+						echo "<script>window.open('login.php','_self')</script>";
+					}else{
+						include("payment.php"); 
+					}
+				?>
 			</div>
 		</div>
 	</div>
-</div>
-
-
-<!--Contents Start-->
-<div id="content" class="container">
-	<div class="row">
-		<?php
-			getProducts();
-		?>
-	</div>
-</div>
 	
-
+	
+	
 <!--Footer Start-->
 	<?php
 		include("include/foot.php");
@@ -233,6 +163,8 @@
 <!--Add JavaScript Files-->
 	<script src="resources/js/jquery.min.js"></script>	
 	<script src="resources/js/bootstrap.min.js"></script>
+<!--	Google Recaptcha -->
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 </body>
 	
 	

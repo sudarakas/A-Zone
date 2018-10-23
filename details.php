@@ -1,5 +1,5 @@
 <?php
-
+	session_start();
 	include("include/dbcon.php");
 	include("include/function.php");
 ?>
@@ -47,7 +47,7 @@
 
 <head>
 	
-	<title>EBuy Store</title>
+	<title>AZONE - Kurunegala</title>
 	
 	
 	<!--Add CSS Files-->
@@ -68,7 +68,9 @@
 			
 			<div class="col-md-6 offer">
 				<a href="#" class="btn btn-primary btn-sm">
-					Welcome : Guest
+					<?php
+						welcomeUser();
+					?>
 				</a>
 				<a href="#">
 					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart(); ?>
@@ -79,7 +81,9 @@
 <!--				Start Menu-->
 				<ul class="menu">
 					<li><a href="register.php">Register</a></li>
-					<li><a href="login.php">Login</a></li>
+					<?php
+						switchLoginLogout();
+					?>
 				</ul>
 				
 			</div>
@@ -320,35 +324,7 @@
 						</div>
 					</div>
  					<?php
-						$getRandomProductsSql = "SELECT * FROM product ORDER BY RAND() LIMIT 0,3";
-						$getRandomProducts = mysqli_query($conn,$getRandomProductsSql);
-						while($rowGetRandomProducts = mysqli_fetch_array($getRandomProducts)){
-							$productId = $rowGetRandomProducts['productId'];
-							$productName = $rowGetRandomProducts['productName'];
-							$productPrice = $rowGetRandomProducts['productPrice'];
-							$productImg1Mini = $rowGetRandomProducts['image1'];
-							
-							echo "
-		<!-- 						One Sub Product Start-->
-								<div class='center-responsive col-md-3 col-sm-6'>
-									<div class='product same-height'>
-										<a href='details.php?productId=$productId'>
-											<img src='admin/resources/img/product_img/$productImg1Mini' alt='' class='img-responsive'>
-										</a>
-									<div class='text'>
-										<h4>
-											<a href='details.php?productId=$productId'>$productName</a>
-										</h4>
-										<p class='price'> Rs $productPrice</p>
-									</div>
-									</div>
-								</div>
-		<!--						One Sub Product Start-->
-							
-							
-							
-							";
-						}
+						suggestProducts();
 					?>
 				</div>
 			</div>

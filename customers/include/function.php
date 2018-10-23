@@ -216,7 +216,7 @@ function sortPrice(){
 }
 
 
-function getUserIP(){
+function setGetCookie(){
 	switch(true){
 			case(!empty($_SERVER['HTTP_X_REAL_IP'])):
 				return $_SERVER['HTTP_X_REAL_IP'];
@@ -233,13 +233,13 @@ function addCart(){
 	
 	global $connF;
 	if(isset($_GET['addCart'])){
-		$userIP = getUserIP();
+		$userIP = setGetCookie();
 		$productIdCart = $_GET['addCart'];
 		$productQty = $_POST['qty'];
 		$productColor = $_POST['color'];
 		$productWarrenty = $_POST['warrenty'];
 		
-		$cartProductsSql = "SELECT * FROM cart WHERE cartIpAddress='$userIP' AND productId ='$productIdCart'";
+		$cartProductsSql = "SELECT * FROM cart WHERE cartCookie='$userIP' AND productId ='$productIdCart'";
 		
 		$checkCart = mysqli_query($connF,$cartProductsSql);
 		
@@ -248,7 +248,7 @@ function addCart(){
 			echo "<script>window.open('details.php?productId=$productIdCart','_self')</script>";
 				
 		}else{
-			$addCartSql = "INSERT INTO cart(productId,cartQty,cartColour,cartWarranty, cartIpAddress) VALUES ('$productIdCart','$productQty','$productColor','$productWarrenty','$userIP')";
+			$addCartSql = "INSERT INTO cart(productId,cartQty,cartColour,cartWarranty, cartCookie) VALUES ('$productIdCart','$productQty','$productColor','$productWarrenty','$userIP')";
 			
 			$addProdutCart = mysqli_query($connF,$addCartSql);
 			echo "<script>window.open('details.php?productId=$productIdCart','_self')</script>";
@@ -260,8 +260,8 @@ function addCart(){
 
 function countCart(){
 	global $connF;
-	$userIP = getUserIP();
-	$countItemsSql = "SELECT * FROM cart WHERE cartIpAddress='$userIP'";
+	$userIP = setGetCookie();
+	$countItemsSql = "SELECT * FROM cart WHERE cartCookie='$userIP'";
 	$countItems = mysqli_query($connF,$countItemsSql);
 	$count = mysqli_num_rows($countItems);
 	
@@ -273,8 +273,8 @@ function priceCart(){
 	global $connF;
 	
 	$totalPrice = 0;
-	$userIP = getUserIP();
-	$cartItemsSql = "SELECT * FROM cart WHERE cartIpAddress='$userIP'";
+	$userIP = setGetCookie();
+	$cartItemsSql = "SELECT * FROM cart WHERE cartCookie='$userIP'";
 	$cartItems = mysqli_query($connF,$cartItemsSql);
 	
 	while($row = mysqli_fetch_array($cartItems)){
@@ -304,8 +304,8 @@ function returnPriceCart(){
 	global $connF;
 	
 	$totalPrice = 0;
-	$userIP = getUserIP();
-	$cartItemsSql = "SELECT * FROM cart WHERE cartIpAddress='$userIP'";
+	$userIP = setGetCookie();
+	$cartItemsSql = "SELECT * FROM cart WHERE cartCookie='$userIP'";
 	$cartItems = mysqli_query($connF,$cartItemsSql);
 	
 	while($row = mysqli_fetch_array($cartItems)){
@@ -327,5 +327,56 @@ function returnPriceCart(){
 	}
 	
 	return round($totalPrice,2);
+}
+
+function suggestProducts(){
+	
+				global $connF;
+				$getRandomProductsSql = "SELECT * FROM product ORDER BY RAND() LIMIT 0,3";
+				$getRandomProducts = mysqli_query($connF,$getRandomProductsSql);
+				while($rowGetRandomProducts = mysqli_fetch_array($getRandomProducts)){
+					$productId = $rowGetRandomProducts['productId'];
+					$productName = $rowGetRandomProducts['productName'];
+					$productPrice = $rowGetRandomProducts['productPrice'];
+					$productImg1Mini = $rowGetRandomProducts['image1'];
+							
+					echo "
+<!-- 				One Sub Product Start-->
+						<div class='center-responsive col-md-3 col-sm-6'>
+							<div class='product same-height'>
+								<a href='details.php?productId=$productId'>
+									<img src='admin/resources/img/product_img/$productImg1Mini' alt='' class='img-responsive'>
+								</a>
+							<div class='text'>
+								<h4>
+									<a href='details.php?productId=$productId'>$productName</a>
+								</h4>
+								<p class='price'> Rs $productPrice</p>
+							</div>
+							</div>
+						</div>
+<!--						One Sub Product Start-->
+							
+							
+							
+					";
+				}
+					
+}
+
+function welcomeUser(){
+	if(!isset($_SESSION['cusEmail'])){
+		echo "Welcome : Guest";
+	}else{
+		echo "Welcome : " . $_SESSION['cusEmail'];
+	}
+}
+
+function switchLoginLogout(){
+	if(!isset($_SESSION['cusEmail'])){
+		echo "<li><a href='../login.php'>Login</a></li>";
+	}else{
+		echo "<li><a href='../logout.php'>Logout</a></li>";
+	}
 }
 ?>

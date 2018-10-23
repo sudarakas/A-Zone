@@ -1,5 +1,5 @@
 <?php
-
+	session_start();
 	include("include/dbcon.php");
 	include("include/function.php");
 ?>
@@ -8,7 +8,7 @@
 
 <head>
 	
-	<title>EBuy Store</title>
+	<title>AZONE - Kurunegala</title>
 	
 	
 	<!--Add CSS Files-->
@@ -29,7 +29,9 @@
 			
 			<div class="col-md-6 offer">
 				<a href="#" class="btn btn-primary btn-sm">
-					Welcome : Guest
+					<?php
+						welcomeUser();
+					?>
 				</a>
 				<a href="#">
 					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart(); ?>
@@ -40,7 +42,9 @@
 <!--				Start Menu-->
 				<ul class="menu">
 					<li><a href="register.php">Register</a></li>
-					<li><a href="login.php">Login</a></li>
+					<?php
+						switchLoginLogout();
+					?>
 				</ul>
 				
 			</div>
@@ -137,8 +141,8 @@
 					<form action="cart.php" method="post" enctype="multipart/form-data">
 						<h1>Cart</h1>
 						<?php
-							$userIP = getUserIP();
-							$grabCartItemsSql = "SELECT * FROM cart WHERE cartIpAddress='$userIP'";
+							$userIP = setGetCookie();
+							$grabCartItemsSql = "SELECT * FROM cart WHERE cartCookie='$userIP'";
 							$grabCartItems = mysqli_query($conn,$grabCartItemsSql);
 							$rowGrab = mysqli_num_rows($grabCartItems);
 						?>
@@ -246,48 +250,9 @@
 							<h3 class="text-center">Check this products out</h3>
 						</div>
 					</div>
-<!--					One Sub Product Start-->
-					<div class="center-responsive col-md-3 col-sm-6">
-						<div class="product same-height">
-							<a href="details.php">
-								<img src="admin/resources/img/product_img/minote5.jpeg" alt="" class="img-responsive">
-							</a>
-							<div class="text">
-								<h4>
-									<a href="details.php">MI Note5</a>
-								</h4>
-								<p class="price"> Rs 35800.00</p>
-							</div>
-						</div>
-					</div>
-<!--					One Sub Product Start-->
-					<div class="center-responsive col-md-3 col-sm-6">
-						<div class="product same-height">
-							<a href="details.php">
-								<img src="admin/resources/img/product_img/minote5.jpeg" alt="" class="img-responsive">
-							</a>
-							<div class="text">
-								<h4>
-									<a href="details.php">MI Note5</a>
-								</h4>
-								<p class="price"> Rs 35800.00</p>
-							</div>
-						</div>
-					</div>
-<!--					One Sub Product Start-->
-					<div class="center-responsive col-md-3 col-sm-6">
-						<div class="product same-height">
-							<a href="details.php">
-								<img src="admin/resources/img/product_img/minote5.jpeg" alt="" class="img-responsive">
-							</a>
-							<div class="text">
-								<h4>
-									<a href="details.php">MI Note5</a>
-								</h4>
-								<p class="price"> Rs 35800.00</p>
-							</div>
-						</div>
-					</div>
+					<?php
+						suggestProducts();
+					?>
 				</div>
 			</div>
 			<div class="col-md-3">

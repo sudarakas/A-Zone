@@ -1,14 +1,66 @@
 <?php
 
+	session_start();
 	include("include/dbcon.php");
 	include("include/function.php");
+	include("include/md5salt.php");
+
+	$wrongpass = "";
 ?>
+
+<?php
+	if(isset($_POST['login'])){
+		
+		$cusEmail = $_POST['cus_email'];
+		$cusPass = $_POST['cus_pass'];
+		$cusPassEncrypt = encNanoSec($cusPass);
+		
+		//Google Recaptcha
+		$sKey = "6LdScHYUAAAAAL6_FSP4Jgmv_Vd4-2sYytWiBt0K";
+		$gResponse = $_POST['g-recaptcha-response'];
+		$remoteIP = $_SERVER['REMOTE_ADDR'];
+		$guRL = "https://www.google.com/recaptcha/api/siteverify?secret=$sKey&response=$gResponse&remoteip=$remoteIP";
+		$retuenResponse = file_get_contents($guRL);
+		$jsonResponse = json_decode($retuenResponse);
+		
+		if($jsonResponse->success){
+			
+			$loginCustomerSql = "SELECT * FROM customer WHERE cusEmail='$cusEmail' AND cusPassword='$cusPassEncrypt'";
+			$loginCustomer = mysqli_query($conn,$loginCustomerSql);
+			$checklogin = mysqli_num_rows($loginCustomer);
+			
+			$registerCusIP = setGetCookie();
+			$checkCartSql = "SELECT * FROM cart WHERE cartCookie='$registerCusIP'";
+			$checkCart = mysqli_query($conn,$checkCartSql);
+			$countCheckCart = mysqli_num_rows($checkCart);
+			
+			if($checklogin>0 && $countCheckCart > 0){
+				
+				$_SESSION['cusEmail'] = $cusEmail;
+				echo "<script>window.open('cart.php','_self')</script>";
+				
+			}else if($checklogin > 0 && $countCheckCart == 0){
+				$_SESSION['cusEmail'] = $cusEmail;
+				echo "<script>window.open('customers/myaccount.php?myorders','_self')</script>";
+			}else{
+				$wrongpass = "Invalid Email/Password";
+			}
+		}else{
+			$wrongpass = "Please complete the Recaptcha";
+		}
+		
+		
+		
+		
+	}
+?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
 	
-	<title>EBuy Store</title>
+	<title>AZONE - Kurunegala</title>
 	
 	
 	<!--Add CSS Files-->
@@ -29,7 +81,9 @@
 			
 			<div class="col-md-6 offer">
 				<a href="#" class="btn btn-primary btn-sm">
-					Welcome : Guest
+					<?php
+						welcomeUser();
+					?>
 				</a>
 				<a href="#">
 					Cart Total Price : Rs<?php priceCart();?>, No of items : <?php countCart(); ?>
@@ -40,7 +94,9 @@
 <!--				Start Menu-->
 				<ul class="menu">
 					<li><a href="register.php">Register</a></li>
-					<li><a href="login.php">Login</a></li>
+					<?php
+						switchLoginLogout();
+					?>
 				</ul>
 				
 			</div>
@@ -149,10 +205,21 @@
 							<label for="">Password</label>
 							<input type="password" class="form-control" name="cus_pass" required>
 						</div>
+						<center>
+							<div class="form-warn" style="font-size: 12px !important;font-weight: 600 !important;letter-spacing: 2px !important;color: red;	">
+								<?php if($wrongpass != "") echo $wrongpass?>
+							</div>
+							<br>
+							<div class="g-recaptcha" data-sitekey="6LdScHYUAAAAAE9U_bKNKWJacA5WvGEIetd3lhbV"></div>
+						</center>
+						<br>
 						<div class="text-center">
-							<button type="submit" name="register" class="btn btn-success">
+							<button type="submit" name="login" class="btn btn-success">
 								<i class="fa fa-envelope"></i> Login
 							</button>
+							<br>
+							<br>
+							<p>Cannot login to your account? contact <a href="contact.php" target="_blank">Support Center</a> or <a href="forgetpassword.php" target="_blank">Recover Password</a></p>
 						</div>
 					</form>
 				</div>
@@ -171,7 +238,10 @@
 <!--Add JavaScript Files-->
 	<script src="resources/js/jquery.min.js"></script>	
 	<script src="resources/js/bootstrap.min.js"></script>
+	
+<!--	Google Recaptcha -->
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 </body>
-	
-	
 </html>
+
+

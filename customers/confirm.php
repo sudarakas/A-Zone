@@ -8,7 +8,7 @@
 
 <head>
 	
-	<title>EBuy Store</title>
+	<title>AZONE - Kurunegala</title>
 	
 	
 	<!--Add CSS Files-->
