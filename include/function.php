@@ -226,7 +226,6 @@ function setGetCookie(){
 	else {
     	return $_COOKIE['user_cookie']; 
 	}
-exit(); 
 	
 }
 

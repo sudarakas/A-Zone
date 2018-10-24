@@ -447,8 +447,17 @@ body{
 	font-weight: 500;
 }
 
+/*payment.php styles*/
 
+#content .leftside{
+	width: 50%;
+	background-color: red;
+}
 
+#content .rightside{
+	width: 50%;
+	background-color: navy;
+}
 
 
 

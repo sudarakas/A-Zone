@@ -4,6 +4,7 @@
 	include("include/dbcon.php");
 	include("include/function.php");
 	include("include/md5salt.php");
+	setGetCookie();
 ?>
 <!DOCTYPE html>
 <html>

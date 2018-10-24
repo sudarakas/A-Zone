@@ -217,15 +217,13 @@ function sortPrice(){
 
 
 function setGetCookie(){
-	switch(true){
-			case(!empty($_SERVER['HTTP_X_REAL_IP'])):
-				return $_SERVER['HTTP_X_REAL_IP'];
-			case(!empty($_SERVER['HTTP_CLIENT_IP'])):
-				return $_SERVER['HTTP_CLIENT_IP'];
-			case(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])):
-				return $_SERVER['HTTP_X_FORWARDED_FOR'];
-			default:
-				return $_SERVER['REMOTE_ADDR'];
+	global $random; 
+	$random= rand(0, 9999999); 
+	if(!isset($_COOKIE['user_cookie'])) {
+    	setcookie('user_cookie',$random, time() + (86400), "/");//86400 = 1 day
+	}
+	else {
+    	return $_COOKIE['user_cookie']; 
 	}
 }
 

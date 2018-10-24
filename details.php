@@ -2,6 +2,7 @@
 	session_start();
 	include("include/dbcon.php");
 	include("include/function.php");
+	setGetCookie();
 ?>
 <?php
 	if(isset($_GET['productId'])){
