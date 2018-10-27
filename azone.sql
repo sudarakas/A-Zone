@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 12, 2018 at 05:13 AM
+-- Generation Time: Oct 27, 2018 at 07:46 PM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -62,11 +62,13 @@ INSERT INTO `admin` (`adminId`, `adminName`, `adminEmail`, `adminPassword`, `adm
 
 CREATE TABLE `cart` (
   `cartId` int(11) NOT NULL,
-  `productId` int(15) NOT NULL,
-  `cartPrice` varchar(500) NOT NULL,
-  `cartQty` int(100) NOT NULL,
-  `cartAmount` varchar(500) NOT NULL,
-  `cartColour` varchar(100) NOT NULL
+  `productId` varchar(15) DEFAULT NULL,
+  `cartPrice` varchar(500) DEFAULT NULL,
+  `cartQty` varchar(100) DEFAULT NULL,
+  `cartAmount` varchar(500) DEFAULT NULL,
+  `cartColour` varchar(100) DEFAULT NULL,
+  `cartWarranty` varchar(20) DEFAULT NULL,
+  `cartCookie` varchar(500) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -121,11 +123,21 @@ CREATE TABLE `customer` (
   `cusEmail` varchar(200) NOT NULL,
   `cusPassword` varchar(200) NOT NULL,
   `cusAddress` varchar(500) NOT NULL,
+  `cusCity` varchar(150) NOT NULL,
   `cusImage` varchar(1000) NOT NULL,
-  `cusAccount` varchar(200) NOT NULL,
   `cConfirmCode` varchar(100) NOT NULL,
   `cusPNum` varchar(100) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `customer`
+--
+
+INSERT INTO `customer` (`cusId`, `cusName`, `cusEmail`, `cusPassword`, `cusAddress`, `cusCity`, `cusImage`, `cConfirmCode`, `cusPNum`) VALUES
+(1, 'Rasmus Lerdorf', 'rasmus@azone.lk', '3duntxToFsvJTlMAeXGNlqREOusPrx8qJJWPNUzTXms=', 'Passara Road,Badulla', 'Badulla', 'download.jfif', '1167', '0715623145'),
+(2, 'Sapuni', 'sapu@gg.lk', 'dK7ZmxxIoTyyN67Nmp6kUmfyu3qubXqfO1ZnhQfHQDU=', 'Kandy Road,', 'Kandy', 'pexels-photo-415484.jpeg', '12598', '0785642125'),
+(3, 'SAPU', 'sapu@gg.lk', 'dK7ZmxxIoTyyN67Nmp6kUmfyu3qubXqfO1ZnhQfHQDU=', 'Kandy Road', 'Kandy', 'pexels-photo-415484.jpeg', '26987', '07856414'),
+(4, 'Gayan De Silva', 'gayan@slt.lk', 'gHcxuF9fM5PmdWWnl37/L9vIum3qMaj08eLIWWByUXo=', 'New Town, Anuradhapura', 'Anuradhapura', 'Namal Ranatunga.JPG', '24981', '0716545693');
 
 -- --------------------------------------------------------
 
@@ -151,7 +163,8 @@ INSERT INTO `manufacture` (`manufactureId`, `manName`, `manImage`) VALUES
 (5, 'Huawei', ''),
 (6, 'HP', ''),
 (7, 'Acer', ''),
-(8, 'DELL', '');
+(8, 'DELL', ''),
+(9, 'MSI', '');
 
 -- --------------------------------------------------------
 
@@ -163,25 +176,48 @@ CREATE TABLE `offlinepayement` (
   `branch` varchar(200) NOT NULL,
   `depositImage` varchar(200) NOT NULL,
   `depositDate` date NOT NULL,
-  `amount` varchar(200) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `amount` varchar(200) NOT NULL,
+  `payId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `offlinepayement`
+--
+
+INSERT INTO `offlinepayement` (`branch`, `depositImage`, `depositDate`, `amount`, `payId`) VALUES
+('BOC', 'boc1.jfif', '2018-10-27', '68800', 4),
+('BOC', 'boc1.jfif', '2018-10-27', '68800', 5);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order`
+-- Table structure for table `orders`
 --
 
-CREATE TABLE `order` (
+CREATE TABLE `orders` (
   `orderId` int(11) NOT NULL,
   `cusId` int(15) NOT NULL,
+  `productId` int(11) NOT NULL,
   `orderAmount` varchar(500) NOT NULL,
   `invoiceNumber` varchar(100) NOT NULL,
   `qty` int(100) NOT NULL,
   `colour` varchar(200) NOT NULL,
-  `date` date NOT NULL,
-  `state` varchar(100) NOT NULL
+  `warranty` varchar(100) NOT NULL,
+  `date` timestamp NOT NULL,
+  `status` varchar(100) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`orderId`, `cusId`, `productId`, `orderAmount`, `invoiceNumber`, `qty`, `colour`, `warranty`, `date`, `status`) VALUES
+(1, 1, 6, '68800', '463589894', 1, 'Black', 'Hardware', '2018-10-25 17:43:28', 'Paid'),
+(2, 1, 1, '188000', '463589894', 1, 'Black', 'Software', '2018-10-25 17:43:28', 'unpaid'),
+(3, 1, 4, '92800', '463589894', 1, 'Black', 'Hardware', '2018-10-25 17:43:28', 'unpaid'),
+(4, 1, 5, '95000', '629100004', 1, 'Black', 'Software', '2018-10-25 17:59:05', 'unpaid'),
+(5, 2, 1, '191800', '2075371314', 1, 'Red', 'Hardware', '2018-10-25 18:28:23', 'unpaid'),
+(6, 1, 9, '48000', '1074857025', 1, 'Red', 'Software', '2018-10-27 14:08:17', 'unpaid');
 
 -- --------------------------------------------------------
 
@@ -196,7 +232,15 @@ CREATE TABLE `payement` (
   `amount` varchar(500) NOT NULL,
   `payMethod` varchar(200) NOT NULL,
   `date` date NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `payement`
+--
+
+INSERT INTO `payement` (`payId`, `customerId`, `pInvoiceNum`, `amount`, `payMethod`, `date`) VALUES
+(4, 1, '463589894', '68800', 'Bank Deposite', '2018-10-27'),
+(5, 1, '463589894', '68800', 'Bank Deposite', '2018-10-27');
 
 -- --------------------------------------------------------
 
@@ -236,7 +280,8 @@ INSERT INTO `product` (`productId`, `productDate`, `productName`, `customUrl`, `
 (6, '2018-10-07 08:08:42', 'OnePlus 5T 128GB', 'oneplus-5t', 'one.jfif', 'one.jfif', 'one.jfif', 'one.jfif', '65000', 'OnePlus 5T 128GB', 5, 1, 'oneplus', 'OnePlus 5T 128GB', '2', '2'),
 (7, '2018-10-07 08:10:55', 'Xiaomi MI A2 64GB', 'mi-a2', 'mia2.jpeg', 'mia2.jpeg', 'mia2.jpeg', 'mia2.jpeg', '38500', 'Xiaomi MI A2 64GB', 4, 1, 'mia2', 'Xiaomi MI A2 64GB', '1', '1'),
 (8, '2018-10-08 03:05:38', 'Nokia 6 2018 64GB', 'nokia-6-2018', 'nokia-6-2018-mobile-phones-price-in-sri-lanka_778_jpg.jpeg', '', '', '', '38000.00', 'Nokia 6 2018', 5, 1, 'nokia6', '64GB ROM', '0', '2'),
-(9, '2018-10-08 03:07:44', 'Huawei Nova 3i', 'nova3i', 'nova3i.jpeg', 'nova3i.jpeg', 'nova3i.jpeg', 'nova3i.jpeg', '48000.00', 'Nova 3i ', 5, 1, 'nova3i', '128 GB', '1', '1');
+(9, '2018-10-08 03:07:44', 'Huawei Nova 3i', 'nova3i', 'nova3i.jpeg', 'nova3i.jpeg', 'nova3i.jpeg', 'nova3i.jpeg', '48000.00', 'Nova 3i ', 5, 1, 'nova3i', '128 GB', '1', '1'),
+(10, '2018-10-19 19:56:59', 'MSI GS65 Stealth THIN', 'msigs60', '118ce8b15854ab3a294904.jpg', '117ee8bbe62c600c737499.jpg', '11a6e8aab8c4544489145b.jpg', '1150e88890a81e84d032c4.jpg', '460000.00', 'MSI GS65 Stealth THIN-050 Thin & Light Bezel Gaming and Business Laptop (Intel 8th Gen Coffee Lake i7-8750H 6-Core, 32GB RAM, 512GB PCIe SSD, 15.6" FHD 1920x1080 Display, GTX 1060, Win10 Pro) VR Ready', 9, 2, 'msi', 'MSI GS65 Stealth THIN-050 Thin & Light Bezel Gaming and Business Laptop (Intel 8th Gen Coffee Lake i7-8750H 6-Core, 32GB RAM, 512GB PCIe SSD, 15.6" FHD 1920x1080 Display, GTX 1060, Win10 Pro) VR Ready', '1', '3');
 
 -- --------------------------------------------------------
 
@@ -332,9 +377,15 @@ ALTER TABLE `manufacture`
   ADD PRIMARY KEY (`manufactureId`);
 
 --
--- Indexes for table `order`
+-- Indexes for table `offlinepayement`
 --
-ALTER TABLE `order`
+ALTER TABLE `offlinepayement`
+  ADD KEY `payId` (`payId`);
+
+--
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
   ADD PRIMARY KEY (`orderId`);
 
 --
@@ -385,7 +436,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `cartId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cartId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `category`
 --
@@ -400,27 +451,27 @@ ALTER TABLE `coupons`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `cusId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cusId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `manufacture`
 --
 ALTER TABLE `manufacture`
-  MODIFY `manufactureId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `manufactureId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
--- AUTO_INCREMENT for table `order`
+-- AUTO_INCREMENT for table `orders`
 --
-ALTER TABLE `order`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `orders`
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `payement`
 --
 ALTER TABLE `payement`
-  MODIFY `payId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `payId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `productId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `productId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `slider`
 --
@@ -436,6 +487,16 @@ ALTER TABLE `supportticket`
 --
 ALTER TABLE `wishlist`
   MODIFY `wishListId` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `offlinepayement`
+--
+ALTER TABLE `offlinepayement`
+  ADD CONSTRAINT `offlinepayement_ibfk_1` FOREIGN KEY (`payId`) REFERENCES `payement` (`payId`);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
