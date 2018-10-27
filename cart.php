@@ -42,7 +42,6 @@
 			<div class="col-md-6">
 <!--				Start Menu-->
 				<ul class="menu">
-					<li><a href="register.php">Register</a></li>
 					<?php
 						switchLoginLogout();
 					?>
@@ -87,7 +86,7 @@
 					 			<a href="cart.php">Cart</a>
 					 		</li>
 					 		<li>
-					 			<a href="checkout.php">My Account</a>
+					 			<a href="customers/myaccount.php?myorders">My Account</a>
 					 		</li>
 					 		<li>
 					 			<a href="contact.php">Contact Us</a>
@@ -142,8 +141,8 @@
 					<form action="cart.php" method="post" enctype="multipart/form-data">
 						<h1>Cart</h1>
 						<?php
-							$userIP = setGetCookie();
-							$grabCartItemsSql = "SELECT * FROM cart WHERE cartCookie='$userIP'";
+							$userCookie = setGetCookie();
+							$grabCartItemsSql = "SELECT * FROM cart WHERE cartCookie='$userCookie'";
 							$grabCartItems = mysqli_query($conn,$grabCartItemsSql);
 							$rowGrab = mysqli_num_rows($grabCartItems);
 						?>

@@ -1,8 +1,27 @@
 <?php
-
+	session_start();
 	include("include/dbcon.php");
 	include("include/function.php");
 ?>
+<?php
+	if(!isset($_SESSION['cusEmail'])){
+		echo "<script>window.open('../login.php','_self')</script>";
+	}
+
+	if(isset($_GET['orderId'])){
+		
+		$orderId = $_GET['orderId'];
+		$getOrderDetilsSql = "SELECT * FROM orders WHERE orderId ='$orderId'";
+		$getOrderDetils = mysqli_query($conn,$getOrderDetilsSql);
+		$getOrderDetilsRow = mysqli_fetch_array($getOrderDetils);
+		
+		$invoiceNumber = $getOrderDetilsRow['invoiceNumber'];
+		$orderAmount = $getOrderDetilsRow['orderAmount'];
+	}
+
+	offlinePayment();
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -142,22 +161,22 @@
 				<div class="box">
 					<h3 style="text-align: center;">Complete Your Payment</h3>
 					<hr>
-					<form action="confirm.php" method="post" enctype="multipart/form-data">
+					<form action="confirm.php?offlinePayment=<?php echo $orderId;?>" method="post" enctype="multipart/form-data">
 						<div class="form-group">
 							<label for="">Invoice No</label>
-							<input type="text" class="form-control" name="invoiceno" required>
+							<input type="text" class="form-control" name="invoiceno" value="<?php echo $invoiceNumber;?>" required>
 						</div>
 						<div class="form-group">
 							<label for="">Payment Date</label>
-							<input type="text" class="form-control" name="paydat" required>
+							<input type="date" class="form-control" name="paydat" required>
 						</div>
 						<div class="form-group">
 							<label for="">Payment Method</label>
 							<select name="paymode" class="form-control" id="">
-								<option value="">Select Payment Method</option>
-								<option value="">Bank Deposite</option>
-								<option value="">CDM Deposite</option>
-								<option value="">Money Orders</option>
+								<option>Select Payment Method</option>
+								<option>Bank Deposite</option>
+								<option>CDM Deposite</option>
+								<option>Money Orders</option>
 							</select>
 						</div>
 						<div class="form-group">
@@ -174,7 +193,7 @@
 						</div>
 						<div class="form-group">
 							<label for="">Amount</label>
-							<input type="text" class="form-control" name="payamount" required>
+							<input type="text" class="form-control" name="payamount" value="<?php echo $orderAmount;?>" required>
 						</div>
 						<div class="form-group">
 							<label for="">Attach Slip</label>

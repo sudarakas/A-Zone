@@ -47,7 +47,6 @@
 			<div class="col-md-6">
 <!--				Start Menu-->
 				<ul class="menu">
-					<li><a href="register.php">Register</a></li>
 					<?php
 						switchLoginLogout();
 					?>
@@ -92,7 +91,7 @@
 					 			<a href="cart.php">Cart</a>
 					 		</li>
 					 		<li>
-					 			<a href="checkout.php">My Account</a>
+					 			<a href="myaccount.php?myorders">My Account</a>
 					 		</li>
 					 		<li>
 					 			<a href="contact.php">Contact Us</a>
@@ -221,58 +220,5 @@
 
 
 <?php
-	if(isset($_POST['register'])){
-		
-		$cusName = $_POST['cus_name'];
-		$cusEmail = $_POST['cus_email'];
-		$cusPass = $_POST['cus_pass'];
-		$cusCPass = $_POST['cus_cpass'];
-		$cusPNo = $_POST['cus_pno'];
-		$cusAddress = $_POST['cus_address'];
-		$cusCity = $_POST['cus_city'];
-		$cusProfilePic = $_FILES['cus_dp']['name'];
-		$cusProfilePicTemp = $_FILES['cus_dp']['tmp_name'];
-		$cusConfimCode = rand();
-		$cusPassEncrpt = encNanoSec($cusPass);
-		
-		//Google Recaptcha
-		$sKey = "6LdScHYUAAAAAL6_FSP4Jgmv_Vd4-2sYytWiBt0K";
-		$gResponse = $_POST['g-recaptcha-response'];
-		$remoteIP = $_SERVER['REMOTE_ADDR'];
-		$guRL = "https://www.google.com/recaptcha/api/siteverify?secret=$sKey&response=$gResponse&remoteip=$remoteIP";
-		$retuenResponse = file_get_contents($guRL);
-		$jsonResponse = json_decode($retuenResponse);
-		
-		if($cusPass == $cusCPass && $jsonResponse->success){
-			move_uploaded_file($cusProfilePicTemp,"customers/resources/img/userpics/$cusProfilePic");
-			
-			$registerCustomerSql = "INSERT INTO customer(cusName, cusEmail, cusPassword, cusAddress, cusCity, cusImage, cConfirmCode, cusPNum) VALUES ('$cusName','$cusEmail','$cusPassEncrpt','$cusAddress','$cusCity','$cusProfilePic','$cusConfimCode','$cusPNo')";
-			
-			$registerCustomer = mysqli_query($conn,$registerCustomerSql);
-		
-			//Check register customer have items on cart
-			$registerCusIP = setGetCookie();
-			$checkCartSql = "SELECT * FROM cart WHERE cartCookie='$registerCusIP'";
-			$checkCart = mysqli_query($conn,$checkCartSql);
-			$countCheckCart = mysqli_num_rows($checkCart);
-		
-			if($countCheckCart>0){
-				$_SESSION['cusEmail'] = $cusEmail;
-				echo "<script>alert('Registered Success')</script>";
-				echo "<script>window.open('cart.php','_self')</script>";
-			}else{
-				echo "<script>alert('Registered Success')</script>";
-				echo "<script>window.open('store.php','_self')</script>";
-			}
-		}else if($jsonResponse->success){
-			echo "<script>alert('Password and Confirm Password are not matched')</script>";
-		}else if($cusPass == $cusCPass){
-			echo "<script>alert('Please complete recaptcha!')</script>";
-		}else{
-			echo "<script>alert('Please check your inputs')</script>";
-		}
-		
-		
-		
-	}
+	customerRegister();
 ?>

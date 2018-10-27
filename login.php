@@ -7,54 +7,10 @@
 	setGetCookie();
 
 	$wrongpass = "";
+	customerLogin();
 ?>
 
-<?php
-	if(isset($_POST['login'])){
-		
-		$cusEmail = $_POST['cus_email'];
-		$cusPass = $_POST['cus_pass'];
-		$cusPassEncrypt = encNanoSec($cusPass);
-		
-		//Google Recaptcha
-		$sKey = "6LdScHYUAAAAAL6_FSP4Jgmv_Vd4-2sYytWiBt0K";
-		$gResponse = $_POST['g-recaptcha-response'];
-		$remoteIP = $_SERVER['REMOTE_ADDR'];
-		$guRL = "https://www.google.com/recaptcha/api/siteverify?secret=$sKey&response=$gResponse&remoteip=$remoteIP";
-		$retuenResponse = file_get_contents($guRL);
-		$jsonResponse = json_decode($retuenResponse);
-		
-		if($jsonResponse->success){
-			
-			$loginCustomerSql = "SELECT * FROM customer WHERE cusEmail='$cusEmail' AND cusPassword='$cusPassEncrypt'";
-			$loginCustomer = mysqli_query($conn,$loginCustomerSql);
-			$checklogin = mysqli_num_rows($loginCustomer);
-			
-			$registerCusIP = setGetCookie();
-			$checkCartSql = "SELECT * FROM cart WHERE cartCookie='$registerCusIP'";
-			$checkCart = mysqli_query($conn,$checkCartSql);
-			$countCheckCart = mysqli_num_rows($checkCart);
-			
-			if($checklogin>0 && $countCheckCart > 0){
-				
-				$_SESSION['cusEmail'] = $cusEmail;
-				echo "<script>window.open('cart.php','_self')</script>";
-				
-			}else if($checklogin > 0 && $countCheckCart == 0){
-				$_SESSION['cusEmail'] = $cusEmail;
-				echo "<script>window.open('customers/myaccount.php?myorders','_self')</script>";
-			}else{
-				$wrongpass = "Invalid Email/Password";
-			}
-		}else{
-			$wrongpass = "Please complete the Recaptcha";
-		}
-		
-		
-		
-		
-	}
-?>
+
 
 <!DOCTYPE html>
 <html>
@@ -94,7 +50,6 @@
 			<div class="col-md-6">
 <!--				Start Menu-->
 				<ul class="menu">
-					<li><a href="register.php">Register</a></li>
 					<?php
 						switchLoginLogout();
 					?>

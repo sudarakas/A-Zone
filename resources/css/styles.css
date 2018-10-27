@@ -451,12 +451,46 @@ body{
 
 #content .leftside{
 	width: 50%;
-	background-color: red;
+	border: 1px solid;
+	margin-bottom: 10px;
+	margin-right: 5px;
+	padding: 5px;
+	padding-bottom: 10px;
+	box-shadow: 0 1px 2px #fff,0 -1px 1px #666,inset 0 -1px 1px rgba(0,0,0,0.5),inset 0 1px 1px rgba(255,255,255,0.8);
+}
+
+#content .leftside h1{
+	text-transform: uppercase;
+	font-weight: 700;
+	
+}
+
+#content .leftside p{
+	font-size: 10px;
+	font-weight: 600;
+	color: #334feb;
 }
 
 #content .rightside{
 	width: 50%;
-	background-color: navy;
+	border: 1px solid;
+	margin-bottom: 10px;
+	margin-left: 5px;
+	padding: 5px;
+	padding-bottom: 10px;
+	box-shadow: 0 1px 2px #fff,0 -1px 1px #666,inset 0 -1px 1px rgba(0,0,0,0.5),inset 0 1px 1px rgba(255,255,255,0.8);
+}
+
+#content .rightside h1{
+	text-transform: uppercase;
+	font-weight: 700;
+	
+}
+
+#content .rightside p{
+	font-size: 10px;
+	font-weight: 600;
+	color: #334feb;
 }
 
 

@@ -1,10 +1,21 @@
+<?php
+	$cusEmail = $_SESSION['cusEmail'];
+
+	$getCustomerSql = "SELECT * FROM customer WHERE cusEmail='$cusEmail'";
+	$getCustomer = mysqli_query($conn,$getCustomerSql);
+	$rowGetCustomer = mysqli_fetch_array($getCustomer);
+
+	$customerPic = $rowGetCustomer['cusImage'];
+	$customerName = $rowGetCustomer['cusName'];
+
+?>
 <div class="panel panel-primary sidebar-menu">
 	<div class="panel-heading">
 		<center>
-			<img src="resources/img/userpics/profilepc.jpeg" class="img-responsive" alt="profile_pic">
+			<img src="resources/img/userpics/<?php echo $customerPic?>" class="img-responsive" alt="profile_pic">
 		</center>
 		<br>
-		<h3 class="panel-title" style="text-align:center;">nanoLK</h3>
+		<h3 class="panel-title" style="text-align:center;"><?php echo $customerName?></h3>
 	</div>
 	<div class="panel-body">
 		<ul class="nav nav-pills nav-stacked">

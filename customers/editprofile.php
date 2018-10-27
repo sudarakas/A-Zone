@@ -1,3 +1,15 @@
+<?php
+
+	$cusEmail = $_SESSION['cusEmail'];
+	$getCustomerInfoSql = "SELECT * FROM customer WHERE cusEmail='$cusEmail'";
+	$getCustomerInfo = mysqli_query($conn,$getCustomerInfoSql);
+	
+
+?>
+
+
+
+
 <center>
 	<h3 style="text-transform: uppercase; font-weight: 700;">Edit Your Profile</h3>
 	<p class="text-info">Edit your account details</p>

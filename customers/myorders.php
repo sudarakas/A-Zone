@@ -13,27 +13,60 @@
 				 	<th>Product</th>
 				 	<th>QTY</th>
 				 	<th>Color</th>
-				 	<th>Warrenty Type</th>
+				 	<th>Warranty Type</th>
 				 	<th>Amount</th>
 				 	<th>Status</th>
 				 	<th>Action</th>
 				 </tr>
 			</thead>
 			<tbody>
-				<tr>
-					<th>1</th>
-					<td>65655656</td>
-					<td>25/09/2018</td>
-					<td>Nova 3i</td>
-					<td>1</td>
-					<td>Black</td>
-					<td>Software</td>
-					<td>Rs 48900.00</td>
-					<td>Padi</td>
-					<td>
-						<a href="confirm.php" target="_blank" class="btn btn-success btn-sm">Confirm</a>
-					</td>
-				</tr>
+				<?php
+					$cusEmail = $_SESSION['cusEmail'];
+					$getCustomerSql = "SELECT * FROM customer WHERE cusEmail='$cusEmail'";
+					$getCustomer = mysqli_query($conn,$getCustomerSql);
+					$rowGetCustomer = mysqli_fetch_array($getCustomer);
+
+					$customerId = $rowGetCustomer['cusId'];
+					$no = 1;
+					$getOrdersSql = "SELECT * FROM orders WHERE cusId='$customerId'";
+					$getOrders = mysqli_query($conn,$getOrdersSql);
+					while($getOrdersRow = mysqli_fetch_array($getOrders)){
+						
+						$orderId = $getOrdersRow['orderId'];
+						$orderInvoice = $getOrdersRow['invoiceNumber'];
+						$orderDate = $getOrdersRow['date'];
+						$orderQty = $getOrdersRow['qty'];
+						$orderColor = $getOrdersRow['colour'];
+						$orderWarrenty = $getOrdersRow['warranty'];
+						$orderStatus= $getOrdersRow['status'];
+						$orderAmount = $getOrdersRow['orderAmount'];
+						$productId = $getOrdersRow['productId'];
+						
+						$getProductNameSql = "SELECT * FROM product WHERE productId='$productId'";
+						$getProductName = mysqli_query($conn,$getProductNameSql);
+						$getProductNameRow = mysqli_fetch_array($getProductName);
+						$productName = $getProductNameRow['productName'];
+						
+						echo "
+						<tr>
+							<th>$no</th>
+							<td>$orderInvoice</td>
+							<td>$orderDate</td>
+							<td>$productName</td>
+							<td>$orderQty</td>
+							<td>$orderColor</td>
+							<td>$orderWarrenty</td>
+							<td>$orderAmount</td>
+							<td>$orderStatus</td>
+							<td>
+								<a href='confirm.php?orderId=$orderId' target='_blank' class='btn btn-success btn-sm'>Confirm</a>
+							</td>
+						</tr>
+							
+						";
+						$no = $no + 1;
+					}
+				?>
 			</tbody>
 		</table>
 	</div>

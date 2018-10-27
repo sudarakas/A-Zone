@@ -4,6 +4,11 @@
 	include("include/function.php");
 	setGetCookie();
 ?>
+<?php
+	if(!isset($_SESSION['cusEmail'])){
+		echo "<script>window.open('../login.php','_self')</script>";
+	}
+?>
 <!DOCTYPE html>
 <html>
 
@@ -42,8 +47,9 @@
 			<div class="col-md-6">
 <!--				Start Menu-->
 				<ul class="menu">
-					<li><a href="../register.php">Register</a></li>
-					<li><a href="../login.php">Login</a></li>
+					<?php
+						switchLoginLogout();
+					?>
 				</ul>
 				
 			</div>
@@ -85,7 +91,7 @@
 					 			<a href="../cart.php">Cart</a>
 					 		</li>
 					 		<li  class="active">
-					 			<a href="myaccount.php">My Account</a>
+					 			<a href="myaccount.php?">My Account</a>
 					 		</li>
 					 		<li>
 					 			<a href="../contact.php">Contact Us</a>
@@ -93,7 +99,7 @@
 					 	</ul>
 				</div>
 				
-				<a class="btn btn-info navbar-btn right" href="cart.php">
+				<a class="btn btn-info navbar-btn right" href="../cart.php">
 					<i class="fa fa-shopping-cart"></i>
 					<span><?php countCart(); ?> items in cart</span>
 				</a>

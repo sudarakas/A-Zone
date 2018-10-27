@@ -47,7 +47,6 @@
 			<div class="col-md-6">
 <!--				Start Menu-->
 				<ul class="menu">
-					<li><a href="register.php">Register</a></li>
 					<?php
 						switchLoginLogout();
 					?>
@@ -92,7 +91,7 @@
 					 			<a href="cart.php">Cart</a>
 					 		</li>
 					 		<li>
-					 			<a href="checkout.php">My Account</a>
+					 			<a href="customers/myaccount.php?myorders">My Account</a>
 					 		</li>
 					 		<li>
 					 			<a href="contact.php">Contact Us</a>
