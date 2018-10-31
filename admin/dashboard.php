@@ -27,7 +27,9 @@
 				 	</div>
 				 	<div class="col-xs-9 text-right">
 				 		<div class="txt-big">
-				 			20
+				 			<?php
+								countNoOrders();
+							?>
 				 		</div>
 				 		<div class="txt-sub">
 				 			Orders
@@ -53,7 +55,9 @@
 				 	</div>
 				 	<div class="col-xs-9 text-right">
 				 		<div class="txt-big">
-				 			20
+				 			<?php
+								countProducts();
+							?>
 				 		</div>
 				 		<div class="txt-sub">
 				 			Products
@@ -79,7 +83,9 @@
 				 	</div>
 				 	<div class="col-xs-9 text-right">
 				 		<div class="txt-big">
-				 			20
+				 			<?php
+								countPayment();
+							?>
 				 		</div>
 				 		<div class="txt-sub">
 				 			Payments
@@ -112,7 +118,7 @@
 							<tr>
 								<th>Order No</th>
 								<th>Invoice No</th>
-								<th>Product ID</th>
+								<th>Date</th>
 								<th>Product Name</th>
 								<th>QTY</th>
 								<th>Color</th>
@@ -122,39 +128,9 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>1</td>
-								<td>656424</td>
-								<td>52</td>
-								<td>OnePlus 6t 64GB</td>
-								<td>1</td>
-								<td>Red</td>
-								<td>Hardware</td>
-								<td>iraj@uok.ac.lk</td>
-								<td>Complete</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>656424</td>
-								<td>52</td>
-								<td>OnePlus 6t 64GB</td>
-								<td>1</td>
-								<td>Red</td>
-								<td>Hardware</td>
-								<td>iraj@uok.ac.lk</td>
-								<td>Complete</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>656424</td>
-								<td>52</td>
-								<td>OnePlus 6t 64GB</td>
-								<td>1</td>
-								<td>Red</td>
-								<td>Hardware</td>
-								<td>iraj@uok.ac.lk</td>
-								<td>Complete</td>
-							</tr>
+							<?php
+								printNewOrders();
+							?>
 						</tbody>
 					</table>
 				</div>

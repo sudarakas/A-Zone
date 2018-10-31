@@ -1,15 +1,17 @@
 <?php
+
 	session_start();
 	include("include/dbcon.php");
 	include("include/function.php");
 	include("include/md5salt.php");
 	setGetCookie();
+
+	$wrongpass = "";
+	customerLogin();
 ?>
-<?php
-	if(!isset($_SESSION['cusEmail'])){
-		echo "<script>window.open('../login.php','_self')</script>";
-	}
-?>
+
+
+
 <!DOCTYPE html>
 <html>
 
@@ -83,24 +85,24 @@
 				<div class="padding-nav">
 					 	<ul class="nav navbar-nav navbar-left">
 					 		<li>
-					 			<a href="../index.php">Home</a>
+					 			<a href="index.php">Home</a>
 					 		</li>
 					 		<li>
-					 			<a href="../store.php">Store</a>
+					 			<a href="store.php">Store</a>
 					 		</li>
 					 		<li>
-					 			<a href="../cart.php">Cart</a>
-					 		</li>
-					 		<li  class="active">
-					 			<a href="myaccount.php?">My Account</a>
+					 			<a href="cart.php">Cart</a>
 					 		</li>
 					 		<li>
-					 			<a href="../contact.php">Contact Us</a>
+					 			<a href="checkout.php">My Account</a>
+					 		</li>
+					 		<li>
+					 			<a href="contact.php">Contact Us</a>
 					 		</li>
 					 	</ul>
 				</div>
 				
-				<a class="btn btn-info navbar-btn right" href="../cart.php">
+				<a class="btn btn-info navbar-btn right" href="cart.php">
 					<i class="fa fa-shopping-cart"></i>
 					<span><?php countCart(); ?> items in cart</span>
 				</a>
@@ -137,38 +139,48 @@
 						<a href="index.php">Home</a>
 					</li>
 					<li>
-						<a href="shop.php">My Account</a>
+						<a href="register.php">Register</a>
 					</li>
 				</ul>
 			</div>
-<!--			Profile Panel Start	-->
-			<div class="col-md-3">
-				<?php
-					include("include/sideprofile.php");
-				?>
-			</div>
-			<div class="col-md-9">
+			<div class="col-md-12">
 				<div class="box">
-					<?php
-						if(isset($_GET['myorders'])){
-							include("myorders.php");
-						}
-						if(isset($_GET['editprofile'])){
-							include("editprofile.php");
-						}	
-						if(isset($_GET['changepassword'])){
-							include("changepassword.php");
-						}
-						
-						if(isset($_GET['payoffline'])){
-							include("payoffline.php");
-						}
-						
-					?>
+					<div class="box-header">
+						<center>
+							<img src="resources/img/logo.jpg" alt="" class="logo">
+							<h2>Recover Password</h2>
+							<p class="text-muted">Recover your password</p>
+						</center>
+					</div>
+					<form action="login.php" method="post" enctype="multipart/form-data">
+						<div class="form-group">
+							<label for="">Email</label>
+							<input type="email" class="form-control" name="cus_email" required>
+						</div>
+						<center>
+							<div class="form-warn" style="font-size: 12px !important;font-weight: 600 !important;letter-spacing: 2px !important;color: red;	">
+								<?php if($wrongpass != "") echo $wrongpass?>
+							</div>
+							<br>
+							<div class="g-recaptcha" data-sitekey="6LdScHYUAAAAAE9U_bKNKWJacA5WvGEIetd3lhbV"></div>
+						</center>
+						<br>
+						<div class="text-center">
+							<button type="submit" name="login" class="btn btn-success">
+								<i class="fa fa-envelope"></i> Login
+							</button>
+							<br>
+							<br>
+							<p>Cannot login to your account? contact <a href="contact.php" target="_blank">Support Center</a></p>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
 	</div>
+	
+	
+	
 <!--Footer Start-->
 	<?php
 		include("include/foot.php");
@@ -178,7 +190,10 @@
 <!--Add JavaScript Files-->
 	<script src="resources/js/jquery.min.js"></script>	
 	<script src="resources/js/bootstrap.min.js"></script>
+	
+<!--	Google Recaptcha -->
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 </body>
-	
-	
 </html>
+
+

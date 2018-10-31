@@ -588,7 +588,7 @@ function offlinePayment(){
 			$saveOffliePaymentSql = "INSERT INTO offlinepayement(branch, depositImage, depositDate, amount, payId) VALUES ('$paymentBranch','$paymentSlip','$payDate','$paidAmount','$lastInsertId')"; 
 			$saveOffliePayment = mysqli_query($connF,$saveOffliePaymentSql);
 		
-			$updateOrderStatusSql = "UPDATE orders SET status='Paid' WHERE orderId='$orderId'";
+			$updateOrderStatusSql = "UPDATE orders SET status='Paid' WHERE invoiceNumber='$invoiceNo'";
 			$updateOrderStatus = mysqli_query($connF,$updateOrderStatusSql);
 		
 			if($updateOrderStatus){
@@ -603,6 +603,75 @@ function offlinePayment(){
 			
 	}
 	
+}
+
+function editProfile(){
+	
+	global $connF;
+	
+	if(isset($_POST['editprofile'])){
+		
+		$currentUser = $_SESSION['cusEmail'];
+		
+		$cusName = $_POST['cus_name'];
+		$cusEmail = $_POST['cus_email'];
+		$cusPNo = $_POST['cus_pno'];
+		$cusAddress = $_POST['cus_address'];
+		$cusCity = $_POST['cus_city'];
+		$cusProfilePic = $_FILES['cus_dp']['name'];
+		$cusProfilePicTemp = $_FILES['cus_dp']['tmp_name'];
+		$cusConfimCode = rand();
+		
+		if($cusProfilePic != ""){
+			$editProfileSql = "UPDATE customer SET cusName='$cusName',cusEmail='$cusEmail',cusAddress='$cusAddress',cusCity='$cusCity',cusImage='$cusProfilePic',cConfirmCode='$cusConfimCode',cusPNum='$cusPNo' WHERE cusEmail='$currentUser'";
+		}
+		else{
+			$editProfileSql = "UPDATE customer SET cusName='$cusName',cusEmail='$cusEmail',cusAddress='$cusAddress',cusCity='$cusCity',cConfirmCode='$cusConfimCode',cusPNum='$cusPNo' WHERE cusEmail='$currentUser'";
+		}
+		move_uploaded_file($cusProfilePicTemp,"customers/resources/img/userpics/$cusProfilePic");
+		$editProfile = mysqli_query($connF,$editProfileSql);
+		echo "<script>alert('Saved Successfully!')</script>";
+	}
+}
+
+function changePassword(){
+	
+	global $connF;
+	
+	if(isset($_POST['changepassword'])){
+		$currentUser = $_SESSION['cusEmail'];
+		$getCustomerPasswordSql = "SELECT * FROM customer WHERE cusEmail='$currentUser'";
+		$getCustomerPassword = mysqli_query($connF,$getCustomerPasswordSql);	
+		$getCustomerPasswordRow = mysqli_fetch_array($getCustomerPassword);
+		
+		$currentPassword = $_POST['current_pass'];
+		$newPassword = $_POST['new_pass'];
+		$cNewPassword = $_POST['new_cpass'];
+		
+		$currentPasswordDB = $getCustomerPasswordRow['cusPassword'];
+		$decryptCurrentPassword = decNanoSec($currentPasswordDB);
+		
+		if($currentPassword == $decryptCurrentPassword && $newPassword == $cNewPassword){
+			$encryptNewPassword = encNanoSec($newPassword);
+			$changePasswordSql = "UPDATE customer SET cusPassword='$encryptNewPassword' WHERE cusEmail = '$currentUser'";
+			$changePassword = mysqli_query($connF,$changePasswordSql);
+			echo "<script>alert('Password changed successfully!, Please login to contiune')</script>";
+			session_destroy();
+			echo "<script>window.open('../login.php','_self')</script>";
+		}
+		else if($currentPasswordDB != $currentPassword && $newPassword == $cNewPassword){
+			
+			echo "<script>alert('Your current password is wrong!')</script>";
+		}
+		else if($currentPasswordDB == $currentPassword && $newPassword != $cNewPassword){
+			
+			echo "<script>alert('Confirm password mismatch')</script>";
+		}
+		else{
+			echo "<script>alert('Something wrong!')</script>";
+		}
+			
+	}
 }
   
 ?>

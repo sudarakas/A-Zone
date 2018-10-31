@@ -21,4 +21,7 @@
 					<i class="fa fa-edit"></i> Save
 				</button>
 			</div>
-		</form>
+</form>
+<?php
+	changePassword();
+?>

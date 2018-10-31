@@ -86,7 +86,7 @@
 					 			<a href="cart.php">Cart</a>
 					 		</li>
 					 		<li>
-					 			<a href="myaccount.php?myorders">My Account</a>
+					 			<a href="customers/myaccount.php?myorders">My Account</a>
 					 		</li>
 					 		<li>
 					 			<a href="contact.php">Contact Us</a>

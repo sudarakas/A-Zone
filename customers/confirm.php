@@ -16,7 +16,13 @@
 		$getOrderDetilsRow = mysqli_fetch_array($getOrderDetils);
 		
 		$invoiceNumber = $getOrderDetilsRow['invoiceNumber'];
-		$orderAmount = $getOrderDetilsRow['orderAmount'];
+		
+		$getOrderAmountSql = "SELECT * FROM orders WHERE invoiceNumber ='$invoiceNumber'";
+		$getOrderAmount = mysqli_query($conn,$getOrderAmountSql);
+		$orderAmountFull = 0;
+		while($getOrderAmountRow = mysqli_fetch_array($getOrderAmount)){
+			$orderAmountFull += $getOrderAmountRow['orderAmount'];
+		}
 	}
 
 	offlinePayment();
@@ -193,7 +199,7 @@
 						</div>
 						<div class="form-group">
 							<label for="">Amount</label>
-							<input type="text" class="form-control" name="payamount" value="<?php echo $orderAmount;?>" required>
+							<input type="text" class="form-control" name="payamount" value="<?php echo $orderAmountFull;?>" required>
 						</div>
 						<div class="form-group">
 							<label for="">Attach Slip</label>

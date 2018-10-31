@@ -19,7 +19,7 @@
 	<ul class="nav navbar-right top-nav">
 		<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-				NanoLabsb <b class="caret"></b>
+				<?php getAdminDetails();?> <b class="caret"></b>
 			</a>
 			<ul class="dropdown-menu"> 
 				<li>
@@ -36,13 +36,13 @@
 				<li>
 					<a href="index.php?viewoders">
 					<i class="fa fa-fw fa-shopping-basket"></i> Orders
-					<span class="badge">12</span>
+					<span class="badge"><?php countNoOrders();?></span>
 					</a>
 				</li>
 				<li>
 					<a href="index.php?viewproducts">
 					<i class="fa fa-list-alt"></i> Products
-					<span class="badge">32</span>
+					<span class="badge"><?php countProducts();?></span>
 					</a>
 				</li>
 				<li class="divider"></li>

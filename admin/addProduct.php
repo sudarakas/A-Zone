@@ -1,7 +1,5 @@
 <?php
 	
-	include("include/dbcon.php");
-
 	if(!isset($_SESSION['email'])){
 		echo "<script>window.open('login.php','_self')</script>";
 	}
@@ -24,6 +22,8 @@
 	<body>
 		<div class="row">
 			<div class="col-lg-12">
+				<br>
+				<br>
 				<ol class="breadcrumb">
 					<li class="active">
 						<i class="fa fa-dashboard"></i> Dashboard / Add Product
@@ -37,7 +37,7 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<div class="panel-title">
-							<i class="fa fa-navicon"></i> Add Products
+							<i class="fa fa-plus"></i> Add Products
 						</div>
 					</div>
 					<div class="panel-body">
@@ -164,7 +164,7 @@
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label"></label>
 								<div class="col-md-6">
-									<input type="submit" name="submit" value="Add Product" class="btn btn-success form-control">
+									<input type="submit" name="addnewproduct" value="Add Product" class="btn btn-success form-control">
 								</div>
 							</div>
 						</form>
@@ -180,45 +180,6 @@
 	</body>
 </html>
 <?php
-	
-	if(isset($_POST['submit'])){
-		
-		$productName = $_POST['productName'];
-		$productUrl = $_POST['productUrl'];
-		$productPrice = $_POST['productPrice'];
-		$productDet = $_POST['productDet'];
-		$productManuf = $_POST['productManuf'];
-		$productCateg = $_POST['productCateg'];
-		$productKeyword = $_POST['productKeyword'];
-		$productFea = $_POST['productFea'];
-		$productAva = $_POST['productAva'];
-		$productWarrenty = $_POST['productWarrenty'];
-		
-		$productImg1 = $_FILES['productimg1']['name'];
-		$productImg2 = $_FILES['productimg2']['name'];
-		$productImg3 = $_FILES['productimg3']['name'];
-		$productImg4 = $_FILES['productimg4']['name'];
-
-		$tempImg1 = $_FILES['productimg1']['tmp_name'];
-		$tempImg2 = $_FILES['productimg2']['tmp_name'];
-		$tempImg3 = $_FILES['productimg3']['tmp_name'];
-		$tempImg4 = $_FILES['productimg4']['tmp_name'];
-
-		move_uploaded_file($tempImg1,"resources/img/product_img/$productImg1");
-		move_uploaded_file($tempImg2,"resources/img/product_img/$productImg2");
-		move_uploaded_file($tempImg3,"resources/img/product_img/$productImg3");
-		move_uploaded_file($tempImg4,"resources/img/product_img/$productImg4");
-
-
-		
-		$sql = "INSERT INTO product(productDate,productName, customUrl, image1, image2, image3, image4, productPrice, productDetails, manufactureId, categoryId, productKeywords, features, availability, Warranty) VALUES (NOW(),'$productName','$productUrl','$productImg1','$productImg2','$productImg3','$productImg4','$productPrice','$productDet','$productManuf','$productCateg','$productKeyword','$productFea','$productAva','$productWarrenty')";
-		
-		$addProduct = mysqli_query($conn,$sql);
-		if($addProduct){
-			echo "<script>alert('Product Added')</script>";
-			echo "<script>window.open('index.php?addproducts','_self')</script>";
-		}
-	}
-
+		addNewProducts();
 ?>
 <?php } ?>

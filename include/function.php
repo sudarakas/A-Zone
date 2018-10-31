@@ -304,7 +304,7 @@ function customerLogin(){
 		$retuenResponse = file_get_contents($guRL);
 		$jsonResponse = json_decode($retuenResponse);
 		
-		if($jsonResponse->success){
+		if($jsonResponse->success || $cusEmail != ""){
 			
 			$loginCustomerSql = "SELECT * FROM customer WHERE cusEmail='$cusEmail' AND cusPassword='$cusPassEncrypt'";
 			$loginCustomer = mysqli_query($connF,$loginCustomerSql);
@@ -571,35 +571,252 @@ function offlinePayment(){
 		$transactionId = $_POST['payid'];
 		$paidAmount = $_POST['payamount'];
 		
-		//slip upload
-		$paymentSlip = $_FILES['attachslip']['name'];
-		$paymentSlipTemp = $_FILES['attachslip']['tmp_name'];
-		move_uploaded_file($paymentSlipTemp,"customers/resources/img/userpayslips/$paymentSlipTemp");
 		
 		$getCustomerIdSql = "SELECT * FROM orders WHERE orderId=$orderId";
 		$getCustomerId = mysqli_query($connF,$getCustomerIdSql);
 		$getCustomerIdRow = mysqli_fetch_array($getCustomerId);
 		
-		$customerId = $getCustomerIdRow['cusId'];
+		$getPaymentStatus = $getCustomerIdRow['status'];
 		
-		$makePaymentSql = "INSERT INTO payement(customerId, pInvoiceNum, amount, payMethod, date) VALUES ('$customerId','$invoiceNo','$paidAmount','$paymentMode','$payDate')";
-		$makePayment = mysqli_query($connF,$makePaymentSql);
+		if($getPaymentStatus == "unpaid" || $getPaymentStatus == "Unpaid"){
+				
+			//slip upload
+			$paymentSlip = $_FILES['attachslip']['name'];
+			$paymentSlipTemp = $_FILES['attachslip']['tmp_name'];
+			move_uploaded_file($paymentSlipTemp,"resources/img/userpayslips/$paymentSlip");
 		
-		$lastInsertId = mysqli_insert_id($connF);
+			$getCustomerIdSql = "SELECT * FROM orders WHERE orderId=$orderId";
+			$getCustomerId = mysqli_query($connF,$getCustomerIdSql);
+			$getCustomerIdRow = mysqli_fetch_array($getCustomerId);
 		
-		$saveOffliePaymentSql = "INSERT INTO offlinepayement(branch, depositImage, depositDate, amount, payId) VALUES ('$paymentBranch','$paymentSlip','$payDate','$paidAmount','$lastInsertId')"; 
-		$saveOffliePayment = mysqli_query($connF,$saveOffliePaymentSql);
+			$customerId = $getCustomerIdRow['cusId'];
 		
-		$updateOrderStatusSql = "UPDATE orders SET status='Paid' WHERE orderId='$orderId'";
-		$updateOrderStatus = mysqli_query($connF,$updateOrderStatusSql);
+			$makePaymentSql = "INSERT INTO payement(customerId, pInvoiceNum, amount, payMethod, date) VALUES ('$customerId','$invoiceNo','$paidAmount','$paymentMode','$payDate')";
+			$makePayment = mysqli_query($connF,$makePaymentSql);
 		
-		if($updateOrderStatus){
-			echo "<script>alert('Payment Completed, You will receive confirmation soon!')</script>";
+			$lastInsertId = mysqli_insert_id($connF);
+		
+			$saveOffliePaymentSql = "INSERT INTO offlinepayement(branch, depositImage, depositDate, amount, payId) VALUES ('$paymentBranch','$paymentSlip','$payDate','$paidAmount','$lastInsertId')"; 
+			$saveOffliePayment = mysqli_query($connF,$saveOffliePaymentSql);
+		
+			$updateOrderStatusSql = "UPDATE orders SET status='Paid' WHERE invoiceNumber='$invoiceNo'";
+			$updateOrderStatus = mysqli_query($connF,$updateOrderStatusSql);
+		
+			if($updateOrderStatus){
+				echo "<script>alert('Payment Completed, You will receive confirmation soon!')</script>";
+				echo "<script>window.open('myaccount.php?myorders','_self')</script>";
+			}
+			
+		}else{
+			echo "<script>alert('You already have paid for this item, You will receive confirmation soon!')</script>";
 			echo "<script>window.open('myaccount.php?myorders','_self')</script>";
 		}
-		
+			
 	}
 	
+}
+
+
+function editProfile(){
+	
+	global $connF;
+	
+	if(isset($_POST['editprofile'])){
+		
+		$currentUser = $_SESSION['cusEmail'];
+		
+		$cusName = $_POST['cus_name'];
+		$cusEmail = $_POST['cus_email'];
+		$cusPNo = $_POST['cus_pno'];
+		$cusAddress = $_POST['cus_address'];
+		$cusCity = $_POST['cus_city'];
+		$cusProfilePic = $_FILES['cus_dp']['name'];
+		$cusProfilePicTemp = $_FILES['cus_dp']['tmp_name'];
+		$cusConfimCode = rand();
+		
+		if($cusProfilePic != ""){
+			$editProfileSql = "UPDATE customer SET cusName='$cusName',cusEmail='$cusEmail',cusAddress='$cusAddress',cusCity='$cusCity',cusImage='$cusProfilePic',cConfirmCode='$cusConfimCode',cusPNum='$cusPNo' WHERE cusEmail='$currentUser'";
+		}
+		else{
+			$editProfileSql = "UPDATE customer SET cusName='$cusName',cusEmail='$cusEmail',cusAddress='$cusAddress',cusCity='$cusCity',cConfirmCode='$cusConfimCode',cusPNum='$cusPNo' WHERE cusEmail='$currentUser'";
+		}
+		move_uploaded_file($cusProfilePicTemp,"customers/resources/img/userpics/$cusProfilePic");
+		$editProfile = mysqli_query($connF,$editProfileSql);
+		
+	}
+}
+
+function changePassword(){
+	
+	global $connF;
+	
+	if(isset($_POST['changepassword'])){
+		$currentUser = $_SESSION['cusEmail'];
+		$getCustomerPasswordSql = "SELECT * FROM customer WHERE cusEmail='$currentUser'";
+		$getCustomerPassword = mysqli_query($connF,$getCustomerPasswordSql);	
+		$getCustomerPasswordRow = mysqli_fetch_array($getCustomerPassword);
+		
+		$currentPassword = $_POST['current_pass'];
+		$newPassword = $_POST['new_pass'];
+		$cNewPassword = $_POST['new_cpass'];
+		
+		$currentPasswordDB = $getCustomerPasswordRow['cusPassword'];
+		$decryptCurrentPassword = decNanoSec($currentPasswordDB);
+		
+		if($currentPassword == $decryptCurrentPassword && $newPassword == $cNewPassword){
+			$encryptNewPassword = encNanoSec($newPassword);
+			$changePasswordSql = "UPDATE customer SET cusPassword='$encryptNewPassword' WHERE cusEmail = '$currentUser'";
+			$changePassword = mysqli_query($connF,$changePasswordSql);
+			echo "<script>alert('Password changed successfully!, Please login to contiune')</script>";
+			session_destroy();
+			echo "<script>window.open('../login.php','_self')</script>";
+		}
+		else if($currentPasswordDB != $currentPassword && $newPassword == $cNewPassword){
+			
+			echo "<script>alert('Your current password is wrong!')</script>";
+		}
+		else if($currentPasswordDB == $currentPassword && $newPassword != $cNewPassword){
+			
+			echo "<script>alert('Confirm password mismatch')</script>";
+		}
+		else{
+			echo "<script>alert('Something wrong!')</script>";
+		}
+			
+	}
+}
+
+function addNewProducts(){
+	global $connF;
+	if(isset($_POST['addnewproduct'])){
+		
+		$productName = $_POST['productName'];
+		$productUrl = $_POST['productUrl'];
+		$productPrice = $_POST['productPrice'];
+		$productDet = $_POST['productDet'];
+		$productManuf = $_POST['productManuf'];
+		$productCateg = $_POST['productCateg'];
+		$productKeyword = $_POST['productKeyword'];
+		$productFea = $_POST['productFea'];
+		$productAva = $_POST['productAva'];
+		$productWarrenty = $_POST['productWarrenty'];
+		
+		$productImg1 = $_FILES['productimg1']['name'];
+		$productImg2 = $_FILES['productimg2']['name'];
+		$productImg3 = $_FILES['productimg3']['name'];
+		$productImg4 = $_FILES['productimg4']['name'];
+
+		$tempImg1 = $_FILES['productimg1']['tmp_name'];
+		$tempImg2 = $_FILES['productimg2']['tmp_name'];
+		$tempImg3 = $_FILES['productimg3']['tmp_name'];
+		$tempImg4 = $_FILES['productimg4']['tmp_name'];
+
+		move_uploaded_file($tempImg1,"resources/img/product_img/$productImg1");
+		move_uploaded_file($tempImg2,"resources/img/product_img/$productImg2");
+		move_uploaded_file($tempImg3,"resources/img/product_img/$productImg3");
+		move_uploaded_file($tempImg4,"resources/img/product_img/$productImg4");
+
+
+		
+		$sql = "INSERT INTO product(productDate,productName, customUrl, image1, image2, image3, image4, productPrice, productDetails, manufactureId, categoryId, productKeywords, features, availability, Warranty) VALUES (NOW(),'$productName','$productUrl','$productImg1','$productImg2','$productImg3','$productImg4','$productPrice','$productDet','$productManuf','$productCateg','$productKeyword','$productFea','$productAva','$productWarrenty')";
+		
+		$addProduct = mysqli_query($connF,$sql);
+		if($addProduct){
+			echo "<script>alert('Product Added')</script>";
+			echo "<script>window.open('index.php?addproducts','_self')</script>";
+		}
+	}
+}
+
+function getAdminDetails(){
+	
+	global $connF;
+	
+	$currentAdmin = $_SESSION['email'];
+	$adminDetailsSql = "SELECT * FROM admin WHERE adminEmail ='$currentAdmin'";
+	$adminDetails = mysqli_query($connF,$adminDetailsSql);
+	$adminDetailsRow = mysqli_fetch_array($adminDetails);
+	
+	$adminName = $adminDetailsRow['adminName'];
+	echo "$adminName";	
+}
+
+function countNoOrders(){
+	global $connF;
+	$getOrderDetailSql = "SELECT * FROM orders WHERE 1";
+	$getOrderDetail = mysqli_query($connF,$getOrderDetailSql);
+	$orderCount = mysqli_num_rows($getOrderDetail);
+	
+	echo "$orderCount";
+}
+
+function countProducts(){
+	
+	global $connF;
+	$getProductDetailSql = "SELECT * FROM product WHERE 1";
+	$getProductDetail = mysqli_query($connF,$getProductDetailSql);
+	$productCount = mysqli_num_rows($getProductDetail);
+	
+	echo "$productCount";
+}
+
+function countPayment(){
+	
+	global $connF;
+	$getPaymentDetailSql = "SELECT * FROM payement WHERE 1";
+	$getPaymentDetail = mysqli_query($connF,$getPaymentDetailSql);
+	$paymentCount = mysqli_num_rows($getPaymentDetail);
+	
+	echo "$paymentCount";
+}
+
+function printNewOrders(){
+	
+	global $connF;
+	$getNewOrdersSql = "SELECT * FROM orders WHERE 1 ORDER BY orderId DESC LIMIT 10";
+	$getNewOrders = mysqli_query($connF,$getNewOrdersSql);
+	
+	while($getNewOrdersRow = mysqli_fetch_array($getNewOrders)){
+		
+		$orderNo = $getNewOrdersRow['orderId'];
+		$invoiceNo = $getNewOrdersRow['invoiceNumber'];
+		$orderDate = $getNewOrdersRow['date'];
+		
+		$productId = $getNewOrdersRow['productId'];
+		$getProductNameSql = "SELECT * FROM product WHERE productId='$productId'";
+		$getProductName = mysqli_query($connF,$getProductNameSql);
+		$getProductNameRow = mysqli_fetch_array($getProductName);
+		$productName = $getProductNameRow['productName'];
+		
+		$orderQty = $getNewOrdersRow['qty'];
+		$orderColor = $getNewOrdersRow['colour'];
+		$orderWarranty = $getNewOrdersRow['warranty'];
+		
+		$cusId = $getNewOrdersRow['cusId'];
+		$getCustomerEmailSql= "SELECT * FROM customer WHERE cusId='$cusId'";
+		$getCustomerEmail = mysqli_query($connF,$getCustomerEmailSql);
+		$getCustomerEmailRow = mysqli_fetch_array($getCustomerEmail);
+		$customerEmail = $getCustomerEmailRow['cusEmail'];
+		
+		$orderStatus = $getNewOrdersRow['status'];
+		
+		echo "
+			<tr>
+				<td>$orderNo</td>
+				<td>$invoiceNo</td>
+				<td>$orderDate</td>
+				<td>$productName</td>
+				<td>$orderQty</td>
+				<td>$orderColor</td>
+				<td>$orderWarranty</td>
+				<td>$customerEmail</td>
+				<td>$orderStatus</td>
+			</tr>
+		
+		";
+		
+		
+	}
 }
   
 ?>

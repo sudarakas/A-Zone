@@ -3,8 +3,16 @@
 	$cusEmail = $_SESSION['cusEmail'];
 	$getCustomerInfoSql = "SELECT * FROM customer WHERE cusEmail='$cusEmail'";
 	$getCustomerInfo = mysqli_query($conn,$getCustomerInfoSql);
-	
+	$getCustomerInfoRow = mysqli_fetch_array($getCustomerInfo);
 
+
+	$customerName = $getCustomerInfoRow['cusName'];
+	$customerEmail = $getCustomerInfoRow['cusEmail'];
+	$customerPno = $getCustomerInfoRow['cusPNum'];
+	$customerAddress = $getCustomerInfoRow['cusAddress'];
+	$customerCity = $getCustomerInfoRow['cusCity'];
+	$customerProfilePic = $getCustomerInfoRow['cusImage'];
+	
 ?>
 
 
@@ -18,39 +26,36 @@
 <form action="" method="post" enctype="multipart/form-data">
 			<div class="form-group">
 				<label for="">Name</label>
-				<input type="text" class="form-control" name="cus_name" required>
+				<input type="text" class="form-control" name="cus_name" value="<?php echo $customerName;?>" required>
 			</div>
 			<div class="form-group">
 				<label for="">Email</label>
-				<input type="email" class="form-control" name="cus_email" required>
-			</div>
-			<div class="form-group">
-				<label for="">Password</label>
-				<input type="password" class="form-control" name="cus_pass" required>
-			</div>
-			<div class="form-group">
-				<label for="">Confirm Password</label>
-				<input type="password" class="form-control" name="cus_cpass" required>
+				<input type="email" class="form-control" name="cus_email" value="<?php echo $customerEmail;?>" required>
 			</div>
 			<div class="form-group">
 				<label for="">Phone Number</label>
-				<input type="password" class="form-control" name="cus_pno" required>
+				<input type="text" class="form-control" name="cus_pno" value="<?php echo $customerPno;?>" required>
 			</div>
 			<div class="form-group">
 				<label for="">Address</label>
-				<input type="password" class="form-control" name="cus_address" required>
+				<input type="text" class="form-control" name="cus_address" value="<?php echo $customerAddress?>" required>
 			</div>
 			<div class="form-group">
 				<label for="">City</label>
-				<input type="password" class="form-control" name="cus_city" required>
+				<input type="text" class="form-control" name="cus_city" value="<?php echo $customerCity?>" required>
 			</div>
 			<div class="form-group">
 				<label for="">Profile Picture</label>
-				<input type="file" class="form-control" name="cus_dp" required>
+				<input type="file" class="form-control" name="cus_dp" value="<?php echo $customerProfilePic?>">
 			</div>
 			<div class="text-center">
 				<button type="submit" name="editprofile" class="btn btn-success">
 					<i class="fa fa-edit"></i> Save
 				</button>
 			</div>
-		</form>
+</form>
+
+
+<?php
+	editProfile();
+?>

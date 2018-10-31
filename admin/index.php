@@ -2,6 +2,8 @@
 
 	session_start();
 	include("include/dbcon.php");
+	include("include/function.php");
+	include("include/md5salt.php");
 
 	if(!isset($_SESSION['email'])){
 		echo "<script>window.open('login.php','_self')</script>";
@@ -9,13 +11,6 @@
 	else{
 ?>
 
-<?php
-
-		$adminSession = $_SESSION['email'];
-		$sqlQuery = "SELECT * FROM admin WHERE adminEmail = '$adminSession'";
-		
-		
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -44,6 +39,11 @@
 				<?php
 					if(isset($_GET['addproducts'])){
 						include("addProduct.php");
+					}
+				?>
+				<?php
+					if(isset($_GET['viewproducts'])){
+						include("viewProducts.php");
 					}
 				?>
 				<?php
