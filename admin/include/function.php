@@ -215,6 +215,14 @@ function sortPrice(){
 	}
 }
 
+function generateConfimCode(){
+	
+	$combination = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789!@$%()*';
+	$combination = str_shuffle($combination);
+	$confirmCode = substr($combination,0,15);
+	return $confirmCode;
+}
+
 function customerRegister(){
 	
 	global $connF;
@@ -230,7 +238,7 @@ function customerRegister(){
 		$cusCity = $_POST['cus_city'];
 		$cusProfilePic = $_FILES['cus_dp']['name'];
 		$cusProfilePicTemp = $_FILES['cus_dp']['tmp_name'];
-		$cusConfimCode = rand();
+		$cusConfimCode = generateConfimCode();
 		$cusPassEncrpt = encNanoSec($cusPass);
 		
 		//Google Recaptcha
@@ -832,6 +840,16 @@ function displayProducts(){
 		$productAvail = $getProductsRow['availability'];
 		$productWarrenty = $getProductsRow['Warranty'];
 		
+		if($productAvail==0){
+			$productAvail = "Coming Soon";
+		}
+		else if($productAvail==1){
+			$productAvail = "Available";
+		}
+		else{
+			$productAvail = "Out of Stock";
+		}
+		
 		$getCategoryNameSql = "SELECT * FROM category WHERE categoryId='$productCateg'";
 		$getCategoryName = mysqli_query($connF,$getCategoryNameSql);
 		$getCategoryNameRow = mysqli_fetch_array($getCategoryName);
@@ -875,5 +893,179 @@ function displayProducts(){
 	}
 	
 }
-  
+
+function deleteProduct(){
+	
+	global $connF;
+	if(isset($_GET['deleteProduct'])){
+		
+		$productId = $_GET['deleteProduct'];
+		$deleteProductSql = "DELETE FROM product WHERE productId='$productId'";
+		$deleteProduct = mysqli_query($connF,$deleteProductSql);
+		
+		if($deleteProduct){
+			echo "<script>alert('Product Deleted')</script>";
+			echo "<script>window.open('index.php?viewproducts','_self')</script>";
+			
+		}
+		else{
+			echo "<script>alert('Something Wrong!')</script>";
+			echo "<script>window.open('index.php?viewproducts','_self')</script>";
+		}
+	}
+}
+
+function updateProduct(){
+	
+	global $connF;
+	
+	if(isset($_POST['updateproduct'])){
+		
+		$productId = $_GET['editProduct'];
+		
+		$getProductsSql = "SELECT * FROM product WHERE productId='$productId'";
+		$getProducts = mysqli_query($connF,$getProductsSql);
+		$getProductsRow = mysqli_fetch_array($getProducts);
+		
+		$productImage1Old = $getProductsRow['image1'];
+		$productImage2Old = $getProductsRow['image2'];
+		$productImage3Old = $getProductsRow['image3'];
+		$productImage4Old = $getProductsRow['image4'];
+		
+		$productName = $_POST['productName'];
+		$productCUrl = $_POST['productUrl'];
+		$productImage1 = $_FILES['productimg1']['name'];
+		$productImage2 = $_FILES['productimg2']['name'];
+		$productImage3 = $_FILES['productimg3']['name'];
+		$productImage4 = $_FILES['productimg4']['name'];
+		$productPrice = $_POST['productPrice'];
+		$productDetails = $_POST['productDet'];
+		$productManufa = $_POST['productManuf'];
+		$productCateg = $_POST['productCateg'];
+		$productKeyword = $_POST['productKeyword'];
+		$productFea = $_POST['productFea'];
+		$productAvail = $_POST['productAva'];
+		$productWarrenty = $_POST['productWarrenty'];
+		
+		if(empty($productImage1)){
+			$productImage1 = $productImage1Old;
+		}
+		
+		if(empty($productImage2)){
+			$productImage2 = $productImage2Old;
+		}
+		
+		if(empty($productImage3)){
+			$productImage3 = $productImage3Old;
+		}
+		
+		if(empty($productImage4)){
+			$productImage4 = $productImage4Old;
+		}
+		
+		$tempImg1 = $_FILES['productimg1']['tmp_name'];
+		$tempImg2 = $_FILES['productimg2']['tmp_name'];
+		$tempImg3 = $_FILES['productimg3']['tmp_name'];
+		$tempImg4 = $_FILES['productimg4']['tmp_name'];
+
+		move_uploaded_file($tempImg1,"resources/img/product_img/$productImage1");
+		move_uploaded_file($tempImg2,"resources/img/product_img/$productImage2");
+		move_uploaded_file($tempImg3,"resources/img/product_img/$productImage3");
+		move_uploaded_file($tempImg4,"resources/img/product_img/$productImage4");
+		
+		$updateProductSql = "UPDATE product SET productName='$productName',customUrl='$productCUrl',image1='$productImage1',image2='$productImage2',image3='$productImage3',image4='$productImage4',productPrice='$productPrice',productDetails='$productDetails',manufactureId='$productManufa',categoryId='$productCateg',productKeywords='$productKeyword',features='$productFea',availability=$productAvail,Warranty='$productWarrenty' WHERE productId='$productId'";
+		
+		$updateProduct = mysqli_query($connF,$updateProductSql);
+		
+		if($updateProduct){
+			echo "<script>alert('Product Updated')</script>";
+			echo "<script>window.open('index.php?viewproducts','_self')</script>";
+		}
+		else{
+			echo "<script>alert('Something Wrong!')</script>";
+			echo "<script>window.open('index.php?viewproducts','_self')</script>";
+		}
+	
+	}
+ 
+}
+
+function displayOrders(){
+	
+	global $connF;
+	$getNewOrdersSql = "SELECT * FROM orders WHERE 1 ORDER BY orderId ASC";
+	$getNewOrders = mysqli_query($connF,$getNewOrdersSql);
+	
+	while($getNewOrdersRow = mysqli_fetch_array($getNewOrders)){
+		
+		$orderNo = $getNewOrdersRow['orderId'];
+		$invoiceNo = $getNewOrdersRow['invoiceNumber'];
+		$orderDate = $getNewOrdersRow['date'];
+		
+		$productId = $getNewOrdersRow['productId'];
+		$getProductNameSql = "SELECT * FROM product WHERE productId='$productId'";
+		$getProductName = mysqli_query($connF,$getProductNameSql);
+		$getProductNameRow = mysqli_fetch_array($getProductName);
+		$productName = $getProductNameRow['productName'];
+		
+		$orderQty = $getNewOrdersRow['qty'];
+		$orderColor = $getNewOrdersRow['colour'];
+		$orderWarranty = $getNewOrdersRow['warranty'];
+		
+		$cusId = $getNewOrdersRow['cusId'];
+		$getCustomerEmailSql= "SELECT * FROM customer WHERE cusId='$cusId'";
+		$getCustomerEmail = mysqli_query($connF,$getCustomerEmailSql);
+		$getCustomerEmailRow = mysqli_fetch_array($getCustomerEmail);
+		$customerEmail = $getCustomerEmailRow['cusEmail'];
+		
+		$orderStatus = $getNewOrdersRow['status'];
+		
+		echo "
+			<tr>
+				<td>$orderNo</td>
+				<td>$invoiceNo</td>
+				<td>$orderDate</td>
+				<td>$productName</td>
+				<td>$orderQty</td>
+				<td>$orderColor</td>
+				<td>$orderWarranty</td>
+				<td>$customerEmail</td>
+				<td>$orderStatus</td>
+				<td><a href='index.php?shipConfirm=$invoiceNo'>Confirm</a></td>
+			</tr>
+		
+		";
+		
+		
+	}
+}
+
+function confirmShip(){
+	
+	global $connF;
+	if(isset($_GET['shipConfirm'])){
+		
+		$invoiceNo = $_GET['shipConfirm'];
+		$confirmOrderSql = "UPDATE orders SET status='Shipped' WHERE invoiceNumber='$invoiceNo'";
+		$confirmOrder = mysqli_query($connF,$confirmOrderSql);
+		
+		if($confirmOrder){
+			echo "<script>window.open('index.php?orderlist','_self')</script>";
+		}
+		
+	}
+}
+
+function displayPayment(){
+	
+	global $connF;
+	$getPaymentSql = "SELECT * FROM payement WHERE 1";
+	$getPayment = mysqli_query($connF,$getPaymentSql);
+	
+	while($getPaymentRow = mysqli_fetch_array($getPayment)){
+		
+		
+	}
+}
+ 
 ?>

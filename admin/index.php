@@ -47,6 +47,33 @@
 					}
 				?>
 				<?php
+					if(isset($_GET['deleteProduct'])){
+						deleteProduct();
+					}
+				?>
+				<?php
+					if(isset($_GET['editProduct'])){
+						include("editProduct.php");
+					}
+				?>
+				<?php
+					if(isset($_GET['orderlist'])){
+						include("orderlist.php");
+					}
+				?>
+				<?php
+					if(isset($_GET['shipConfirm'])){
+						confirmShip();
+					}
+				?>
+				<?php
+					if(isset($_GET['payments'])){
+						include("payments.php");
+					}
+				?>
+				
+				
+				<?php
 					if(isset($_GET['logout'])){
 						include("logout.php");
 					}

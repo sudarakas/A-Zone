@@ -215,6 +215,14 @@ function sortPrice(){
 	}
 }
 
+function generateConfimCode(){
+	
+	$combination = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789!@$%()*';
+	$combination = str_shuffle($combination);
+	$confirmCode = substr($combination,0,15);
+	return $confirmCode;
+}
+
 function customerRegister(){
 	
 	global $connF;
@@ -230,7 +238,7 @@ function customerRegister(){
 		$cusCity = $_POST['cus_city'];
 		$cusProfilePic = $_FILES['cus_dp']['name'];
 		$cusProfilePicTemp = $_FILES['cus_dp']['tmp_name'];
-		$cusConfimCode = rand();
+		$cusConfimCode = generateConfimCode();
 		$cusPassEncrpt = encNanoSec($cusPass);
 		
 		//Google Recaptcha

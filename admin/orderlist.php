@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title> View Product - Azone Kurunegala</title>
+		<title> View Orders - Azone Kurunegala</title>
 		
 		<!--Add CSS Files-->
 		<link rel="stylesheet" type="text/css" href="resources/css/adminstyle.css">
@@ -25,7 +25,7 @@
 				<br>
 				<ol class="breadcrumb">
 					<li class="active">
-						<i class="fa fa-dashboard"></i> Dashboard / View Product
+						<i class="fa fa-dashboard"></i> Dashboard / View Orders
 					</li>
 				</ol>
 			</div>
@@ -36,38 +36,29 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<div class="panel-title">
-							<i class="fa fa-list"></i> View Products
+							<i class="fa fa-truck"></i> View Orders
 						</div>
 					</div>
 					<div class="panel-body">
 						<div class="table-responsive">
 							<table class="table table-bordered table-striped">
-							
 								<thead>
 									<tr>
-										<th>Id</th>
+										<th>Order No</th>
+										<th>Invoice No</th>
 										<th>Date</th>
-										<th>Name</th>
-										<th>Custom URL</th>
-										<th>Image</th>
-										<th>Image</th>
-										<th>Image</th>
-										<th>Image</th>
-										<th>Price</th>
-<!--										<th>Details</th>-->
-										<th>Manufacture</th>
-										<th>Category</th>
-										<th>Keyword</th>
-<!--										<th>Features</th>-->
-										<th>Availability</th>
-										<th>Warranty</th>
-										<th>Edit</th>
-										<th>Delete</th>
+										<th>Product Name</th>
+										<th>QTY</th>
+										<th>Color</th>
+										<th>Warrenty</th>
+										<th>Customer Email</th>
+										<th>Status</th>
+										<th>Confirm Shipment</th>
 									</tr>
 								</thead>
 								<tbody>
 									<?php
-										displayProducts();
+										displayOrders();
 									?>
 								</tbody>
 							</table>

@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title> View Product - Azone Kurunegala</title>
+		<title> Payments - Azone Kurunegala</title>
 		
 		<!--Add CSS Files-->
 		<link rel="stylesheet" type="text/css" href="resources/css/adminstyle.css">
@@ -25,7 +25,7 @@
 				<br>
 				<ol class="breadcrumb">
 					<li class="active">
-						<i class="fa fa-dashboard"></i> Dashboard / View Product
+						<i class="fa fa-dashboard"></i> Dashboard / Payments
 					</li>
 				</ol>
 			</div>
@@ -36,7 +36,7 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<div class="panel-title">
-							<i class="fa fa-list"></i> View Products
+							<i class="fa fa-dollar"></i> Payments
 						</div>
 					</div>
 					<div class="panel-body">
@@ -45,29 +45,22 @@
 							
 								<thead>
 									<tr>
-										<th>Id</th>
-										<th>Date</th>
-										<th>Name</th>
-										<th>Custom URL</th>
-										<th>Image</th>
-										<th>Image</th>
-										<th>Image</th>
-										<th>Image</th>
+										<th>Pay Id</th>
+										<th>InvoiceNo</th>
+										<th>Amount</th>
+										<th>Payments Method</th>
+										<th>Payment Date</th>
+										<th>Branch</th>
+										<th>Slip</th>
+										<th>Deposited Amount</th>
 										<th>Price</th>
-<!--										<th>Details</th>-->
-										<th>Manufacture</th>
-										<th>Category</th>
-										<th>Keyword</th>
-<!--										<th>Features</th>-->
-										<th>Availability</th>
-										<th>Warranty</th>
-										<th>Edit</th>
-										<th>Delete</th>
+										<th>Confim Payment</th>
 									</tr>
 								</thead>
 								<tbody>
 									<?php
-										displayProducts();
+										displayPayment();
+										generateConfimCode();
 									?>
 								</tbody>
 							</table>

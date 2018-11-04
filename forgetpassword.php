@@ -4,10 +4,11 @@
 	include("include/dbcon.php");
 	include("include/function.php");
 	include("include/md5salt.php");
+	require("include/phpmailer/PHPMailerAutoload.php"); 
 	setGetCookie();
 
 	$wrongpass = "";
-	customerLogin();
+	recoverPassword();
 ?>
 
 
@@ -152,7 +153,7 @@
 							<p class="text-muted">Recover your password</p>
 						</center>
 					</div>
-					<form action="login.php" method="post" enctype="multipart/form-data">
+					<form action="forgetpassword.php" method="post" enctype="multipart/form-data">
 						<div class="form-group">
 							<label for="">Email</label>
 							<input type="email" class="form-control" name="cus_email" required>
@@ -166,8 +167,8 @@
 						</center>
 						<br>
 						<div class="text-center">
-							<button type="submit" name="login" class="btn btn-success">
-								<i class="fa fa-envelope"></i> Login
+							<button type="submit" name="recoverpass" class="btn btn-success">
+								<i class="fa fa-envelope"></i> Recover Password
 							</button>
 							<br>
 							<br>
