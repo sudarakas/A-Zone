@@ -223,6 +223,14 @@ function generateConfimCode(){
 	return $confirmCode;
 }
 
+function generateRandomPassword(){
+	
+	$combination = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789~!@#$%^&*()_+[]{}<>?';
+	$combination = str_shuffle($combination);
+	$randomPassword = substr($combination,0,8);
+	return $randomPassword;
+}
+
 function customerRegister(){
 	
 	global $connF;
@@ -1064,8 +1072,335 @@ function displayPayment(){
 	
 	while($getPaymentRow = mysqli_fetch_array($getPayment)){
 		
+		$payId = $getPaymentRow['payId'];
+		
+		$cusId = $getPaymentRow['customerId'];
+		$getCustomerEmailSql= "SELECT * FROM customer WHERE cusId='$cusId'";
+		$getCustomerEmail = mysqli_query($connF,$getCustomerEmailSql);
+		$getCustomerEmailRow = mysqli_fetch_array($getCustomerEmail);
+		$customerEmail = $getCustomerEmailRow['cusEmail'];
+		
+		$invoiceNo = $getPaymentRow['pInvoiceNum'];
+		$amount = $getPaymentRow['amount'];
+		$payMethod = $getPaymentRow['payMethod'];
+		$payDate = $getPaymentRow['date'];
+		$depositSlip = '';
+		$branch = '';
+		$depositeDate = '';
+		$depositAmount = '';
+		//getOffline Payment Details
+		$getOfflinePaymentSql = "SELECT * FROM offlinepayement WHERE payId='$payId'";
+		$getOfflinePayment = mysqli_query($connF,$getOfflinePaymentSql);
+		while($getOfflinePaymentRow = mysqli_fetch_array($getOfflinePayment)){
+			
+			$depositSlip = $getOfflinePaymentRow['depositImage'];
+			$branch = $getOfflinePaymentRow['branch'];
+			$depositeDate = $getOfflinePaymentRow['depositDate'];
+			$depositAmount = $getOfflinePaymentRow['amount'];
+
+		}
+		
+		if($depositSlip==''){
+			echo "
+			
+				<tr>
+					<td>$payId</td>
+					<td>$invoiceNo</td>
+					<td>$amount</td>
+					<td>$payMethod</td>
+					<td>$payDate</td>
+					<td>$branch</td>
+					<td>$depositSlip</td>
+					<td>$depositeDate</td>
+					<td>$depositAmount</td>
+					<td><a href='index.php?payConfirm=$invoiceNo'>Confirm</a></td>
+				</tr>
+			";
+		}
+		else{
+			echo "
+			
+				<tr>
+					<td>$payId</td>
+					<td>$invoiceNo</td>
+					<td>$amount</td>
+					<td>$payMethod</td>
+					<td>$payDate</td>
+					<td>$branch</td>
+					<td><a href='../customers/resources/img/userpayslips/$depositSlip' target='_blank'>view</a></td>
+					<td>$depositeDate</td>
+					<td>$depositAmount</td>
+					<td><a href='index.php?payConfirm=$invoiceNo'>Confirm</a></td>
+				</tr>
+			";
+		}
+
+	}
+}
+
+function confirmPayment(){ 
+	
+	global $connF;
+	if(isset($_GET['payConfirm'])){
+		
+		$invoiceNo = $_GET['payConfirm'];
+		$confirmOrderSql = "UPDATE orders SET status='Verified' WHERE invoiceNumber='$invoiceNo'";
+		$confirmOrder = mysqli_query($connF,$confirmOrderSql);
+		
+		if($confirmOrder){
+			echo "<script>window.open('index.php?payments','_self')</script>";
+		}
 		
 	}
 }
+
+function countCustomerNoOrders($cusId){
+	global $connF;
+	$getOrderDetailSql = "SELECT * FROM orders WHERE cusId = '$cusId'";
+	$getOrderDetail = mysqli_query($connF,$getOrderDetailSql);
+	$orderCount = mysqli_num_rows($getOrderDetail);
+	
+	return $orderCount;
+}
+
+function displayCustomers(){
+	
+	global $connF;
+	$getCustomerSql = "SELECT * FROM customer WHERE 1 ORDER BY cusId ASC";
+	$getCustomer = mysqli_query($connF,$getCustomerSql);
+	
+	while($getCutomerRow = mysqli_fetch_array($getCustomer)){
+		
+		$cusId = $getCutomerRow['cusId'];
+		$cusName = $getCutomerRow['cusName'];
+		$cusEmail = $getCutomerRow['cusEmail'];
+		$cusAddress = $getCutomerRow['cusAddress'];
+		$cusCity = $getCutomerRow['cusCity'];
+		$cusPno = $getCutomerRow['cusPNum'];
+		$cusOrderCount = countCustomerNoOrders($cusId);
+		$cusVerified = $getCutomerRow['cConfirmCode'];
+		
+		if($cusVerified==''){
+			echo "
+			
+				<tr>
+					<td>$cusId</td>
+					<td>$cusName</td>
+					<td>$cusEmail</td>
+					<td>$cusAddress</td>
+					<td>$cusCity</td>
+					<td>$cusPno</td>
+					<td>$cusOrderCount</td>
+					<td>Verified</td>
+					<td><a href='index.php?deleteCustomer=$cusId'>Delete</a></td>
+				</tr>
+			
+			";
+		}
+		else{
+			echo "
+			
+				<tr>
+					<td>$cusId</td>
+					<td>$cusName</td>
+					<td>$cusEmail</td>
+					<td>$cusAddress</td>
+					<td>$cusCity</td>
+					<td>$cusPno</td>
+					<td>$cusOrderCount</td>
+					<td>Not Verified</td>
+					<td><a href='index.php?deleteCustomer=$cusId'>Delete</a></td>
+				</tr>
+			
+			";
+			
+		}
+	}
+	
+}
+
+function deleteCustomer(){
+	global $connF;
+	if(isset($_GET['deleteCustomer'])){
+		
+		$cusId = $_GET['deleteCustomer'];
+		$deleteCustomerSql = "DELETE FROM customer WHERE cusId='$cusId'";
+		$deleteCustomer = mysqli_query($connF,$deleteCustomerSql);
+		
+		if($deleteCustomer){
+			echo "<script>alert('Customer Deleted')</script>";
+			echo "<script>window.open('index.php?customers','_self')</script>";
+		}
+		
+	}
+}
+
+function addCategory(){
+	global $connF;
+	if(isset($_POST['addnewcategory'])){
+		
+		$categoryName = $_POST['productCategoty'];
+		$addCategorySql = "INSERT INTO category(catName) VALUES ('$categoryName')";
+		$addCategory = mysqli_query($connF,$addCategorySql);
+		if($addCategory){
+			echo "<script>alert('Category Added')</script>";
+			echo "<script>window.open('index.php?addcategory','_self')</script>";
+		}
+		
+	}
+}
+
+
+function displayCategory(){
+	global $connF;
+	$getCategorySql = "SELECT * FROM category WHERE 1";
+	$getCategory = mysqli_query($connF,$getCategorySql);
+	while($getCategoryRow = mysqli_fetch_array($getCategory)){
+		$categoryId = $getCategoryRow['categoryId'];
+		$categoryName = $getCategoryRow['catName'];
+		echo "
+			<tr>
+				<td>$categoryId</td>
+				<td>$categoryName</td>
+				<td><a href='index.php?deleteCategory=$categoryId'>Delete</a></td>
+			</tr>
+		
+		";
+	}
+}
+
+function deleteCategory(){
+	global $connF;
+	if(isset($_GET['deleteCategory'])){
+		
+		$categoryId = $_GET['deleteCategory'];
+		$deleteCategorySql = "DELETE FROM category WHERE categoryId='$categoryId'";
+		$deleteCategory = mysqli_query($connF,$deleteCategorySql);
+		if($deleteCategory){
+			echo "<script>window.open('index.php?viewcategory','_self')</script>";
+		}
+	}
+	
+}
+
+function addManufacture(){
+	global $connF;
+	if(isset($_POST['addnewmanufacture'])){
+		
+		$manufactureName = $_POST['producManufacture'];
+		$addManufactureSql = "INSERT INTO manufacture(manName) VALUES ('$manufactureName')";
+		$addManufacture = mysqli_query($connF,$addManufactureSql);
+		if($addManufacture){
+			echo "<script>alert('Manufacture Added')</script>";
+			echo "<script>window.open('index.php?addmanufacture','_self')</script>";
+		}
+		
+	}
+	
+}
+
+function viewManufacture(){
+	global $connF;
+	if(isset($_GET['viewmanufacture'])){
+		$getManufactureSql = "SELECT * FROM manufacture WHERE 1";
+		$getManufacture = mysqli_query($connF,$getManufactureSql);
+		while($getManufactureRow = mysqli_fetch_array($getManufacture)){
+			$manufactureId = $getManufactureRow['manufactureId'];
+			$manufactureName = $getManufactureRow['manName'];
+			echo "
+				<tr>
+					<td>$manufactureId</td>
+					<td>$manufactureName</td>
+					<td><a href='index.php?deleteManufacture=$manufactureId'>Delete</a></td>
+				</tr>
+		
+			";
+		}
+		
+	}
+}
+
+function deleteManufacture(){
+	global $connF;
+	if(isset($_GET['deleteManufacture'])){
+		
+		$manufactureId = $_GET['deleteManufacture'];
+		$deleteManufactureSql = "DELETE FROM manufacture WHERE manufactureId='$manufactureId'";
+		$deleteManufacture = mysqli_query($connF,$deleteManufactureSql);
+		if(deleteManufacture){
+			echo "<script>window.open('index.php?viewmanufacture','_self')</script>";
+		}
+	}
+}
+
+function addNewAds(){
+	global $connF;
+	if(isset($_POST['addnewad'])){
+		
+		$adTitle = $_POST['adname'];
+		$adDetail = $_POST['addetail'];
+		$addNewAdSql = "INSERT INTO adds(addTitle,addDescription) VALUES ('$adTitle','$adDetail')";
+		$addNewAd = mysqli_query($connF,$addNewAdSql);
+		if($addNewAd){
+			echo "<script>alert('Ad Added')</script>";
+			echo "<script>window.open('index.php?addads','_self')</script>";
+		}
+	}
+}
+
+function viewAds(){
+	global $connF;
+	if(isset($_GET['viewads'])){
+		$getAdSql = "SELECT * FROM adds WHERE 1";
+		$getAd = mysqli_query($connF,$getAdSql);
+		while($getAdRow = mysqli_fetch_array($getAd)){
+			$adId = $getAdRow['addId'];
+			$adTitle = $getAdRow['addTitle'];
+			$adDetail = $getAdRow['addDescription'];
+			echo "
+				<tr>
+					<td>$adId</td>
+					<td>$adTitle</td>
+					<td>$adDetail</td>
+					<td><a href='index.php?deleteAd=$adId'>Delete</a></td>
+				</tr>
+		
+			";
+		}
+	}
+	
+}
+
+function deleteAds(){
+	global $connF;
+	if(isset($_GET['deleteAd'])){
+		echo "OK";
+		$adId = $_GET['deleteAd'];
+		$deleteAdSql = "DELETE FROM adds WHERE addId='$adId'";
+		$deleteAd = mysqli_query($connF,$deleteAdSql);
+		if($deleteAd){
+			echo "<script>window.open('index.php?viewads','_self')</script>";
+		}
+	}
+}
  
+function displayAds(){
+	global $connF;
+	$getAdsSql = "SELECT * FROM adds ORDER BY addId LIMIT 3";
+	$getAds = mysqli_query($connF,$getAdsSql);
+	while($getAdsRow = mysqli_fetch_array($getAds)){
+		$adTitle = $getAdsRow['addTitle'];
+		$adDetail = $getAdsRow['addDescription'];
+		echo "
+			<div class='col-sm-4'>
+					<div class='box same-height'>
+						<h3><a href='#'>$adTitle</a></h3>
+						<p>$adDetail</p>
+					</div>
+				</div>
+		
+			";
+		
+	}
+}
 ?>

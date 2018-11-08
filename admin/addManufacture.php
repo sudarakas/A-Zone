@@ -8,14 +8,15 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title> Payments - Azone Kurunegala</title>
+		<title> Add Manufacture - Azone Kurunegala</title>
 		
 		<!--Add CSS Files-->
 		<link rel="stylesheet" type="text/css" href="resources/css/adminstyle.css">
 		<link rel="stylesheet" href="resources/css/bootstrap.min.css">
 		<link rel="stylesheet"  type="text/css" href="resources/font-awesome/css/font-awesome.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
-		
+		<script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
+  		<script>tinymce.init({ selector:'textarea' });</script>
 		
 	</head>
 	<body>
@@ -25,7 +26,7 @@
 				<br>
 				<ol class="breadcrumb">
 					<li class="active">
-						<i class="fa fa-dashboard"></i> Dashboard / Payments
+						<i class="fa fa-dashboard"></i> Dashboard / Add Manufacture
 					</li>
 				</ol>
 			</div>
@@ -36,34 +37,24 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<div class="panel-title">
-							<i class="fa fa-dollar"></i> Payments
+							<i class="fa fa-plus"></i> Add Manufacture
 						</div>
 					</div>
 					<div class="panel-body">
-						<div class="table-responsive">
-							<table class="table table-bordered table-striped">
-							
-								<thead>
-									<tr>
-										<th>Pay Id</th>
-										<th>InvoiceNo</th>
-										<th>Amount</th>
-										<th>Payments Method</th>
-										<th>Payment Date</th>
-										<th>Branch</th>
-										<th>Slip</th>
-										<th>Deposited Amount</th>
-										<th>Price</th>
-										<th>Confim Payment</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php
-										displayPayment();
-									?>
-								</tbody>
-							</table>
-						</div>
+						<form class="form-horizontal" method="post" enctype="multipart/form-data">
+							<div class="form-group">
+								<label for="" class="col-md-3 control-label">Manufacture Name</label>
+								<div class="col-md-6">
+									<input type="text" name="producManufacture" class="form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-md-3 control-label"></label>
+								<div class="col-md-6">
+									<input type="submit" name="addnewmanufacture" value="Add Categoty" class="btn btn-success form-control">
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -75,4 +66,7 @@
 		<script src="resources/js/sweetalert.min.js"></script>
 	</body>
 </html>
+<?php
+		addManufacture();
+?>
 <?php } ?>

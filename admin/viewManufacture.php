@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title> Payments - Azone Kurunegala</title>
+		<title> View Manufacture - Azone Kurunegala</title>
 		
 		<!--Add CSS Files-->
 		<link rel="stylesheet" type="text/css" href="resources/css/adminstyle.css">
@@ -25,7 +25,7 @@
 				<br>
 				<ol class="breadcrumb">
 					<li class="active">
-						<i class="fa fa-dashboard"></i> Dashboard / Payments
+						<i class="fa fa-dashboard"></i> Dashboard / View Manufacture
 					</li>
 				</ol>
 			</div>
@@ -36,7 +36,7 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<div class="panel-title">
-							<i class="fa fa-dollar"></i> Payments
+							<i class="fa fa-list"></i> View Manufacture
 						</div>
 					</div>
 					<div class="panel-body">
@@ -45,21 +45,14 @@
 							
 								<thead>
 									<tr>
-										<th>Pay Id</th>
-										<th>InvoiceNo</th>
-										<th>Amount</th>
-										<th>Payments Method</th>
-										<th>Payment Date</th>
-										<th>Branch</th>
-										<th>Slip</th>
-										<th>Deposited Amount</th>
-										<th>Price</th>
-										<th>Confim Payment</th>
+										<th>Id</th>
+										<th>Name</th>
+										<th>Delete</th>
 									</tr>
 								</thead>
 								<tbody>
 									<?php
-										displayPayment();
+										viewManufacture();
 									?>
 								</tbody>
 							</table>

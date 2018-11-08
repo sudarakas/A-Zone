@@ -180,24 +180,9 @@
 	<div id="adbox">
 		<div class="container">
 			<div class="same-height-row">
-				<div class="col-sm-4">
-					<div class="box same-height">
-						<h3><a href="#">Summer Discounts</a></h3>
-						<p>Upto 10% Discounts for Summer 2018</p>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="box same-height">
-						<h3><a href="#">Lifetime Tech Support</a></h3>
-						<p>Free lifetime tech support only from us</p>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="box same-height">
-						<h3><a href="#">Original Products</a></h3>
-						<p>We are offering 7 days checking warrenty</p>
-					</div>
-				</div>
+				<?php
+					displayAds();
+				?>
 			</div>
 		</div>
 	</div>

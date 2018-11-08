@@ -8,6 +8,9 @@
 	if(!isset($_SESSION['email'])){
 		echo "<script>window.open('login.php','_self')</script>";
 	}
+//	else if(isset($_SESSION['email'])){
+//		echo "<script>window.open('index.php?dashboard','_self')</script>";
+//	}
 	else{
 ?>
 
@@ -71,8 +74,66 @@
 						include("payments.php");
 					}
 				?>
-				
-				
+				<?php
+					if(isset($_GET['payConfirm'])){
+						confirmPayment();
+					}
+				?>
+				<?php
+					if(isset($_GET['customers'])){
+						include("customers.php");
+					}
+				?>
+				<?php
+					if(isset($_GET['deleteCustomer'])){
+						deleteCustomer();
+					}
+				?>
+				<?php
+					if(isset($_GET['addcategory'])){
+						include("addcategory.php");
+					}
+				?>
+				<?php
+					if(isset($_GET['viewcategory'])){
+						include("viewcategory.php");
+					}
+				?>
+				<?php
+					if(isset($_GET['deleteCategory'])){
+						deleteCategory();
+					}
+				?>
+				<?php
+					if(isset($_GET['addmanufacture'])){
+						include("addManufacture.php");
+					}
+				?>
+				<?php
+					if(isset($_GET['viewmanufacture'])){
+						include("viewManufacture.php");
+					}
+				?>
+				<?php
+					if(isset($_GET['deleteManufacture'])){
+						deleteManufacture();
+					}
+				?>
+				<?php
+					if(isset($_GET['addads'])){
+						include('addAds.php');
+					}
+				?>
+				<?php
+					if(isset($_GET['viewads'])){
+						include('viewAds.php');
+					}
+				?>
+				<?php
+					if(isset($_GET['deleteAd'])){
+						deleteAds();
+					}
+				?>
 				<?php
 					if(isset($_GET['logout'])){
 						include("logout.php");

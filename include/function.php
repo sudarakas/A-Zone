@@ -301,6 +301,36 @@ function customerRegister(){
 	}
 }
 
+function sentConfirmMail($email,$name,$cCode){
+	
+	//PHPMailer Function
+			$mail = new PHPMailer;
+			$mail->isSMTP();
+			$mail->SMTPDebug = 0;
+			$mail->Debugoutput = 'html';
+			$mail->Host = 'smtp.gmail.com';
+			$mail->Port = 587;
+			$mail->SMTPSecure = 'tls';
+			$mail->SMTPAuth = true;
+			$mail->Username = "mailer.azone@gmail.com";
+			$mail->Password = "azone@123456";
+			$mail->setFrom('mailer.azone@gmail.com', 'Azone Support');
+			$mail->addAddress($email, $name);
+			$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
+			$mail->Subject = 'Please Confirm Your Azone Account';
+			$mail->Body = "
+						<p>Hi! $name </p>
+						<p>Thank you for registering on our site </p>
+						<br><br><br>
+						<b> Please visit below link to confirm your email </b>
+						<br><br>
+						Your Azone Account Password:&nbsp; <strong>$randomPassword</strong>
+						<br><br>
+						<b><i>Important! Please change your password just after logged into the site</i></b>
+						";
+	
+}
+
 function customerLogin(){
 	
 	global $connF;
@@ -352,6 +382,8 @@ function customerLogin(){
 	}
 }
 
+
+
 function recoverPassword(){
 	
 	global $connF;
@@ -380,11 +412,11 @@ function recoverPassword(){
 			$encRandomPassword = encNanoSec($randomPassword);
 			
 			$setRandowPasswordSql = "UPDATE customer SET cusPassword='$encRandomPassword' WHERE cusEmail='$customerEmail'";
-			
+			$setRandowPassword = mysqli_query($connF,$setRandowPasswordSql);
 			$customerName = $getCustomerRow['cusName'];
 
 
-
+			//PHPMailer Function
 			$mail = new PHPMailer;
 			$mail->isSMTP();
 			$mail->SMTPDebug = 0;
@@ -404,7 +436,7 @@ function recoverPassword(){
 						<br><br>
 						Your Azone Account Password:&nbsp; <strong>$randomPassword</strong>
 						<br><br>
-						<b><i> Important! Please chnage your password just after you logged into the 			site</i></b>
+						<b><i>Important! Please change your password just after logged into the site</i></b>
 						";
 			if (!$mail->send()) {
     			$wrongpass = "Somthing Wrong";
@@ -907,4 +939,549 @@ function printNewOrders(){
 	}
 }
   
+function displayProducts(){
+	
+	global $connF;
+	$getProductsSql = "SELECT * FROM product WHERE 1";
+	$getProducts = mysqli_query($connF,$getProductsSql);
+	
+	while($getProductsRow = mysqli_fetch_array($getProducts)){
+		
+		$productId = $getProductsRow['productId'];
+		$productDate = $getProductsRow['productDate'];
+		$productName = $getProductsRow['productName'];
+		$productCUrl = $getProductsRow['customUrl'];
+		$productImage1 = $getProductsRow['image1'];
+		$productImage2 = $getProductsRow['image2'];
+		$productImage3 = $getProductsRow['image3'];
+		$productImage4 = $getProductsRow['image4'];
+		$productPrice = $getProductsRow['productPrice'];
+		$productDetails = $getProductsRow['productDetails'];
+		$productManufa = $getProductsRow['manufactureId'];
+		$productCateg = $getProductsRow['categoryId'];
+		$productKeyword = $getProductsRow['productKeywords'];
+		$productFea = $getProductsRow['features'];
+		$productAvail = $getProductsRow['availability'];
+		$productWarrenty = $getProductsRow['Warranty'];
+		
+		if($productAvail==0){
+			$productAvail = "Coming Soon";
+		}
+		else if($productAvail==1){
+			$productAvail = "Available";
+		}
+		else{
+			$productAvail = "Out of Stock";
+		}
+		
+		$getCategoryNameSql = "SELECT * FROM category WHERE categoryId='$productCateg'";
+		$getCategoryName = mysqli_query($connF,$getCategoryNameSql);
+		$getCategoryNameRow = mysqli_fetch_array($getCategoryName);
+		
+		$categoryName = $getCategoryNameRow['catName'];
+		
+		$getManufactureNameSql = "SELECT * FROM manufacture WHERE manufactureId='$productManufa'";
+		$getManufactureName = mysqli_query($connF,$getManufactureNameSql);
+		$getManufactureNameRow = mysqli_fetch_array($getManufactureName);
+		
+		$ManufactureName = $getManufactureNameRow['manName'];
+		
+		
+		echo "
+		<tr>
+			<td>$productId</td>
+			<td>$productDate</td>
+			<td>$productName</td>
+			<td>$productCUrl</td>
+			<td><img src='resources/img/product_img/$productImage1' style='width: 50px;height:50px;'></td>
+			<td><img src='resources/img/product_img/$productImage2' style='width: 50px;height:50px;'></td>
+			<td><img src='resources/img/product_img/$productImage3' style='width: 50px;height:50px;'></td>
+			<td><img src='resources/img/product_img/$productImage4' style='width: 50px;height:50px;'></td>
+			<td>$productPrice</td>
+<!--		<td>$productDetails</td> -->
+			<td>$ManufactureName</td>
+			<td>$categoryName</td>
+			<td>$productKeyword</td>
+<!--		<td>$productFea</td> -->
+			<td>$productAvail</td>
+			<td>$productWarrenty</td>
+			<td><a href='index.php?editProduct=$productId'>Edit</a></td>
+			<td><a href='index.php?deleteProduct=$productId'>Delete</a></td>
+			
+		</tr>
+		";
+		
+		
+		
+		
+	}
+	
+}
+
+function deleteProduct(){
+	
+	global $connF;
+	if(isset($_GET['deleteProduct'])){
+		
+		$productId = $_GET['deleteProduct'];
+		$deleteProductSql = "DELETE FROM product WHERE productId='$productId'";
+		$deleteProduct = mysqli_query($connF,$deleteProductSql);
+		
+		if($deleteProduct){
+			echo "<script>alert('Product Deleted')</script>";
+			echo "<script>window.open('index.php?viewproducts','_self')</script>";
+			
+		}
+		else{
+			echo "<script>alert('Something Wrong!')</script>";
+			echo "<script>window.open('index.php?viewproducts','_self')</script>";
+		}
+	}
+}
+
+function updateProduct(){
+	
+	global $connF;
+	
+	if(isset($_POST['updateproduct'])){
+		
+		$productId = $_GET['editProduct'];
+		
+		$getProductsSql = "SELECT * FROM product WHERE productId='$productId'";
+		$getProducts = mysqli_query($connF,$getProductsSql);
+		$getProductsRow = mysqli_fetch_array($getProducts);
+		
+		$productImage1Old = $getProductsRow['image1'];
+		$productImage2Old = $getProductsRow['image2'];
+		$productImage3Old = $getProductsRow['image3'];
+		$productImage4Old = $getProductsRow['image4'];
+		
+		$productName = $_POST['productName'];
+		$productCUrl = $_POST['productUrl'];
+		$productImage1 = $_FILES['productimg1']['name'];
+		$productImage2 = $_FILES['productimg2']['name'];
+		$productImage3 = $_FILES['productimg3']['name'];
+		$productImage4 = $_FILES['productimg4']['name'];
+		$productPrice = $_POST['productPrice'];
+		$productDetails = $_POST['productDet'];
+		$productManufa = $_POST['productManuf'];
+		$productCateg = $_POST['productCateg'];
+		$productKeyword = $_POST['productKeyword'];
+		$productFea = $_POST['productFea'];
+		$productAvail = $_POST['productAva'];
+		$productWarrenty = $_POST['productWarrenty'];
+		
+		if(empty($productImage1)){
+			$productImage1 = $productImage1Old;
+		}
+		
+		if(empty($productImage2)){
+			$productImage2 = $productImage2Old;
+		}
+		
+		if(empty($productImage3)){
+			$productImage3 = $productImage3Old;
+		}
+		
+		if(empty($productImage4)){
+			$productImage4 = $productImage4Old;
+		}
+		
+		$tempImg1 = $_FILES['productimg1']['tmp_name'];
+		$tempImg2 = $_FILES['productimg2']['tmp_name'];
+		$tempImg3 = $_FILES['productimg3']['tmp_name'];
+		$tempImg4 = $_FILES['productimg4']['tmp_name'];
+
+		move_uploaded_file($tempImg1,"resources/img/product_img/$productImage1");
+		move_uploaded_file($tempImg2,"resources/img/product_img/$productImage2");
+		move_uploaded_file($tempImg3,"resources/img/product_img/$productImage3");
+		move_uploaded_file($tempImg4,"resources/img/product_img/$productImage4");
+		
+		$updateProductSql = "UPDATE product SET productName='$productName',customUrl='$productCUrl',image1='$productImage1',image2='$productImage2',image3='$productImage3',image4='$productImage4',productPrice='$productPrice',productDetails='$productDetails',manufactureId='$productManufa',categoryId='$productCateg',productKeywords='$productKeyword',features='$productFea',availability=$productAvail,Warranty='$productWarrenty' WHERE productId='$productId'";
+		
+		$updateProduct = mysqli_query($connF,$updateProductSql);
+		
+		if($updateProduct){
+			echo "<script>alert('Product Updated')</script>";
+			echo "<script>window.open('index.php?viewproducts','_self')</script>";
+		}
+		else{
+			echo "<script>alert('Something Wrong!')</script>";
+			echo "<script>window.open('index.php?viewproducts','_self')</script>";
+		}
+	
+	}
+ 
+}
+
+function displayOrders(){
+	
+	global $connF;
+	$getNewOrdersSql = "SELECT * FROM orders WHERE 1 ORDER BY orderId ASC";
+	$getNewOrders = mysqli_query($connF,$getNewOrdersSql);
+	
+	while($getNewOrdersRow = mysqli_fetch_array($getNewOrders)){
+		
+		$orderNo = $getNewOrdersRow['orderId'];
+		$invoiceNo = $getNewOrdersRow['invoiceNumber'];
+		$orderDate = $getNewOrdersRow['date'];
+		
+		$productId = $getNewOrdersRow['productId'];
+		$getProductNameSql = "SELECT * FROM product WHERE productId='$productId'";
+		$getProductName = mysqli_query($connF,$getProductNameSql);
+		$getProductNameRow = mysqli_fetch_array($getProductName);
+		$productName = $getProductNameRow['productName'];
+		
+		$orderQty = $getNewOrdersRow['qty'];
+		$orderColor = $getNewOrdersRow['colour'];
+		$orderWarranty = $getNewOrdersRow['warranty'];
+		
+		$cusId = $getNewOrdersRow['cusId'];
+		$getCustomerEmailSql= "SELECT * FROM customer WHERE cusId='$cusId'";
+		$getCustomerEmail = mysqli_query($connF,$getCustomerEmailSql);
+		$getCustomerEmailRow = mysqli_fetch_array($getCustomerEmail);
+		$customerEmail = $getCustomerEmailRow['cusEmail'];
+		
+		$orderStatus = $getNewOrdersRow['status'];
+		
+		echo "
+			<tr>
+				<td>$orderNo</td>
+				<td>$invoiceNo</td>
+				<td>$orderDate</td>
+				<td>$productName</td>
+				<td>$orderQty</td>
+				<td>$orderColor</td>
+				<td>$orderWarranty</td>
+				<td>$customerEmail</td>
+				<td>$orderStatus</td>
+				<td><a href='index.php?shipConfirm=$invoiceNo'>Confirm</a></td>
+			</tr>
+		
+		";
+		
+		
+	}
+}
+
+function confirmShip(){
+	
+	global $connF;
+	if(isset($_GET['shipConfirm'])){
+		
+		$invoiceNo = $_GET['shipConfirm'];
+		$confirmOrderSql = "UPDATE orders SET status='Shipped' WHERE invoiceNumber='$invoiceNo'";
+		$confirmOrder = mysqli_query($connF,$confirmOrderSql);
+		
+		if($confirmOrder){
+			echo "<script>window.open('index.php?orderlist','_self')</script>";
+		}
+		
+	}
+}
+
+function displayPayment(){
+	
+	global $connF;
+	$getPaymentSql = "SELECT * FROM payement WHERE 1";
+	$getPayment = mysqli_query($connF,$getPaymentSql);
+	
+	while($getPaymentRow = mysqli_fetch_array($getPayment)){
+		
+		$payId = $getPaymentRow['payId'];
+		
+		$cusId = $getPaymentRow['customerId'];
+		$getCustomerEmailSql= "SELECT * FROM customer WHERE cusId='$cusId'";
+		$getCustomerEmail = mysqli_query($connF,$getCustomerEmailSql);
+		$getCustomerEmailRow = mysqli_fetch_array($getCustomerEmail);
+		$customerEmail = $getCustomerEmailRow['cusEmail'];
+		
+		$invoiceNo = $getPaymentRow['pInvoiceNum'];
+		$amount = $getPaymentRow['amount'];
+		$payMethod = $getPaymentRow['payMethod'];
+		$payDate = $getPaymentRow['date'];
+		$depositSlip = '';
+		$branch = '';
+		$depositeDate = '';
+		$depositAmount = '';
+		//getOffline Payment Details
+		$getOfflinePaymentSql = "SELECT * FROM offlinepayement WHERE payId='$payId'";
+		$getOfflinePayment = mysqli_query($connF,$getOfflinePaymentSql);
+		while($getOfflinePaymentRow = mysqli_fetch_array($getOfflinePayment)){
+			
+			$depositSlip = $getOfflinePaymentRow['depositImage'];
+			$branch = $getOfflinePaymentRow['branch'];
+			$depositeDate = $getOfflinePaymentRow['depositDate'];
+			$depositAmount = $getOfflinePaymentRow['amount'];
+
+		}
+		
+		if($depositSlip==''){
+			echo "
+			
+				<tr>
+					<td>$payId</td>
+					<td>$invoiceNo</td>
+					<td>$amount</td>
+					<td>$payMethod</td>
+					<td>$payDate</td>
+					<td>$branch</td>
+					<td>$depositSlip</td>
+					<td>$depositeDate</td>
+					<td>$depositAmount</td>
+					<td><a href='index.php?payConfirm=$invoiceNo'>Confirm</a></td>
+				</tr>
+			";
+		}
+		else{
+			echo "
+			
+				<tr>
+					<td>$payId</td>
+					<td>$invoiceNo</td>
+					<td>$amount</td>
+					<td>$payMethod</td>
+					<td>$payDate</td>
+					<td>$branch</td>
+					<td><a href='../customers/resources/img/userpayslips/$depositSlip' target='_blank'>view</a></td>
+					<td>$depositeDate</td>
+					<td>$depositAmount</td>
+					<td><a href='index.php?payConfirm=$invoiceNo'>Confirm</a></td>
+				</tr>
+			";
+		}
+
+	}
+}
+
+function confirmPayment(){ 
+	
+	global $connF;
+	if(isset($_GET['payConfirm'])){
+		
+		$invoiceNo = $_GET['payConfirm'];
+		$confirmOrderSql = "UPDATE orders SET status='Verified' WHERE invoiceNumber='$invoiceNo'";
+		$confirmOrder = mysqli_query($connF,$confirmOrderSql);
+		
+		if($confirmOrder){
+			echo "<script>window.open('index.php?payments','_self')</script>";
+		}
+		
+	}
+}
+
+function countCustomerNoOrders($cusId){
+	global $connF;
+	$getOrderDetailSql = "SELECT * FROM orders WHERE cusId = '$cusId'";
+	$getOrderDetail = mysqli_query($connF,$getOrderDetailSql);
+	$orderCount = mysqli_num_rows($getOrderDetail);
+	
+	return $orderCount;
+}
+
+function displayCustomers(){
+	
+	global $connF;
+	$getCustomerSql = "SELECT * FROM customer WHERE 1 ORDER BY cusId ASC";
+	$getCustomer = mysqli_query($connF,$getCustomerSql);
+	
+	while($getCutomerRow = mysqli_fetch_array($getCustomer)){
+		
+		$cusId = $getCutomerRow['cusId'];
+		$cusName = $getCutomerRow['cusName'];
+		$cusEmail = $getCutomerRow['cusEmail'];
+		$cusAddress = $getCutomerRow['cusAddress'];
+		$cusCity = $getCutomerRow['cusCity'];
+		$cusPno = $getCutomerRow['cusPNum'];
+		$cusOrderCount = countCustomerNoOrders($cusId);
+		$cusVerified = $getCutomerRow['cConfirmCode'];
+		
+		if($cusVerified==''){
+			echo "
+			
+				<tr>
+					<td>$cusId</td>
+					<td>$cusName</td>
+					<td>$cusEmail</td>
+					<td>$cusAddress</td>
+					<td>$cusCity</td>
+					<td>$cusPno</td>
+					<td>$cusOrderCount</td>
+					<td>Verified</td>
+					<td><a href='index.php?deleteCustomer=$cusId'>Delete</a></td>
+				</tr>
+			
+			";
+		}
+		else{
+			echo "
+			
+				<tr>
+					<td>$cusId</td>
+					<td>$cusName</td>
+					<td>$cusEmail</td>
+					<td>$cusAddress</td>
+					<td>$cusCity</td>
+					<td>$cusPno</td>
+					<td>$cusOrderCount</td>
+					<td>Not Verified</td>
+					<td><a href='index.php?deleteCustomer=$cusId'>Delete</a></td>
+				</tr>
+			
+			";
+			
+		}
+	}
+	
+}
+
+function deleteCustomer(){
+	global $connF;
+	if(isset($_GET['deleteCustomer'])){
+		
+		$cusId = $_GET['deleteCustomer'];
+		$deleteCustomerSql = "DELETE FROM customer WHERE cusId='$cusId'";
+		$deleteCustomer = mysqli_query($connF,$deleteCustomerSql);
+		
+		if($deleteCustomer){
+			echo "<script>alert('Customer Deleted')</script>";
+			echo "<script>window.open('index.php?customers','_self')</script>";
+		}
+		
+	}
+}
+
+function addCategory(){
+	global $connF;
+	if(isset($_POST['addnewcategory'])){
+		
+		$categoryName = $_POST['productCategoty'];
+		$addCategorySql = "INSERT INTO category(catName) VALUES ('$categoryName')";
+		$addCategory = mysqli_query($connF,$addCategorySql);
+		if($addCategory){
+			echo "<script>alert('Category Added')</script>";
+			echo "<script>window.open('index.php?addcategory','_self')</script>";
+		}
+		
+	}
+}
+
+
+function displayCategory(){
+	global $connF;
+	$getCategorySql = "SELECT * FROM category WHERE 1";
+	$getCategory = mysqli_query($connF,$getCategorySql);
+	while($getCategoryRow = mysqli_fetch_array($getCategory)){
+		$categoryId = $getCategoryRow['categoryId'];
+		$categoryName = $getCategoryRow['catName'];
+		echo "
+			<tr>
+				<td>$categoryId</td>
+				<td>$categoryName</td>
+				<td><a href='index.php?deleteCategory=$categoryId'>Delete</a></td>
+			</tr>
+		
+		";
+	}
+}
+
+function deleteCategory(){
+	global $connF;
+	if(isset($_GET['deleteCategory'])){
+		
+		$categoryId = $_GET['deleteCategory'];
+		$deleteCategorySql = "DELETE FROM category WHERE categoryId='$categoryId'";
+		$deleteCategory = mysqli_query($connF,$deleteCategorySql);
+		if($deleteCategory){
+			echo "<script>window.open('index.php?viewcategory','_self')</script>";
+		}
+	}
+	
+}
+
+function addManufacture(){
+	global $connF;
+	if(isset($_POST['addnewmanufacture'])){
+		
+		$manufactureName = $_POST['producManufacture'];
+		$addManufactureSql = "INSERT INTO manufacture(manName) VALUES ('$manufactureName')";
+		$addManufacture = mysqli_query($connF,$addManufactureSql);
+		if($addManufacture){
+			echo "<script>alert('Manufacture Added')</script>";
+			echo "<script>window.open('index.php?addmanufacture','_self')</script>";
+		}
+		
+	}
+	
+}
+
+function viewManufacture(){
+	global $connF;
+	if(isset($_GET['viewmanufacture'])){
+		$getManufactureSql = "SELECT * FROM manufacture WHERE 1";
+		$getManufacture = mysqli_query($connF,$getManufactureSql);
+		while($getManufactureRow = mysqli_fetch_array($getManufacture)){
+			$manufactureId = $getManufactureRow['manufactureId'];
+			$manufactureName = $getManufactureRow['manName'];
+			echo "
+				<tr>
+					<td>$manufactureId</td>
+					<td>$manufactureName</td>
+					<td><a href='index.php?deleteManufacture=$manufactureId'>Delete</a></td>
+				</tr>
+		
+			";
+		}
+		
+	}
+}
+
+function deleteManufacture(){
+	global $connF;
+	if(isset($_GET['deleteManufacture'])){
+		
+		$manufactureId = $_GET['deleteManufacture'];
+		$deleteManufactureSql = "DELETE FROM manufacture WHERE manufactureId='$manufactureId'";
+		$deleteManufacture = mysqli_query($connF,$deleteManufactureSql);
+		if(deleteManufacture){
+			echo "<script>window.open('index.php?viewmanufacture','_self')</script>";
+		}
+	}
+}
+
+function addNewAds(){
+	global $connF;
+	if(isset($_POST['addnewad'])){
+		
+		$adTitle = $_POST['adname'];
+		$adDetail = $_POST['addetail'];
+		$addNewAdSql = "INSERT INTO adds(addTitle,addDescription) VALUES ('$adTitle','$adDetail')";
+		$addNewAd = mysqli_query($connF,$addNewAdSql);
+		if($addNewAd){
+			echo "<script>alert('Ad Added')</script>";
+			echo "<script>window.open('index.php?addads','_self')</script>";
+		}
+	}
+}
+ 
+function displayAds(){
+	
+	global $connF;
+	$getAdsSql = "SELECT * FROM adds ORDER BY addId LIMIT 3";
+	$getAds = mysqli_query($connF,$getAdsSql);
+	while($getAdsRow = mysqli_fetch_array($getAds)){
+		$adTitle = $getAdsRow['addTitle'];
+		$adDetail = $getAdsRow['addDescription'];
+		echo "
+			<div class='col-sm-4'>
+					<div class='box same-height'>
+						<h3><a href='#'>$adTitle</a></h3>
+						<p>$adDetail</p>
+					</div>
+				</div>
+		
+			";
+		
+	}
+}
 ?>
