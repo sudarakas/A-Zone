@@ -59,7 +59,7 @@
 							echo "list-group-item-info";
 						}
 					   ?>">
-				<a href="myaccount.php?logout"><i class="fa fa-sign-out"></i> Logout</a>
+				<a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a>
 			</li>
 		</ul>
 	</div>

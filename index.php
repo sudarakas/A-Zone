@@ -151,7 +151,7 @@
 					?>
 					<?php
 					
-						$sql = "SELECT * FROM slider LIMIT 1,4";
+						$sql = "SELECT * FROM slider ORDER BY sliderId DESC LIMIT 4";
 						$getImg = mysqli_query($conn,$sql);
 						while($rowImg = mysqli_fetch_array($getImg)){
 							$imgLink = $rowImg['sImage'];

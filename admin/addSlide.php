@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title> Add Manufacture - Azone Kurunegala</title>
+		<title> Add Slide - Azone Kurunegala</title>
 		
 		<!--Add CSS Files-->
 		<link rel="stylesheet" type="text/css" href="resources/css/adminstyle.css">
@@ -26,7 +26,7 @@
 				<br>
 				<ol class="breadcrumb">
 					<li class="active">
-						<i class="fa fa-dashboard"></i> Dashboard / Add Manufacture
+						<i class="fa fa-dashboard"></i> Dashboard / Add Slide
 					</li>
 				</ol>
 			</div>
@@ -35,23 +35,30 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="panel panel-primary">
+				
 					<div class="panel-heading">
 						<div class="panel-title">
-							<i class="fa fa-plus"></i> Add Manufacture
+							<i class="fa fa-plus"></i> Add Slide
 						</div>
 					</div>
 					<div class="panel-body">
 						<form class="form-horizontal" method="post" enctype="multipart/form-data">
 							<div class="form-group">
-								<label for="" class="col-md-3 control-label">Manufacture Name</label>
+								<label for="" class="col-md-3 control-label">Slide Name</label>
 								<div class="col-md-6">
-									<input type="text" name="producManufacture" class="form-control" required>
+									<input type="text" name="slidename" class="form-control" required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-md-3 control-label">Upload Slide</label>
+								<div class="col-md-6">
+									<input type="file" name="slideimg" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label"></label>
 								<div class="col-md-6">
-									<input type="submit" name="addnewmanufacture" value="Add Categoty" class="btn btn-success form-control">
+									<input type="submit" name="addnewslide" value="Add Categoty" class="btn btn-success form-control">
 								</div>
 							</div>
 						</form>
@@ -67,6 +74,6 @@
 	</body>
 </html>
 <?php
-		addManufacture();
+		addSlide();
 ?>
 <?php } ?>

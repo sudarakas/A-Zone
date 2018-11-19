@@ -135,6 +135,36 @@
 					}
 				?>
 				<?php
+					if(isset($_GET['addslideshow'])){
+						include('addSlide.php');
+					}
+				?>
+				<?php
+					if(isset($_GET['viewslideshow'])){
+						include('viewSlide.php');
+					}
+				?>
+				<?php
+					if(isset($_GET['deleteSlide'])){
+						deleteSlide();			
+					}
+				?>
+				<?php
+					if(isset($_GET['addadmin'])){
+						include('addAdmin.php');
+					}
+				?>
+				<?php
+					if(isset($_GET['viewadmins'])){
+						include('viewAdmin.php');
+					}
+				?>
+				<?php
+					if(isset($_GET['deleteAdmin'])){
+						deleteAdmin();
+					}
+				?>
+				<?php
 					if(isset($_GET['logout'])){
 						include("logout.php");
 					}

@@ -45,43 +45,43 @@
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label">Product Name</label>
 								<div class="col-md-6">
-									<input type="text" name="productName" class="form-control">
+									<input type="text" name="productName" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label">Custom Url</label>
 								<div class="col-md-6">
-									<input type="text" name="productUrl" class="form-control">
+									<input type="text" name="productUrl" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label">Product Image</label>
 								<div class="col-md-6">
-									<input type="file" name="productimg1" class="form-control">
+									<input type="file" name="productimg1" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label">Product Image</label>
 								<div class="col-md-6">
-									<input type="file" name="productimg2" class="form-control">
+									<input type="file" name="productimg2" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label">Product Image</label>
 								<div class="col-md-6">
-									<input type="file" name="productimg3" class="form-control">
+									<input type="file" name="productimg3" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label">Product Image</label>
 								<div class="col-md-6">
-									<input type="file" name="productimg4" class="form-control">
+									<input type="file" name="productimg4" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label">Product Price</label>
 								<div class="col-md-6">
-									<input type="text" name="productPrice" class="form-control">
+									<input type="text" name="productPrice" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">
@@ -127,7 +127,7 @@
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label">Product Keyword</label>
 								<div class="col-md-6">
-									<input type="text" name="productKeyword" class="form-control">
+									<input type="text" name="productKeyword" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">

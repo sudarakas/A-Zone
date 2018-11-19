@@ -45,7 +45,7 @@
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label">Categoty Name</label>
 								<div class="col-md-6">
-									<input type="text" name="productCategoty" class="form-control">
+									<input type="text" name="productCategoty" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">

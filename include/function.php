@@ -671,8 +671,45 @@ function makeOrder(){
 			}
 			
 		}
-		echo "<script>alert('Order placed successfully! Please complete the payment')</script>";
-		echo "<script>window.open('customers/myaccount.php?myorders','_self')</script>";
+		
+		
+		$getCustomerEmailSql = "SELECT * FROM customer WHERE cusId='$cusId'";
+		$getCustomerEmail = mysqli_query($connF,$getCustomerEmailSql);
+		$getCustomerEmailRow = mysqli_fetch_array($getCustomerEmail);
+		$cusEmail = $getCustomerEmailRow['cusEmail'];
+	
+		//PHPMailer Function
+			$mail = new PHPMailer;
+			$mail->isSMTP();
+			$mail->SMTPDebug = 0;
+			$mail->Debugoutput = 'html';
+			$mail->Host = 'smtp.gmail.com';
+			$mail->Port = 587;
+			$mail->SMTPSecure = 'tls';
+			$mail->SMTPAuth = true;
+			$mail->Username = "mailer.azone@gmail.com";
+			$mail->Password = "azone@123456";
+			$mail->setFrom('mailer.azone@gmail.com', 'Azone Support');
+			$mail->addAddress($cusEmail,$cusEmail );
+			$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
+			$mail->Subject = 'Order Placed Successfully';
+			$mail->Body = "
+						<b>You order have been successfully placed, Please wait! Our customer care will contact you ASAP</b>
+						<br><br>
+						<b>Thanks<br>Azone Team</b>
+						
+						
+						<br><br>
+						<b><i>If you need any kind of assistant, please contact Us</i></b>
+						";
+			if (!$mail->send()) {
+    			echo "<script>alert('Please contact us')</script>";
+			} 
+			else {
+   				echo "<script>alert('Order placed successfully! Please complete the payment')</script>";
+				echo "<script>window.open('customers/myaccount.php?myorders','_self')</script>";
+			}
+		
 	}
 }
 
@@ -1464,8 +1501,43 @@ function addNewAds(){
 	}
 }
  
-function displayAds(){
+function viewAds(){
+	global $connF;
+	if(isset($_GET['viewads'])){
+		$getAdSql = "SELECT * FROM adds WHERE 1";
+		$getAd = mysqli_query($connF,$getAdSql);
+		while($getAdRow = mysqli_fetch_array($getAd)){
+			$adId = $getAdRow['addId'];
+			$adTitle = $getAdRow['addTitle'];
+			$adDetail = $getAdRow['addDescription'];
+			echo "
+				<tr>
+					<td>$adId</td>
+					<td>$adTitle</td>
+					<td>$adDetail</td>
+					<td><a href='index.php?deleteAd=$adId'>Delete</a></td>
+				</tr>
+		
+			";
+		}
+	}
 	
+}
+
+function deleteAds(){
+	global $connF;
+	if(isset($_GET['deleteAd'])){
+		$adId = $_GET['deleteAd'];
+		$deleteAdSql = "DELETE FROM adds WHERE addId='$adId'";
+		$deleteAd = mysqli_query($connF,$deleteAdSql);
+		if($deleteAd){
+			echo "<script>window.open('index.php?viewads','_sel
+			f')</script>";
+		}
+	}
+}
+ 
+function displayAds(){
 	global $connF;
 	$getAdsSql = "SELECT * FROM adds ORDER BY addId LIMIT 3";
 	$getAds = mysqli_query($connF,$getAdsSql);
@@ -1484,4 +1556,173 @@ function displayAds(){
 		
 	}
 }
+
+function addSlide(){
+	global $connF;
+	if(isset($_POST['addnewslide'])){
+		
+		$slideName = $_POST['slidename'];
+		$slideImg = $_FILES['slideimg']['name'];
+		$tempImg1 = $_FILES['slideimg']['tmp_name'];
+		move_uploaded_file($tempImg1,"resources/img/slideshow/$slideImg");
+		
+		$addNewSlideSql = "INSERT INTO slider(sName, sImage) VALUES ('$slideName','$slideImg')";
+		$addNewSlide = mysqli_query($connF,$addNewSlideSql);
+		if($addNewSlide){
+			echo "<script>alert('Slide Added')</script>";
+			echo "<script>window.open('index.php?addslideshow','_self')</script>";
+		}
+	}
+}
+
+function viewSlide(){
+	global $connF;
+	$getSlidesSql = "SELECT * FROM slider WHERE 1";
+	$getSlides = mysqli_query($connF,$getSlidesSql);
+	while($getSlidesRow = mysqli_fetch_array($getSlides)){
+		$slideId = $getSlidesRow['sliderId'];
+		$slideName = $getSlidesRow['sName'];
+		$slideImg = $getSlidesRow['sImage'];
+		echo "	
+				<tr>
+					<td>$slideId</td>
+					<td>$slideName</td>
+					<td><img src='resources/img/slideshow/$slideImg' style='width: 50px;height:50px;'></td>
+					<td><a href='index.php?deleteSlide=$slideId'>Delete</a></td>
+				</tr>
+		
+			";
+	}
+}
+
+function deleteSlide(){
+	global $connF;
+	if(isset($_GET['deleteSlide'])){
+		$slideId = $_GET['deleteSlide'];
+		$deleteSlideSql = "DELETE FROM slider WHERE sliderId='$slideId'";
+		$deleteSlide = mysqli_query($connF,$deleteSlideSql);
+		if($deleteSlide){
+			echo"<script>alert('Slide Deleted')</script>";
+			echo "<script>window.open('index.php?viewslideshow','_self')</script>";
+		}
+	}
+}
+
+function addNewAdmin(){
+	global $connF;
+	if(isset($_POST['addnewadmin'])){
+		$adminName = $_POST['adminName'];
+		$adminEmail = $_POST['adminEmail'];
+		$adminPass = $_POST['adminPass'];
+		$adminCPass = $_POST['adminCPass'];
+		$adminImg = $_FILES['adminimg1']['name'];
+		$adminTempImg = $_FILES['adminimg1']['tmp_name'];
+		$adminPno = $_POST['adminPNo'];
+		
+		if($adminPass == $adminCPass){
+			$adminPassEnc = encNanoSec($adminPass);
+			$addAdminSql = "INSERT INTO admin(adminName, adminEmail, adminPassword, adminPhoto, adminPNum) VALUES ('$adminName','$adminEmail','$adminPassEnc','$adminImg','$adminPno')";
+			$addAdmin = mysqli_query($connF,$addAdminSql);
+			move_uploaded_file($adminTempImg,"resources/admin_img/$adminImg");
+			if($addAdmin){
+			echo "<script>alert('Admin Added')</script>";
+			echo "<script>window.open('index.php?addadmin','_self')</script>";
+		}
+		}
+	}
+}
+
+function viewAdmin(){
+	global $connF;
+	$viewAdminSql ="SELECT * FROM admin WHERE 1";
+	$viewAdmin = mysqli_query($connF,$viewAdminSql);
+	
+	while($viewAdminRow = mysqli_fetch_array($viewAdmin)){
+		$adminId = $viewAdminRow['adminId'];
+		$adminName = $viewAdminRow['adminName'];
+		$adminEmail = $viewAdminRow['adminEmail'];
+		$adminPass = $viewAdminRow['adminPassword'];
+		$adminPassDec = decNanoSec($adminPass);
+		$adminImg = $viewAdminRow['adminPhoto'];
+		$adminPno = $viewAdminRow['adminPNum'];
+		
+		echo "	
+				<tr>
+					<td>$adminId</td>
+					<td>$adminName</td>
+					<td>$adminEmail</td>
+					<td>$adminPassDec</td>
+					<td><img src='resources/admin_img/$adminImg' style='width: 50px;height:50px;'></td>
+					<td>$adminPno</td>
+					<td><a href='index.php?deleteAdmin=$adminId'>Delete</a></td>
+				</tr>
+		
+			";
+	}
+}
+
+function deleteAdmin(){
+	global $connF;
+	if(isset($_GET['deleteAdmin'])){
+		$adminId = $_GET['deleteAdmin'];
+		$deleteAdminSql = "DELETE FROM admin WHERE adminId='$adminId'";
+		$deleteAdmin = mysqli_query($connF,$deleteAdminSql);
+		if($deleteAdmin){
+			echo"<script>alert('Admin Deleted')</script>";
+			echo "<script>window.open('index.php?viewadmins','_self')</script>";
+		}
+	}
+}
+
+function contactUs(){
+	global $connF;
+	if(isset($_POST['contactus'])){
+		$department = $_POST['department'];
+		$cusName = $_POST['name'];
+		$cusEmail = $_POST['email'];
+		$subject = $_POST['subject'];
+		$message = $_POST['message'];
+		
+		$saveInqueySql ="INSERT INTO supportticket(ticketDepartment, ticketcusName, ticketcusEmail, ticketcusSub, ticketcusMsg) VALUES ('$department','$cusName','$cusEmail','$subject','$message')";
+		$saveInquey = mysqli_query($connF,$saveInqueySql);
+		$supportEmail = 'mailer.azone@gmail.com';
+		
+		//PHPMailer Function
+			$mail = new PHPMailer;
+			$mail->isSMTP();
+			$mail->SMTPDebug = 0;
+			$mail->Debugoutput = 'html';
+			$mail->Host = 'smtp.gmail.com';
+			$mail->Port = 587;
+			$mail->SMTPSecure = 'tls';
+			$mail->SMTPAuth = true;
+			$mail->Username = "mailer.azone@gmail.com";
+			$mail->Password = "azone@123456";
+			$mail->setFrom('mailer.azone@gmail.com', 'Azone Support');
+			$mail->addAddress($supportEmail, 'Inquery Handler');
+			$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
+			$mail->Subject = 'Customer Inquery - Azone';
+			$mail->Body = "
+						<b> Department : $department </b>
+						<br><br>
+						<b> Customer Name : $cusName </b>
+						<br><br>
+						<b> Customer Email : $cusEmail </b>
+						<br><br>
+						<b> Subject : $subject </b>
+						<br><br>
+						<p> Message : $message </p>
+						<br><br>
+						<br><br>
+						<b><i>If you need any kind of assistant, please contact Root Administrator</i></b>
+						";
+			if (!$mail->send()) {
+				echo"<script>alert('Something Wrong, Please Call Us')</script>";
+			} 
+			else {
+				echo"<script>alert('Inquery has been sent, Our customer service will contact you')</script>";
+			}
+	}
+}
+
 ?>

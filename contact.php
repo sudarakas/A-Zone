@@ -2,6 +2,7 @@
 	session_start();
 	include("include/dbcon.php");
 	include("include/function.php");
+	require 'include/phpmailer/PHPMailerAutoload.php'; 
 	setGetCookie();
 ?>
 <!DOCTYPE html>
@@ -17,7 +18,7 @@
 	<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css">
 	<link rel="stylesheet"  type="text/css" href="resources/font-awesome/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
-	
+	<script>tinymce.init({ selector:'textarea' });</script>
 	
 </head>
 	
@@ -145,28 +146,34 @@
 					</div>
 					<form action="contact.php" method="post">
 						<div class="form-group">
-							<label for="">Name</label>
+							<label for="">Department</label>
+							<select name="department" class="form-control">
+								<option value="account">Billing</option>
+								<option value="customer">Products</option>
+								<option value="other">Other</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="">Your Name</label>
 							<input type="text" class="form-control" name="name" required>
 						</div>
 						<div class="form-group">
-							<label for="">Email</label>
+							<label for="">Your Email</label>
 							<input type="email" class="form-control" name="email" required>
 						</div>
+						<hr>
+						<br>
 						<div class="form-group">
 							<label for="">Subject</label>
 							<input type="text" class="form-control" name="subject" required>
 						</div>
 						<div class="form-group">
 							<label for="">Message</label>
-							<textarea class="form-control" name="message" required></textarea>
+							<textarea name="message" class="form-control" cols="19" rows="5"></textarea>
 						</div>
 						<div class="text-center">
-							<button type="submit" name="submit" class="btn btn-success">
-								<i class="fa fa-envelope"></i> Send
-							</button>
-							<button type="reset" name="clear" class="btn btn-danger">
-								<i class="fa fa-trash"></i> Clear
-							</button>
+							<input type="submit" name="contactus" value="Send" class="btn btn-success form-control" style="width: 10%;">
+							<input type="reset" name="clear" value="Clear" class="btn btn-danger form-control" style="width: 10%;">
 						</div>
 					</form>
 				</div>
@@ -185,7 +192,12 @@
 <!--Add JavaScript Files-->
 	<script src="resources/js/jquery.min.js"></script>	
 	<script src="resources/js/bootstrap.min.js"></script>
+	<script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
+  	<script>tinymce.init({ selector:'textarea' });</script>
 </body>
-	
-	
 </html>
+
+
+<?php
+	@contactUs(); //hiding phpmailer unwanted error msg using @
+?>

@@ -8,7 +8,7 @@
 	setGetCookie();
 
 	$wrongpass = "";
-	recoverPassword();
+	@recoverPassword();		//hiding phpmailer unwanted error msg using @
 ?>
 
 

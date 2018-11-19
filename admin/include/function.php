@@ -1374,12 +1374,12 @@ function viewAds(){
 function deleteAds(){
 	global $connF;
 	if(isset($_GET['deleteAd'])){
-		echo "OK";
 		$adId = $_GET['deleteAd'];
 		$deleteAdSql = "DELETE FROM adds WHERE addId='$adId'";
 		$deleteAd = mysqli_query($connF,$deleteAdSql);
 		if($deleteAd){
-			echo "<script>window.open('index.php?viewads','_self')</script>";
+			echo "<script>window.open('index.php?viewads','_sel
+			f')</script>";
 		}
 	}
 }
@@ -1403,4 +1403,122 @@ function displayAds(){
 		
 	}
 }
+
+function addSlide(){
+	global $connF;
+	if(isset($_POST['addnewslide'])){
+		
+		$slideName = $_POST['slidename'];
+		$slideImg = $_FILES['slideimg']['name'];
+		$tempImg1 = $_FILES['slideimg']['tmp_name'];
+		move_uploaded_file($tempImg1,"resources/img/slideshow/$slideImg");
+		
+		$addNewSlideSql = "INSERT INTO slider(sName, sImage) VALUES ('$slideName','$slideImg')";
+		$addNewSlide = mysqli_query($connF,$addNewSlideSql);
+		if($addNewSlide){
+			echo "<script>alert('Slide Added')</script>";
+			echo "<script>window.open('index.php?addslideshow','_self')</script>";
+		}
+	}
+}
+
+function viewSlide(){
+	global $connF;
+	$getSlidesSql = "SELECT * FROM slider WHERE 1";
+	$getSlides = mysqli_query($connF,$getSlidesSql);
+	while($getSlidesRow = mysqli_fetch_array($getSlides)){
+		$slideId = $getSlidesRow['sliderId'];
+		$slideName = $getSlidesRow['sName'];
+		$slideImg = $getSlidesRow['sImage'];
+		echo "	
+				<tr>
+					<td>$slideId</td>
+					<td>$slideName</td>
+					<td><img src='resources/img/slideshow/$slideImg' style='width: 50px;height:50px;'></td>
+					<td><a href='index.php?deleteSlide=$slideId'>Delete</a></td>
+				</tr>
+		
+			";
+	}
+}
+
+function deleteSlide(){
+	global $connF;
+	if(isset($_GET['deleteSlide'])){
+		$slideId = $_GET['deleteSlide'];
+		$deleteSlideSql = "DELETE FROM slider WHERE sliderId='$slideId'";
+		$deleteSlide = mysqli_query($connF,$deleteSlideSql);
+		if($deleteSlide){
+			echo"<script>alert('Slide Deleted')</script>";
+			echo "<script>window.open('index.php?viewslideshow','_self')</script>";
+		}
+	}
+}
+
+function addNewAdmin(){
+	global $connF;
+	if(isset($_POST['addnewadmin'])){
+		$adminName = $_POST['adminName'];
+		$adminEmail = $_POST['adminEmail'];
+		$adminPass = $_POST['adminPass'];
+		$adminCPass = $_POST['adminCPass'];
+		$adminImg = $_FILES['adminimg1']['name'];
+		$adminTempImg = $_FILES['adminimg1']['tmp_name'];
+		$adminPno = $_POST['adminPNo'];
+		
+		if($adminPass == $adminCPass){
+			$adminPassEnc = encNanoSec($adminPass);
+			$addAdminSql = "INSERT INTO admin(adminName, adminEmail, adminPassword, adminPhoto, adminPNum) VALUES ('$adminName','$adminEmail','$adminPassEnc','$adminImg','$adminPno')";
+			$addAdmin = mysqli_query($connF,$addAdminSql);
+			move_uploaded_file($adminTempImg,"resources/admin_img/$adminImg");
+			if($addAdmin){
+			echo "<script>alert('Admin Added')</script>";
+			echo "<script>window.open('index.php?addadmin','_self')</script>";
+		}
+		}
+	}
+}
+
+function viewAdmin(){
+	global $connF;
+	$viewAdminSql ="SELECT * FROM admin WHERE 1";
+	$viewAdmin = mysqli_query($connF,$viewAdminSql);
+	
+	while($viewAdminRow = mysqli_fetch_array($viewAdmin)){
+		$adminId = $viewAdminRow['adminId'];
+		$adminName = $viewAdminRow['adminName'];
+		$adminEmail = $viewAdminRow['adminEmail'];
+		$adminPass = $viewAdminRow['adminPassword'];
+		$adminPassDec = decNanoSec($adminPass);
+		$adminImg = $viewAdminRow['adminPhoto'];
+		$adminPno = $viewAdminRow['adminPNum'];
+		
+		echo "	
+				<tr>
+					<td>$adminId</td>
+					<td>$adminName</td>
+					<td>$adminEmail</td>
+					<td>$adminPassDec</td>
+					<td><img src='resources/admin_img/$adminImg' style='width: 50px;height:50px;'></td>
+					<td>$adminPno</td>
+					<td><a href='index.php?deleteAdmin=$adminId'>Delete</a></td>
+				</tr>
+		
+			";
+	}
+}
+
+function deleteAdmin(){
+	global $connF;
+	if(isset($_GET['deleteAdmin'])){
+		$adminId = $_GET['deleteAdmin'];
+		$deleteAdminSql = "DELETE FROM admin WHERE adminId='$adminId'";
+		$deleteAdmin = mysqli_query($connF,$deleteAdminSql);
+		if($deleteAdmin){
+			echo"<script>alert('Admin Deleted')</script>";
+			echo "<script>window.open('index.php?viewadmins','_self')</script>";
+		}
+	}
+}
+
 ?>
