@@ -469,6 +469,16 @@ function setGetCookie(){
 	
 }
 
+function getProductPrice($productId){
+	global $connF;
+	$productPriceSql = "SELECT * FROM product WHERE productId='$productId'";
+	$getProductPrice = mysqli_query($connF,$productPriceSql);	
+	$rowPrice = mysqli_fetch_array($getProductPrice);
+	$productPrice = $rowPrice['productPrice'];
+	
+	return $productPrice;
+}
+
 function addCart(){
 	
 	global $connF;
@@ -478,6 +488,7 @@ function addCart(){
 		$productQty = $_POST['qty'];
 		$productColor = $_POST['color'];
 		$productWarrenty = $_POST['warrenty'];
+		$productPrice = getProductPrice($productIdCart);
 		
 		$cartProductsSql = "SELECT * FROM cart WHERE cartCookie='$userCookie' AND productId ='$productIdCart' AND cartColour='$productColor' AND cartWarranty='$productWarrenty'";
 		
@@ -488,7 +499,7 @@ function addCart(){
 			echo "<script>window.open('details.php?productId=$productIdCart','_self')</script>";
 				
 		}else{
-			$addCartSql = "INSERT INTO cart(productId,cartQty,cartColour,cartWarranty, cartCookie) VALUES ('$productIdCart','$productQty','$productColor','$productWarrenty','$userCookie')";
+			$addCartSql = "INSERT INTO cart(productId,cartPrice,cartQty,cartColour,cartWarranty, cartCookie) VALUES ('$productIdCart','$productPrice','$productQty','$productColor','$productWarrenty','$userCookie')";
 			
 			$addProdutCart = mysqli_query($connF,$addCartSql);
 			echo "<script>window.open('details.php?productId=$productIdCart','_self')</script>";
@@ -522,21 +533,17 @@ function priceCart(){
 		$productQty = $row['cartQty'];
 		$productWarrenty = $row['cartWarranty'];
 		
-		$productPriceSql = "SELECT * FROM product WHERE productId='$productId'";
-		$getProductPrice = mysqli_query($connF,$productPriceSql);
+		$productWarrenty = $row['cartWarranty'];
+		$cartPrice = $row['cartPrice'];
+		$Price = $cartPrice * $productQty;
 		
-		while($rowPrice = mysqli_fetch_array($getProductPrice)){
-			$Price = $rowPrice['productPrice'] * $productQty;
-			if($productWarrenty != "Software"){
-				$Price += 3800; 
-			}
-			$totalPrice += $Price;
-		}
+		$totalPrice += $Price;
 		
 	}
 	
 	echo " " . $totalPrice . " ";
 }
+
 
 function returnPriceCart(){
 	
@@ -551,18 +558,11 @@ function returnPriceCart(){
 		$productId = $row['productId'];
 		$productQty = $row['cartQty'];
 		$productWarrenty = $row['cartWarranty'];
+		$cartPrice = $row['cartPrice'];
+		$Price = $cartPrice * $productQty;
 		
-		$productPriceSql = "SELECT * FROM product WHERE productId='$productId'";
-		$getProductPrice = mysqli_query($connF,$productPriceSql);
-		
-		while($rowPrice = mysqli_fetch_array($getProductPrice)){
-			$Price = $rowPrice['productPrice'] * $productQty;
-			if($productWarrenty != "Software"){
-				$Price += 3800; 
-			}
-			$totalPrice += $Price;
-		}
-		
+		$totalPrice += $Price;
+
 	}
 	
 	return round($totalPrice,2);
@@ -653,23 +653,14 @@ function makeOrder(){
 			$productQty = $rowGetCartItem['cartQty'];
 			$productWarrenty = $rowGetCartItem['cartWarranty'];
 			$productColor = $rowGetCartItem['cartColour'];
-			$productPriceSql = "SELECT * FROM product WHERE productId='$productId'";
-			$getProductPrice = mysqli_query($connF,$productPriceSql);
-		
-			while($rowPrice = mysqli_fetch_array($getProductPrice)){
-				$Price = $rowPrice['productPrice'] * $productQty;
+			$Price = $rowGetCartItem['cartPrice'];
 				
-				if($productWarrenty != "Software"){
-					$Price += 3800; 
-				}
-				
-				$createOrderSql = "INSERT INTO orders(cusId,productId , orderAmount, invoiceNumber, qty, colour,warranty, date, status) VALUES ('$cusId',$productId ,'$Price','$generateInvoice','$productQty','$productColor','$productWarrenty',NOW(),'Unpaid')";
+			$createOrderSql = "INSERT INTO orders(cusId,productId , orderAmount, invoiceNumber, qty, colour,warranty, date, status) VALUES ('$cusId',$productId ,'$Price','$generateInvoice','$productQty','$productColor','$productWarrenty',NOW(),'Unpaid')";
 				$createOrder = mysqli_query($connF,$createOrderSql);
 				
-				$removeCartSql = "DELETE FROM cart WHERE cartCookie = '$userCookie' AND productId = '$productId'";
-				$removeCart = mysqli_query($connF,$removeCartSql);
-			}
-			
+			$removeCartSql = "DELETE FROM cart WHERE cartCookie = '$userCookie' AND productId = '$productId'";
+			$removeCart = mysqli_query($connF,$removeCartSql);
+
 		}
 		
 		
@@ -1517,7 +1508,6 @@ function viewAds(){
 					<td>$adDetail</td>
 					<td><a href='index.php?deleteAd=$adId'>Delete</a></td>
 				</tr>
-		
 			";
 		}
 	}
@@ -1722,6 +1712,56 @@ function contactUs(){
 			else {
 				echo"<script>alert('Inquery has been sent, Our customer service will contact you')</script>";
 			}
+	}
+}
+
+function applyCoupon(){
+	global $connF;
+	if(isset($_POST['coupon'])){
+		$couponCode = $_POST['couponcode'];
+		$userCookie = setGetCookie();
+		if($couponCode != ''){
+			$getCouponSql = "SELECT * FROM coupons WHERE couponCode='$couponCode'";
+			$getCoupon = mysqli_query($connF,$getCouponSql);
+			$getCouponNo = mysqli_num_rows($getCoupon);
+		
+			if($getCouponNo > 0){
+				$getCouponRow = mysqli_fetch_array($getCoupon);
+				$couponTitle = $getCouponRow['couponTitle'];
+				$couponPrice = $getCouponRow['couponPrice'];
+				$couponProduct = $getCouponRow['productId'];
+				$availableCoupons = $getCouponRow['availableCoupons'];
+				
+				
+				$cartItemsSql = "SELECT * FROM cart WHERE cartCookie='$userCookie' AND productId='$couponProduct'";
+				$cartItems = mysqli_query($connF,$cartItemsSql);
+				$cartItemsNo = mysqli_num_rows($cartItems);
+				
+				if($cartItemsNo > 0){
+					$row = mysqli_fetch_array($cartItems);
+					$cartProductPrice = $row['cartPrice'];
+					$couponApplied = $row['couponApplied'];
+					
+					if($availableCoupons != 0 && $couponApplied == 0){
+						$cartProductPrice -= $couponPrice;		//apply the coupon
+						$applyCouponSql = "UPDATE cart SET cartPrice='$cartProductPrice' WHERE productId = '$couponProduct'";
+						$applyCoupon = mysqli_query($connF,$applyCouponSql);
+						
+						$updateCouponSql = "UPDATE coupons availableCoupons=availableCoupons - 1 WHERE couponCode = '$couponCode'";
+						$updateCoupon = mysqli_query($connF,$updateCouponSql);
+						
+						echo"<script>alert('Coupon applied successfully!')</script>";
+					}
+					else{
+						echo"<script>alert('Coupon already expired!')</script>";
+					}
+				}
+				
+			}else{
+				echo"<script>alert('Not valid for current cart products')</script>";
+			}
+			
+		}
 	}
 }
 

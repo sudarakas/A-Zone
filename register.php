@@ -160,15 +160,15 @@
 						</div>
 						<div class="form-group">
 							<label for="">Password</label>
-							<input type="password" class="form-control" name="cus_pass" required>
+							<input type="password" min="8" max="32" class="form-control" name="cus_pass"  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,32}"  onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Must have at least 8 characters including capital and simple letters and numbers without symbols' : ''); if(this.checkValidity()) form.cus_cpass.pattern = this.value;" required>
 						</div>
 						<div class="form-group">
 							<label for="">Confirm Password</label>
-							<input type="password" class="form-control" name="cus_cpass" required>
+							<input type="password" class="form-control" name="cus_cpass" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Please enter the same Password as above' : '');" required>
 						</div>
 						<div class="form-group">
 							<label for="">Phone Number</label>
-							<input type="text" class="form-control" name="cus_pno" required>
+							<input type="text" pattern="[0]{1}[0-9]{9}" length="10" class="form-control" name="cus_pno"  onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Phone is not valid, Please enter a valid phone number' : ''); if(this.checkValidity()) form.cus_cpass.pattern = this.value;" required>
 						</div>
 						<div class="form-group">
 							<label for="">Address</label>

@@ -164,7 +164,7 @@
 								</thead>
 								<tbody>
 								<?php
-									
+									$subTotal = 0;
 									while($rowGrabCart = mysqli_fetch_array($grabCartItems)){
 										$productId = $rowGrabCart['productId'];
 										$productQty = $rowGrabCart['cartQty'];
@@ -224,7 +224,14 @@
 										<th colspan="2">Rs <?php echo returnPriceCart();?></th>
 									</tr>
 								</tfoot>
-							</table>
+							</table><br>
+							<div class="form-inline pull-right">
+								<div class="form-group">
+									<label>Coupon</label>
+									<input type="text" name="couponcode" class="form-control">
+								</div>
+								<input type="submit" name="coupon" value="Apply" class="btn btn-success">
+							</div><br>
 						</div>
 						<div class="box-footer">
 							<div class="pull-left">
@@ -270,17 +277,17 @@
 									<td>
 										SubTotal
 									</td>
-									<th> Rs 48500.00</th>
+									<th> Rs <?php echo returnPriceCart()?></th>
 								</tr>
 								<tr>
 									<td>
 										Delivery Cost
 									</td>
-									<td> Rs 350.00</td>
+									<td> Free</td>
 								</tr>
 								<tr class="total">
 									<td>Total</td>
-									<th>Rs 48850.00</th>
+									<th>Rs <?php echo returnPriceCart()?></th>
 								</tr>
 							</tbody>
 						</table>
@@ -301,6 +308,9 @@
 	<script src="resources/js/jquery.min.js"></script>	
 	<script src="resources/js/bootstrap.min.js"></script>
 </body>
-	
-	
 </html>
+
+
+<?php
+	applyCoupon();
+?>
