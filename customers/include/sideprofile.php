@@ -19,6 +19,9 @@
 	</div>
 	<div class="panel-body">
 		<ul class="nav nav-pills nav-stacked">
+			<?php
+				forceMailConfirm();
+			?>
 			<li class="<?php
 					   	if(isset($_GET['myorders'])){
 							echo "list-group-item-info";

@@ -163,7 +163,9 @@
 						if(isset($_GET['payoffline'])){
 							include("payoffline.php");
 						}
-						
+						if(isset($_GET['emailconfirm'])){
+							include("emailconfirm.php");
+						}
 					?>
 				</div>
 			</div>

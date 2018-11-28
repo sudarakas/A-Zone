@@ -1521,4 +1521,61 @@ function deleteAdmin(){
 	}
 }
 
+
+function addCoupon(){
+	global $connF;
+	if(isset($_POST['addcoupon'])){
+		$couponTitle = $_POST['couponTitle'];
+		$couponPrice = $_POST['couponPrice'];
+		$couponCode = $_POST['couponCode'];
+		$couponProduct = $_POST['couponProduct'];
+		$couponAmount = $_POST['couponAmount'];
+		
+		$addNewCouponSql = "INSERT INTO coupons(couponTitle, couponPrice, couponCode, productId, availableCoupons) VALUES('$couponTitle','$couponPrice','$couponCode','$couponProduct','$couponAmount')";
+		$addNewCoupon = mysqli_query($connF,$addNewCouponSql);
+		if($addNewCoupon){
+			echo"<script>alert('Coupon Added')</script>";
+			echo "<script>window.open('index.php?addcoupons','_self')</script>";
+		}
+	}
+}
+
+function viewCoupon(){
+	global $connF;
+	$getCouponsSql = "SELECT * FROM coupons WHERE 1";
+	$getCoupons = mysqli_query($connF,$getCouponsSql);
+	while($getCouponsRow = mysqli_fetch_array($getCoupons)){
+		$couponId= $getCouponsRow['couponId'];
+		$couponTitle = $getCouponsRow['couponTitle'];
+		$couponPrice = $getCouponsRow['couponPrice'];
+		$couponCode = $getCouponsRow['couponCode'];
+		$couponProduct = $getCouponsRow['productId'];
+		$couponAmount = $getCouponsRow['availableCoupons'];
+		echo"
+			<tr>
+				<td>$couponId</td>
+				<td>$couponTitle</td>
+				<td>$couponPrice</td>
+				<td>$couponCode</td>
+				<td>$couponProduct</td>
+				<td>$couponAmount</td>
+				<td><a href='index.php?deleteCoupon=$couponId'>Delete</a></td>
+			</tr>
+		";
+		
+	}
+}
+
+function deleteCoupon(){
+	global $connF;
+	if(isset($_GET['deleteCoupon'])){
+		$couponId = $_GET['deleteCoupon'];
+		$deleteCouponSql = "DELETE FROM coupons WHERE couponId='$couponId'";
+		$deleteCoupon = mysqli_query($connF,$deleteCouponSql);
+		if($deleteCoupon){
+			echo"<script>alert('Coupon Deleted')</script>";
+			echo "<script>window.open('index.php?viewcoupons','_self')</script>";
+		}
+	}
+}
 ?>

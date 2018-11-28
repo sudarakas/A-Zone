@@ -681,5 +681,47 @@ function changePassword(){
 			
 	}
 }
+
+function forceMailConfirm(){
+	global $connF;
+	$currentUser = $_SESSION['cusEmail'];
+	$getConfirmCodeSql = "SELECT * FROM customer WHERE cusEmail='$currentUser'";
+	$getConfirmCode = mysqli_query($connF,$getConfirmCodeSql);
+	$getConfirmCodeRow = mysqli_fetch_array($getConfirmCode);
+	
+	$confirmCode = $getConfirmCodeRow['cConfirmCode'];
+	if($confirmCode != ''){
+		echo "
+			<li class='list-group-item-danger'>
+				<a href='myaccount.php?emailconfirm' class='text-danger'><i class='fa fa-list-alt'></i> Confirm Email Address</a>
+			</li>
+		";
+	}
+}
+
+function confirmEmail(){
+	global $connF;
+	if(isset($_POST['confirmEmail'])){
+		$confirmCode = $_POST['confirmcode'];
+		$currentUser = $_SESSION['cusEmail'];
+		$getConfirmCodeSql = "SELECT * FROM customer WHERE cusEmail='$currentUser'";
+		$getConfirmCode = mysqli_query($connF,$getConfirmCodeSql);
+		$getConfirmCodeRow = mysqli_fetch_array($getConfirmCode);
+	
+		$confirmCodeSaved = $getConfirmCodeRow['cConfirmCode'];
+		
+		if($confirmCode == $confirmCodeSaved){
+			$updateConfirmCodeSql ="UPDATE customer SET cConfirmCode='' WHERE cusEmail='$currentUser'";
+			$updateConfirmCode = mysqli_query($connF,$updateConfirmCodeSql);
+			if($updateConfirmCode){
+				echo "<script>alert('Email Address Confirmed Successfully')</script>";
+				echo "<script>window.open('myaccount.php?myorders','_self')</script>";
+			}
+		}else{
+			echo "<script>alert('Confirmation Code Invalid')</script>";
+			echo "<script>window.open('myaccount.php?emailconfirm','_self')</script>";
+		}
+	}
+}
   
 ?>

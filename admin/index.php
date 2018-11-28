@@ -120,6 +120,21 @@
 					}
 				?>
 				<?php
+					if(isset($_GET['addcoupons'])){
+						include("addCoupon.php");
+					}
+				?>
+				<?php
+					if(isset($_GET['viewcoupons'])){
+						include("viewCoupons.php");
+					}
+				?>
+				<?php
+					if(isset($_GET['deleteCoupon'])){
+						deleteCoupon();
+					}
+				?>
+				<?php
 					if(isset($_GET['addads'])){
 						include('addAds.php');
 					}
@@ -172,13 +187,6 @@
 			</div>
 		</div>
 	</div>
-	
-	
-	
-	
-	
-	
-	
 	
 	<!--Add JavaScript Files-->
 	<script src="resources/js/jquery.min.js"></script>

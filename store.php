@@ -146,11 +146,11 @@
 						<label for="">Price Range: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
 						<div class="form-group">
 							<label for="">Min (Rs:)</label>
-							<input type="text" class="form-control" name="minPrice" required pattern="[0-9]*">
+							<input type="text" class="form-control" name="minPrice" pattern="[0-9]*">
 						</div>
 						<div class="form-group">
 							<label for="">&nbsp; Max (Rs:)</label>
-							<input type="text" class="form-control" name="maxPrice" required pattern="[0-9]*">
+							<input type="text" class="form-control" name="maxPrice" pattern="[0-9]*">
 						</div>
 						<div class="form-group text-center">
 							<input type="submit" value="Sort" name="priceSort" class="btn btn-success" onclick="window.location.href='store.php?priceSort'">

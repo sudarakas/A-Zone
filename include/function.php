@@ -180,6 +180,12 @@ function sortPrice(){
 		global $connF;
 		$minPrice = $_POST['minPrice'];
 		$maxPrice = $_POST['maxPrice'];
+		if(empty($minPrice)){
+			$minPrice = 0;
+		}
+		if(empty($maxPrice)){
+			$maxPrice = 9999999;
+		}	
 		$sql = "SELECT * FROM product WHERE productPrice BETWEEN $minPrice AND $maxPrice ORDER BY productPrice ASC";
 		$sortPrice = mysqli_query($connF,$sql);
 		
@@ -231,6 +237,39 @@ function generateRandomPassword(){
 	return $randomPassword;
 }
 
+function sentConfirmMail($email,$name,$cCode){
+	
+	//PHPMailer Function
+			$mail = new PHPMailer;
+			$mail->isSMTP();
+			$mail->SMTPDebug = 0;
+			$mail->Debugoutput = 'html';
+			$mail->Host = 'smtp.gmail.com';
+			$mail->Port = 587;
+			$mail->SMTPSecure = 'tls';
+			$mail->SMTPAuth = true;
+			$mail->Username = "mailer.azone@gmail.com";
+			$mail->Password = "azone@123456";
+			$mail->setFrom('mailer.azone@gmail.com', 'Azone Support');
+			$mail->addAddress($email, $name);
+			$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
+			$mail->Subject = 'Please Confirm Your Azone Account';
+			$mail->Body = "
+						<p>Hi! $name </p>
+						<p>Thank you for registering on our site </p>
+						<br><br><br>
+						<b> Please visit My Account page on site to confirm your email </b>
+						<br><br>
+						Your Azone Account Confirmation Code:&nbsp; <strong>$cCode</strong>
+						<br><br>
+						<b><i>Important! Please verifiy your email just after logged into the site</i></b>
+						";
+			if (!$mail->send()) {
+    			echo "<script>alert('Somthing Wrong! Please Contact Us')</script>";
+			}
+	
+}
+
 function customerRegister(){
 	
 	global $connF;
@@ -268,13 +307,42 @@ function customerRegister(){
 			$registerCustomerSql = "INSERT INTO customer(cusName, cusEmail, cusPassword, cusAddress, cusCity, cusImage, cConfirmCode, cusPNum) VALUES ('$cusName','$cusEmail','$cusPassEncrpt','$cusAddress','$cusCity','$cusProfilePic','$cusConfimCode','$cusPNo')";
 			
 			$registerCustomer = mysqli_query($connF,$registerCustomerSql);
-		
+			
+			//PHPMailer Function
+			$mail = new PHPMailer;
+			$mail->isSMTP();
+			$mail->SMTPDebug = 0;
+			$mail->Debugoutput = 'html';
+			$mail->Host = 'smtp.gmail.com';
+			$mail->Port = 587;
+			$mail->SMTPSecure = 'tls';
+			$mail->SMTPAuth = true;
+			$mail->Username = "mailer.azone@gmail.com";
+			$mail->Password = "azone@123456";
+			$mail->setFrom('mailer.azone@gmail.com', 'Azone Support');
+			$mail->addAddress($cusEmail, $cusName);
+			$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
+			$mail->Subject = 'Please Confirm Your Azone Account';
+			$mail->Body = "
+						<p>Hi! $cusName </p>
+						<p>Thank you for registering on our site </p>
+						<br><br><br>
+						<b> Please visit My Account page on site to confirm your email </b>
+						<br><br>
+						Your Azone Account Confirmation Code:&nbsp; <strong>$cusConfimCode</strong>
+						<br><br>
+						<b><i>Important! Please verifiy your email just after logged into the site</i></b>
+						";
+			if (!$mail->send()) {
+    			echo "<script>alert('Somthing Wrong! Please Contact Us')</script>";
+			}
+			
 			//Check register customer have items on cart
 			$registerCusCookie = setGetCookie();
 			$checkCartSql = "SELECT * FROM cart WHERE cartCookie='$registerCusCookie'";
 			$checkCart = mysqli_query($connF,$checkCartSql);
 			$countCheckCart = mysqli_num_rows($checkCart);
-		
+			
 			if($countCheckCart>0){
 				$_SESSION['cusEmail'] = $cusEmail;
 				echo "<script>alert('Registered Success')</script>";
@@ -301,35 +369,7 @@ function customerRegister(){
 	}
 }
 
-function sentConfirmMail($email,$name,$cCode){
-	
-	//PHPMailer Function
-			$mail = new PHPMailer;
-			$mail->isSMTP();
-			$mail->SMTPDebug = 0;
-			$mail->Debugoutput = 'html';
-			$mail->Host = 'smtp.gmail.com';
-			$mail->Port = 587;
-			$mail->SMTPSecure = 'tls';
-			$mail->SMTPAuth = true;
-			$mail->Username = "mailer.azone@gmail.com";
-			$mail->Password = "azone@123456";
-			$mail->setFrom('mailer.azone@gmail.com', 'Azone Support');
-			$mail->addAddress($email, $name);
-			$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
-			$mail->Subject = 'Please Confirm Your Azone Account';
-			$mail->Body = "
-						<p>Hi! $name </p>
-						<p>Thank you for registering on our site </p>
-						<br><br><br>
-						<b> Please visit below link to confirm your email </b>
-						<br><br>
-						Your Azone Account Password:&nbsp; <strong>$randomPassword</strong>
-						<br><br>
-						<b><i>Important! Please change your password just after logged into the site</i></b>
-						";
-	
-}
+
 
 function customerLogin(){
 	
@@ -482,9 +522,9 @@ function getProductPrice($productId){
 function addCart(){
 	
 	global $connF;
-	if(isset($_GET['addCart'])){
-		$userCookie = setGetCookie();
-		$productIdCart = $_GET['addCart'];
+	if(isset($_POST['addCart'])){
+		$userCookie = setGetCookie(); 
+		$productIdCart = $_POST['productId'];
 		$productQty = $_POST['qty'];
 		$productColor = $_POST['color'];
 		$productWarrenty = $_POST['warrenty'];
@@ -499,6 +539,9 @@ function addCart(){
 			echo "<script>window.open('details.php?productId=$productIdCart','_self')</script>";
 				
 		}else{
+			if($productWarr != "Software"){
+				$productPrice += 3800; 
+			}
 			$addCartSql = "INSERT INTO cart(productId,cartPrice,cartQty,cartColour,cartWarranty, cartCookie) VALUES ('$productIdCart','$productPrice','$productQty','$productColor','$productWarrenty','$userCookie')";
 			
 			$addProdutCart = mysqli_query($connF,$addCartSql);
@@ -1744,13 +1787,14 @@ function applyCoupon(){
 					
 					if($availableCoupons != 0 && $couponApplied == 0){
 						$cartProductPrice -= $couponPrice;		//apply the coupon
-						$applyCouponSql = "UPDATE cart SET cartPrice='$cartProductPrice' WHERE productId = '$couponProduct'";
+						$applyCouponSql = "UPDATE cart SET cartPrice='$cartProductPrice',couponApplied = 1 WHERE productId = '$couponProduct'";
 						$applyCoupon = mysqli_query($connF,$applyCouponSql);
 						
-						$updateCouponSql = "UPDATE coupons availableCoupons=availableCoupons - 1 WHERE couponCode = '$couponCode'";
+						$updateCouponSql = "UPDATE coupons SET availableCoupons=availableCoupons - 1 WHERE couponCode = '$couponCode'";
 						$updateCoupon = mysqli_query($connF,$updateCouponSql);
 						
 						echo"<script>alert('Coupon applied successfully!')</script>";
+						echo "<script>window.open('cart.php','_self')</script>";
 					}
 					else{
 						echo"<script>alert('Coupon already expired!')</script>";
@@ -1765,4 +1809,32 @@ function applyCoupon(){
 	}
 }
 
+function addWishList(){
+	global $connF;
+	if(isset($_POST['addwishlist'])){
+		$customerEmail = $_SESSION['cusEmail'];
+		$productId = $_POST['productId'];
+		
+		$getCustomerSql = "SELECT * FROM customer WHERE cusEmail='$customerEmail'";
+		$getCustomer = mysqli_query($connF,$getCustomerSql);
+		$getCustomerRow = mysqli_fetch_array($getCustomer);
+		
+		$customerId = $getCustomerRow['cusId'];
+		
+		$wishlistCheckSql = "SELECT * FROM wishlist WHERE custId='$customerId' AND productId='$productId'";
+		
+		$wishlistCheck = mysqli_query($connF,$wishlistCheckSql);
+		
+		if(mysqli_num_rows($wishlistCheck)>0){
+			echo"<script>alert('Product already added to wishlist')</script>";
+			echo "<script>window.open('details.php?productId=$productId','_self')</script>";
+				
+		}else{
+			$addWishListSql="INSERT INTO wishlist(custId, productId) VALUES ('$customerId','$productId')";
+			$addWishList = mysqli_query($connF,$addWishListSql);
+			echo "<script>window.open('details.php?productId=$productId','_self')</script>";
+			
+		}
+	}
+}
 ?>

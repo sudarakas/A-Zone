@@ -236,7 +236,10 @@
 								addCart();
 							?>
 							<hr>
-							<form action="details.php?addCart=<?php echo $productId;?>" method="post" class="form-horizontal">
+							<form action="" method="post" class="form-horizontal">
+								<div class="form-group">
+									<input type="hidden" name="productId" value="<?php echo $productId;?>">
+								</div>
 								<div class="form-group">
 									<label for="" class="col-md-5 control-label">
 										Quantity
@@ -274,9 +277,18 @@
 								</div>
 								<p class="price">Rs <?php echo $productPrice;?></p>
 								<p class="text-center buttons">
-									<button class="btn btn-info" type="submit">
+									<button class="btn btn-info" type="submit" name="addCart">
 										<i class="fa fa-shopping-cart"></i> Add to Cart
 									</button>
+									<?php
+										if(isset($_SESSION['cusEmail'])){
+											echo "
+												<button class='btn btn-success'' type='submit' name='addwishlist'>
+												<i class='fa fa-heart'></i> Add to Wishlist
+												</button>	
+											";
+										}
+									?>
 								</p>
 							</form>
 						</div>
@@ -343,6 +355,7 @@
 	<script src="resources/js/jquery.min.js"></script>	
 	<script src="resources/js/bootstrap.min.js"></script>
 </body>
-	
-	
 </html>
+<?php
+	addWishList();
+?>
