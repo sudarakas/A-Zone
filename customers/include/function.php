@@ -723,5 +723,54 @@ function confirmEmail(){
 		}
 	}
 }
-  
+
+function showWishList(){
+	global $connF;
+	$currentUser = $_SESSION['cusEmail'];
+	$getCustomerIdSql = "SELECT * FROM customer WHERE cusEmail='$currentUser'";
+	$getCustomerId = mysqli_query($connF,$getCustomerIdSql);
+	$getCustomerIdRow = mysqli_fetch_array($getCustomerId);
+	
+	$cusId = $getCustomerIdRow['cusId'];
+	
+	$getWishListSql = "SELECT * FROM wishlist WHERE custId='$cusId'";
+	$getWishList = mysqli_query($connF,$getWishListSql);
+	$count = 0;
+	while($getWishListRow = mysqli_fetch_array($getWishList)){
+		$count++;
+		$productId = $getWishListRow['productId'];
+		$wishlistId = $getWishListRow['wishListId'];
+		$getProductNameSql = "SELECT * FROM product WHERE productId='$productId'";
+		$getProductName = mysqli_query($connF,$getProductNameSql);
+		$getProductNameRow = mysqli_fetch_array($getProductName);
+		
+		$productName = $getProductNameRow['productName'];
+		echo "
+			<tr>
+				 	<td>$count</td>
+				 	<td>$productName</td>
+				 	<td><a href='../details.php?productId=$productId' class='btn btn-success btn-sm' target='_blank'>Buy Now</td>
+				 	<td><a href='deletewishlist.php?wishlistId=$wishlistId' class='btn btn-danger btn-sm'>Delete</td>
+			</tr>
+		";
+	}
+	
+}
+
+function deleteWishlist(){
+	global $connF;
+	$wishListId = $_GET['wishlistId'];
+	$deleteWishListSql = "DELETE FROM wishlist WHERE wishListId ='$wishListId'";
+	$deleteWishList = mysqli_query($connF,$deleteWishListSql);
+
+	if($deleteWishList){
+		echo "<script>alert('Item Deleted Successfully')</script>";
+		echo "<script>window.open('myaccount.php?wishlist','_self')</script>";
+	}
+	else{
+		echo "<script>alert('Something Wrong! Please Contact Us')</script>";
+		echo "<script>window.open('myaccount.php?wishlist','_self')</script>";
+	}
+}
+
 ?>

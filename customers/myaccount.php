@@ -166,6 +166,9 @@
 						if(isset($_GET['emailconfirm'])){
 							include("emailconfirm.php");
 						}
+						if(isset($_GET['wishlist'])){
+							include("wishlist.php");
+						}
 					?>
 				</div>
 			</div>
