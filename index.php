@@ -137,7 +137,7 @@
 				<div class="carousel-inner">
 					<?php
 					
-						$sql = "SELECT * FROM slider LIMIT 0,1";
+						$sql = "SELECT * FROM slider ORDER BY sliderId LIMIT 0,1 ";
 						$getImg = mysqli_query($conn,$sql);
 						while($rowImg = mysqli_fetch_array($getImg)){
 							$imgLink = $rowImg['sImage'];

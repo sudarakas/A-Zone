@@ -20,11 +20,6 @@
 	<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css">
 	<link rel="stylesheet"  type="text/css" href="resources/font-awesome/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
-	
-	
-
-	
-	
 </head>
 	
 <body>
@@ -161,11 +156,14 @@
 						</div>
 						<div class="form-group">
 							<label for="">Password</label>
-							<input type="password" min="8" max="32" class="form-control" name="cus_pass"  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,32}"  onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Must have at least 8 characters including capital and simple letters and numbers without symbols' : ''); if(this.checkValidity()) form.cus_cpass.pattern = this.value;" required>
+							<input type="password" min="8" max="32" class="form-control" id="cpass" name="cus_pass"  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,32}"  onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Must have at least 8 characters including capital and simple letters and numbers without symbols' : ''); if(this.checkValidity()) form.cus_cpass.pattern = this.value;" required>
 						</div>
 						<div class="form-group">
 							<label for="">Confirm Password</label>
-							<input type="password" class="form-control" name="cus_cpass" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Please enter the same Password as above' : '');" required>
+							<input type="password" class="form-control" id="ccpass" name="cus_cpass" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Please enter the same Password as above' : '');" required>
+						</div>
+						<div id="showErrorccpass">
+							
 						</div>
 						<div class="form-group">
 							<label for="">Phone Number</label>
@@ -181,7 +179,7 @@
 						</div>
 						<div class="form-group">
 							<label for="">Profile Picture</label>
-							<input type="file" class="form-control" name="cus_dp" required>
+							<input type="file" accept="image/*" class="form-control" name="cus_dp" required>
 						</div>
 						<center>
 							<div class="g-recaptcha" data-sitekey="6LdScHYUAAAAAE9U_bKNKWJacA5WvGEIetd3lhbV"></div>
@@ -215,7 +213,24 @@
 <!--	Google Recaptcha -->
 	<script src='https://www.google.com/recaptcha/api.js'></script>
 </body>
-	
+<script>
+	$(document).ready(function() {
+		debugger;
+		$('#ccpass').keyup(function(){
+			var cpass = $('#cpass').val();
+			var ccpass = $('#ccpass').val();
+
+			if(ccpass != cpass){
+				$('#showErrorccpass').html('*Passwords Are Not Matched!*');
+				$('#showErrorccpass').css('color','red');
+				return false;
+			}else{
+				$('#showErrorccpass').html('');   
+				return true;  
+			}
+		});
+	});
+</script>
 	
 </html>
 

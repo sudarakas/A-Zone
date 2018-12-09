@@ -628,13 +628,12 @@ function editProfile(){
 		$cusCity = $_POST['cus_city'];
 		$cusProfilePic = $_FILES['cus_dp']['name'];
 		$cusProfilePicTemp = $_FILES['cus_dp']['tmp_name'];
-		$cusConfimCode = rand();
 		
 		if($cusProfilePic != ""){
-			$editProfileSql = "UPDATE customer SET cusName='$cusName',cusEmail='$cusEmail',cusAddress='$cusAddress',cusCity='$cusCity',cusImage='$cusProfilePic',cConfirmCode='$cusConfimCode',cusPNum='$cusPNo' WHERE cusEmail='$currentUser'";
+			$editProfileSql = "UPDATE customer SET cusName='$cusName',cusEmail='$cusEmail',cusAddress='$cusAddress',cusCity='$cusCity',cusImage='$cusProfilePic',cusPNum='$cusPNo' WHERE cusEmail='$currentUser'";
 		}
 		else{
-			$editProfileSql = "UPDATE customer SET cusName='$cusName',cusEmail='$cusEmail',cusAddress='$cusAddress',cusCity='$cusCity',cConfirmCode='$cusConfimCode',cusPNum='$cusPNo' WHERE cusEmail='$currentUser'";
+			$editProfileSql = "UPDATE customer SET cusName='$cusName',cusEmail='$cusEmail',cusAddress='$cusAddress',cusCity='$cusCity',cusPNum='$cusPNo' WHERE cusEmail='$currentUser'";
 		}
 		move_uploaded_file($cusProfilePicTemp,"customers/resources/img/userpics/$cusProfilePic");
 		$editProfile = mysqli_query($connF,$editProfileSql);

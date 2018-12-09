@@ -58,7 +58,7 @@
 							<div class="form-group">
 								<label for="" class="col-md-3 control-label"></label>
 								<div class="col-md-6">
-									<input type="submit" name="addnewslide" value="Add Categoty" class="btn btn-success form-control">
+									<input type="submit" name="addnewslide" value="Add Slide" class="btn btn-success form-control">
 								</div>
 							</div>
 						</form>

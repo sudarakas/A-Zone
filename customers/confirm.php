@@ -64,8 +64,9 @@
 			<div class="col-md-6">
 <!--				Start Menu-->
 				<ul class="menu">
-					<li><a href="../register.php">Register</a></li>
-					<li><a href="../login.php">Login</a></li>
+					<?php
+						switchLoginLogout();
+					?>
 				</ul>
 				
 			</div>
