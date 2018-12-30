@@ -539,7 +539,7 @@ function addCart(){
 			echo "<script>window.open('details.php?productId=$productIdCart','_self')</script>";
 				
 		}else{
-			if($productWarr != "Software"){
+			if($productWarrenty != "Software"){
 				$productPrice += 3800; 
 			}
 			$addCartSql = "INSERT INTO cart(productId,cartPrice,cartQty,cartColour,cartWarranty, cartCookie) VALUES ('$productIdCart','$productPrice','$productQty','$productColor','$productWarrenty','$userCookie')";
@@ -1799,10 +1799,12 @@ function applyCoupon(){
 					else{
 						echo"<script>alert('Coupon already expired!')</script>";
 					}
+				}else{
+					echo"<script>alert('Not valid for current cart products')</script>";
 				}
 				
 			}else{
-				echo"<script>alert('Not valid for current cart products')</script>";
+				echo"<script>alert('Invalid coupon code!')</script>";
 			}
 			
 		}

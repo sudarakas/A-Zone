@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 01, 2018 at 07:09 PM
+-- Generation Time: Nov 08, 2018 at 11:44 AM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -74,7 +74,7 @@ CREATE TABLE `cart` (
   `productId` varchar(15) DEFAULT NULL,
   `cartPrice` varchar(500) DEFAULT NULL,
   `cartQty` varchar(100) DEFAULT NULL,
-  `couponApplied` varchar(500) DEFAULT '0',
+  `cartAmount` varchar(500) DEFAULT NULL,
   `cartColour` varchar(100) DEFAULT NULL,
   `cartWarranty` varchar(20) DEFAULT NULL,
   `cartCookie` varchar(500) DEFAULT NULL
@@ -111,20 +111,13 @@ INSERT INTO `category` (`categoryId`, `catName`, `catImage`) VALUES
 
 CREATE TABLE `coupons` (
   `couponId` int(11) NOT NULL,
+  `productId` int(15) NOT NULL,
   `couponTitle` varchar(200) NOT NULL,
   `couponPrice` varchar(500) NOT NULL,
   `couponCode` varchar(100) NOT NULL,
-  `productId` varchar(11) NOT NULL,
-  `availableCoupons` int(10) NOT NULL
+  `limite` varchar(100) NOT NULL,
+  `uses` varchar(100) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `coupons`
---
-
-INSERT INTO `coupons` (`couponId`, `couponTitle`, `couponPrice`, `couponCode`, `productId`, `availableCoupons`) VALUES
-(1, 'Christmas 30%', '1500', 'AZONE5614ZCGX', '1', 97),
-(3, '100 OFF', '1000', 'AZONE56412XZ', '5', 7);
 
 -- --------------------------------------------------------
 
@@ -149,20 +142,11 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`cusId`, `cusName`, `cusEmail`, `cusPassword`, `cusAddress`, `cusCity`, `cusImage`, `cusPNum`, `cConfirmCode`) VALUES
-(1, 'Rasmus Lerdorf', 'rasmus@azone.lk', 'kqHKj/1pgZORm04IAWllZuc03gPylhk1VLJKza1uRFU=', 'Galle Road,Colombo', 'Colombo', 'download.jfif', '0713009096', ''),
+(1, 'Rasmus Lerdorf', 'rasmus@azone.lk', 'kqHKj/1pgZORm04IAWllZuc03gPylhk1VLJKza1uRFU=', 'Galle Road,Colombo', 'Colombo', 'download.jfif', '0713009096', '3776'),
 (2, 'Sapuni', 'sapu@gg.lk', 'dK7ZmxxIoTyyN67Nmp6kUmfyu3qubXqfO1ZnhQfHQDU=', 'Kandy Road,', 'Kandy', 'pexels-photo-415484.jpeg', '0785642125', ''),
-(7, 'Raja', 'rajacfindia@gmail.com', 'QeADFs21HlPln56w+DVFXjronO9RZrQxWTxjqqy43nc=', 'Kandy Road', 'Dambulle', '1.png', '07135654', 'L(v5JzNQhDUE1nw'),
 (4, 'Gayan De Silva', 'gayan@slt.lk', 'gHcxuF9fM5PmdWWnl37/L9vIum3qMaj08eLIWWByUXo=', 'New Town, Anuradhapura', 'Anuradhapura', 'Namal Ranatunga.JPG', '0716545693', '24981'),
-(5, 'Sudaraka', 'sudharakafb@gmail.com', 'ND1u6ZlX0xJ3MfJ7fnHm2mWJ6AX3+WhdJ2ibPuNVLdk=', 'Jaffna Road,Anuradhapura', 'Anuradhapura', 'AirBrush_20180701182928.jpg', '0713009095', '4l(oMzQVt)83#Um'),
-(6, 'Upul', 'upul@gmail.com', 'LDx/xZoS4ZpERXnTTqn9o+V94IK0I5IMmcrPluMo/6k=', 'New Town, Anuradhapura', 'Anuradhapura', 'R-anil-de-silva.png', '0789653214', 'vY5RVN!I$EmnZuB'),
-(8, 'Raja', 'rajacfindia@gmail.com', '1mwDKTSdsl4XllYg5FQdh5M4FlApCVIFTrh/HN41wqY=', 'Kandy Road', 'Dambulle', '1.png', '0716545896', 'a3$RB6wlhng%@UD'),
-(9, 'Gayan', 'gayanrajixxxtha1994@gmail.com', 'sx5oo5t8Of3U1lJ91ICTNVvpD79H+UiTGKTgIvpXhpk=', 'Passara Road,Badulle', 'Badulla', 'R-anil-de-silva.png', '0716596412', 'clSqQ!d$orVPJmn'),
-(10, 'Prabath', 'gxxayanrajitha1994@gmail.com', 'NlLU1bO4UwB5r4PixebAyXT663Ha100pOKyAaW1OrAk=', 'Passara Road,Badulle', 'Badulla', 'Lalith.png', '0713005696', 'QIyrS8ol2An9px)'),
-(11, 'Ruwan', 'gayanrajitha199456@gmail.comgg', 'mUj+0e/dE2UhxwzEA+FmCcB2Ru8TpyjSk+jIOnO/LuI=', 'New Town, Anuradhapura', 'Anuradhapura', 'user1.png', '0789653215', 'NW1ruK)U2cmxL*J'),
-(12, 'Bashana', 'ggg@gmail.com', 'jydM40n89iK+G/4d/95k+L/nuwBz9vxaPjDrOBDryho=', 'No 7,Jela', 'Jela', 'user2.png', '0563256142', 'kpRojBNSyOA%KtV'),
-(13, 'Gya Nim', 'gayanraj444itha1994@gmail.com', 'g3vv6my7DzCyCyEwkwuDTJ1UEa4Ln/MynxlHkCFt2Tw=', 'Jaffna Road,Anuradhapura', 'Anuradhapura', 'Namal Ranatunga.JPG', '0705602014', 'S8H7phBIR5X%Viu'),
-(14, 'Lakshani', 'gayanrajixxtha1994@gmail.com', 's9/t/X8XvzW0iVYpe4d728IDbw8OE6BrOAhg0JWffEA=', 'Passara Road,Badulle', 'Badulla', 'user2.png', '0705602014', 'VKah4t@GY60y)x2'),
-(15, 'Lakshan', 'gayanrajitha1994@gmail.com', 's9/t/X8XvzW0iVYpe4d728IDbw8OE6BrOAhg0JWffEA=', 'Passara Road,Badulle', 'Badulla', 'user2.png', '0705602014', '');
+(5, 'Sudaraka', 'sudharakafb@gmail.com', 'EO5bsVOl7WQgNmRqyJGx/UaJCbGQeEKZEOlzQT9AyGw=', 'Jaffna Road,Anuradhapura', 'Anuradhapura', 'AirBrush_20180701182928.jpg', '0713009095', '4l(oMzQVt)83#Um'),
+(6, 'Upul', 'upul@gmail.com', 'LDx/xZoS4ZpERXnTTqn9o+V94IK0I5IMmcrPluMo/6k=', 'New Town, Anuradhapura', 'Anuradhapura', 'R-anil-de-silva.png', '0789653214', 'vY5RVN!I$EmnZuB');
 
 -- --------------------------------------------------------
 
@@ -244,20 +228,7 @@ INSERT INTO `orders` (`orderId`, `cusId`, `productId`, `orderAmount`, `invoiceNu
 (6, 1, 9, '48000', '1074857025', 1, 'Red', 'Software', '2018-10-27 14:08:17', 'unpaid'),
 (7, 1, 10, '460000', '1609112244', 1, 'Black', 'Software', '2018-10-29 14:58:50', 'Unpaid'),
 (8, 1, 2, '159800', '1609112244', 1, 'Black', 'Hardware', '2018-10-29 14:58:50', 'Unpaid'),
-(9, 5, 11, '38600', '2030915017', 1, 'Black', 'Hardware', '2018-11-03 18:32:01', 'Unpaid'),
-(10, 5, 11, '38600', '500951010', 1, 'Gold', 'Hardware', '2018-11-18 18:38:43', 'Unpaid'),
-(11, 5, 6, '65000', '860329280', 1, 'Black', 'Software', '2018-11-18 18:40:35', 'Unpaid'),
-(12, 5, 4, '89000', '744740675', 1, 'Black', 'Software', '2018-11-18 18:42:53', 'Unpaid'),
-(13, 5, 3, '56000.5', '1883727265', 1, 'Black', 'Software', '2018-11-18 18:43:26', 'Unpaid'),
-(14, 5, 5, '98800', '1478599518', 1, 'Gold', 'Hardware', '2018-11-18 18:50:52', 'Unpaid'),
-(15, 5, 1, '191800', '629618000', 1, 'Red', 'Hardware', '2018-11-18 18:52:18', 'Unpaid'),
-(16, 5, 10, '460000', '903639339', 1, 'Black', 'Software', '2018-11-18 18:54:44', 'Unpaid'),
-(17, 5, 9, '48000', '402311248', 1, 'Black', 'Software', '2018-11-18 18:59:30', 'Unpaid'),
-(18, 7, 1, '188000', '193484004', 1, 'Black', 'Software', '2018-11-22 06:15:18', 'Unpai'),
-(19, 7, 5, '95000', '193484004', 1, 'Black', 'Hardware', '2018-11-22 06:15:18', 'Unpai'),
-(20, 7, 2, '156000', '1156846510', 1, 'Black', 'Hardware', '2018-11-22 06:18:51', 'Unpaid'),
-(21, 7, 11, '33800', '1673995627', 1, 'Black', 'Software', '2018-11-22 07:37:34', 'Unpaid'),
-(22, 7, 5, '94000', '805623229', 1, 'Black', 'Software', '2018-11-22 10:45:02', 'Unpaid');
+(9, 5, 11, '38600', '2030915017', 1, 'Black', 'Hardware', '2018-11-03 18:32:01', 'Unpaid');
 
 -- --------------------------------------------------------
 
@@ -332,7 +303,7 @@ CREATE TABLE `slider` (
   `sliderId` int(11) NOT NULL,
   `sName` varchar(100) NOT NULL,
   `sImage` varchar(1000) NOT NULL,
-  `sliderURL` varchar(500) DEFAULT NULL
+  `sliderURL` varchar(500) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -354,26 +325,8 @@ INSERT INTO `slider` (`sliderId`, `sName`, `sImage`, `sliderURL`) VALUES
 
 CREATE TABLE `supportticket` (
   `ticketId` int(11) NOT NULL,
-  `ticketDepartment` varchar(200) NOT NULL,
-  `ticketcusName` varchar(100) NOT NULL,
-  `ticketcusEmail` varchar(100) NOT NULL,
-  `ticketcusSub` varchar(500) NOT NULL,
-  `ticketcusMsg` varchar(1500) NOT NULL
+  `ticketTitle` varchar(200) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `supportticket`
---
-
-INSERT INTO `supportticket` (`ticketId`, `ticketDepartment`, `ticketcusName`, `ticketcusEmail`, `ticketcusSub`, `ticketcusMsg`) VALUES
-(1, 'customer', 'Suda', 'suda@gg.lk', 'Product Not Shipped ?', '<p>Order still not shipped?&nbsp;</p>'),
-(2, 'customer', 'Suda', 'suda@gg.lk', 'Product Not Shipped ?', '<p>Order still not shipped?</p>'),
-(3, 'account', 'Suda', 'suda@gg.lk', 'Card Not Accepeted', '<p>My cc not working</p>'),
-(4, 'account', 'My3', 'my3@gg.lk', 'Prime M', '<p>Test MSg</p>'),
-(5, 'account', 'dasd', 'sadasd@hh.k', 'asdasdasd', '<p>asdasdsadasd</p>'),
-(6, 'account', 'dasd', 'sadasd@hh.k', 'asdasdasd', '<p>asdasdsadasd</p>'),
-(7, 'account', 'dasd', 'sadasd@hh.k', 'asdasdasd', '<p>asdasdsadasd</p>'),
-(8, 'customer', 'Maithreepala', 'wijekalamy3@president.lk', 'Can not select Prime Minister? ', '<p>Please help me to select a good prime minister :/&nbsp;</p>');
 
 -- --------------------------------------------------------
 
@@ -386,13 +339,6 @@ CREATE TABLE `wishlist` (
   `custId` int(15) NOT NULL,
   `productId` int(15) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `wishlist`
---
-
-INSERT INTO `wishlist` (`wishListId`, `custId`, `productId`) VALUES
-(2, 1, 5);
 
 --
 -- Indexes for dumped tables
@@ -426,8 +372,7 @@ ALTER TABLE `category`
 -- Indexes for table `coupons`
 --
 ALTER TABLE `coupons`
-  ADD PRIMARY KEY (`couponId`),
-  ADD UNIQUE KEY `couponCode` (`couponCode`);
+  ADD PRIMARY KEY (`couponId`);
 
 --
 -- Indexes for table `customer`
@@ -496,12 +441,12 @@ ALTER TABLE `adds`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `adminId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `adminId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `cartId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `cartId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT for table `category`
 --
@@ -511,12 +456,12 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `coupons`
 --
 ALTER TABLE `coupons`
-  MODIFY `couponId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `couponId` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `cusId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `cusId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `manufacture`
 --
@@ -526,7 +471,7 @@ ALTER TABLE `manufacture`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT for table `payement`
 --
@@ -541,17 +486,17 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `slider`
 --
 ALTER TABLE `slider`
-  MODIFY `sliderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `sliderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `supportticket`
 --
 ALTER TABLE `supportticket`
-  MODIFY `ticketId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `ticketId` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `wishListId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `wishListId` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --
