@@ -57,10 +57,22 @@
 							<td>$orderColor</td>
 							<td>$orderWarrenty</td>
 							<td>$orderAmount</td>
-							<td>$orderStatus</td>
+							<td>$orderStatus</td>";
+						if($orderStatus == 'unpaid' ||$orderStatus == 'Unpaid' ){
+							echo "
 							<td>
 								<a href='confirm.php?orderId=$orderId' target='_blank' class='btn btn-success btn-sm'>Confirm</a>
 							</td>
+							";
+						}else{
+							echo "
+							<td>
+								<a href='' class='btn btn-warning btn-sm'>$orderStatus</a>
+							</td>
+							";
+						}
+							
+						echo "
 						</tr>
 							
 						";

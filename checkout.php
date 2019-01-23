@@ -136,7 +136,7 @@
 						<a href="index.php">Home</a>
 					</li>
 					<li>
-						<a href="register.php">Register</a>
+						<a href="register.php">Checkout</a>
 					</li>
 				</ul>
 			</div>

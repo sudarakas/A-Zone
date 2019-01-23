@@ -67,8 +67,7 @@
 			";
 			
 		}
-		
-		
+
 	}
 
 	function getCategory(){
@@ -570,7 +569,7 @@ function priceCart(){
 	$userCookie = setGetCookie();
 	$cartItemsSql = "SELECT * FROM cart WHERE cartCookie='$userCookie'";
 	$cartItems = mysqli_query($connF,$cartItemsSql);
-	
+		
 	while($row = mysqli_fetch_array($cartItems)){
 		$productId = $row['productId'];
 		$productQty = $row['cartQty'];
@@ -1839,4 +1838,97 @@ function addWishList(){
 		}
 	}
 }
+
+function returnCustomerId(){
+	global $connF;
+	$customerEmail = $_SESSION['cusEmail'];	
+	$getCustomerIdSql = "SELECT * FROM customer WHERE cusEmail='$customerEmail'";
+	$getCustomerId = mysqli_query($connF,$getCustomerIdSql);
+	$getCustomerIdRow = mysqli_fetch_array($getCustomerId);
+	$customerId = $getCustomerIdRow['cusId'];
+
+	return $customerId;
+
+}
+
+function USDToLKR(){
+
+	$api = "http://free.currencyconverterapi.com/api/v5/convert?q=USD_LKR&compact=ultra";
+	$value = json_decode(file_get_contents($api),true);
+	$rate = $value['USD_LKR'];
+	return $rate;
+}
+
+function makeOrderPayPal(){
+	global $connF;
+	if(isset($_GET['customerId'])){
+		
+		$cusId = $_GET['customerId'];
+		$userCookie = setGetCookie();
+		
+		$getCartItemSql = "SELECT * FROM cart WHERE cartCookie = '$userCookie'";
+		$getCartItem = mysqli_query($connF,$getCartItemSql);
+		
+		$generateInvoice = mt_rand();
+
+		while($rowGetCartItem = mysqli_fetch_array($getCartItem)){
+			
+			$productId = $rowGetCartItem['productId'];
+			$productQty = $rowGetCartItem['cartQty'];
+			$productWarrenty = $rowGetCartItem['cartWarranty'];
+			$productColor = $rowGetCartItem['cartColour'];
+			$Price = $rowGetCartItem['cartPrice'];
+				
+			$createOrderSql = "INSERT INTO orders(cusId,productId , orderAmount, invoiceNumber, qty, colour,warranty, date, status) VALUES ('$cusId',$productId ,'$Price','$generateInvoice','$productQty','$productColor','$productWarrenty',NOW(),'Paid')";
+			$createOrder = mysqli_query($connF,$createOrderSql);
+
+			$makePaymentSql = "INSERT INTO payement(customerId, pInvoiceNum, amount, payMethod, date) VALUES ('$cusId','$generateInvoice','$Price','PayPal',NOW())";
+			$makePayment = mysqli_query($connF,$makePaymentSql);
+				
+			$removeCartSql = "DELETE FROM cart WHERE cartCookie = '$userCookie' AND productId = '$productId'";
+			$removeCart = mysqli_query($connF,$removeCartSql);
+
+		}
+		
+		
+		$getCustomerEmailSql = "SELECT * FROM customer WHERE cusId='$cusId'";
+		$getCustomerEmail = mysqli_query($connF,$getCustomerEmailSql);
+		$getCustomerEmailRow = mysqli_fetch_array($getCustomerEmail);
+		$cusEmail = $getCustomerEmailRow['cusEmail'];
+	
+		//PHPMailer Function
+			$mail = new PHPMailer;
+			$mail->isSMTP();
+			$mail->SMTPDebug = 0;
+			$mail->Debugoutput = 'html';
+			$mail->Host = 'smtp.gmail.com';
+			$mail->Port = 587;
+			$mail->SMTPSecure = 'tls';
+			$mail->SMTPAuth = true;
+			$mail->Username = "mailer.azone@gmail.com";
+			$mail->Password = "azone@123456";
+			$mail->setFrom('mailer.azone@gmail.com', 'Azone Support');
+			$mail->addAddress($cusEmail,$cusEmail );
+			$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
+			$mail->Subject = 'Order Placed Successfully';
+			$mail->Body = "
+						<b>You order have been successfully placed, Please wait! Our customer care will contact you ASAP</b>
+						<br><br>
+						<b>Thanks<br>Azone Team</b>
+						
+						
+						<br><br>
+						<b><i>If you need any kind of assistant, please contact Us</i></b>
+						";
+			if (!$mail->send()) {
+    			echo "<script>alert('Please contact us')</script>";
+			} 
+			else {
+   				echo "<script>alert('Order placed successfully!')</script>";
+				echo "<script>window.open('customers/myaccount.php?myorders','_self')</script>";
+			}
+		
+	}
+}
+
 ?>

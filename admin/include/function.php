@@ -890,8 +890,7 @@ function displayProducts(){
 			<td>$productAvail</td>
 			<td>$productWarrenty</td>
 			<td><a href='index.php?editProduct=$productId'>Edit</a></td>
-			<td><a href='index.php?deleteProduct=$productId'>Delete</a></td>
-			
+			<td><a onClick=\"javascript: return confirm('Please confirm deletion');\" href='index.php?deleteProduct=$productId'>Delete</a></td>			
 		</tr>
 		";
 		
@@ -1192,7 +1191,7 @@ function displayCustomers(){
 					<td>$cusPno</td>
 					<td>$cusOrderCount</td>
 					<td>Verified</td>
-					<td><a href='index.php?deleteCustomer=$cusId'>Delete</a></td>
+					<td><a onClick=\"javascript: return confirm('Please confirm deletion');\" href='index.php?deleteCustomer=$cusId'>Delete</a></td>
 				</tr>
 			
 			";
@@ -1209,7 +1208,7 @@ function displayCustomers(){
 					<td>$cusPno</td>
 					<td>$cusOrderCount</td>
 					<td>Not Verified</td>
-					<td><a href='index.php?deleteCustomer=$cusId'>Delete</a></td>
+					<td><a onClick=\"javascript: return confirm('Please confirm deletion');\" href='index.php?deleteCustomer=$cusId'>Delete</a></td>
 				</tr>
 			
 			";
@@ -1262,7 +1261,7 @@ function displayCategory(){
 			<tr>
 				<td>$categoryId</td>
 				<td>$categoryName</td>
-				<td><a href='index.php?deleteCategory=$categoryId'>Delete</a></td>
+				<td><a onClick=\"javascript: return confirm('Please confirm deletion');\" href='index.php?deleteCategory=$categoryId'>Delete</a></td>
 			</tr>
 		
 		";
@@ -1311,7 +1310,7 @@ function viewManufacture(){
 				<tr>
 					<td>$manufactureId</td>
 					<td>$manufactureName</td>
-					<td><a href='index.php?deleteManufacture=$manufactureId'>Delete</a></td>
+					<td><a onClick=\"javascript: return confirm('Please confirm deletion');\" href='index.php?deleteManufacture=$manufactureId'>Delete</a></td>
 				</tr>
 		
 			";
@@ -1362,7 +1361,7 @@ function viewAds(){
 					<td>$adId</td>
 					<td>$adTitle</td>
 					<td>$adDetail</td>
-					<td><a href='index.php?deleteAd=$adId'>Delete</a></td>
+					<td><a onClick=\"javascript: return confirm('Please confirm deletion');\" href='index.php?deleteAd=$adId'>Delete</a></td>
 				</tr>
 		
 			";
@@ -1501,7 +1500,7 @@ function viewAdmin(){
 					<td>$adminPassDec</td>
 					<td><img src='resources/admin_img/$adminImg' style='width: 50px;height:50px;'></td>
 					<td>$adminPno</td>
-					<td><a href='index.php?deleteAdmin=$adminId'>Delete</a></td>
+					<td><a onClick=\"javascript: return confirm('Please confirm deletion');\" href='index.php?deleteAdmin=$adminId'>Delete</a></td>
 				</tr>
 		
 			";
@@ -1559,7 +1558,7 @@ function viewCoupon(){
 				<td>$couponCode</td>
 				<td>$couponProduct</td>
 				<td>$couponAmount</td>
-				<td><a href='index.php?deleteCoupon=$couponId'>Delete</a></td>
+				<td><a onClick=\"javascript: return confirm('Please confirm deletion');\" href='index.php?deleteCoupon=$couponId'>Delete</a></td>
 			</tr>
 		";
 		

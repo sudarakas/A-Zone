@@ -137,7 +137,7 @@
 						<a href="index.php">Home</a>
 					</li>
 					<li>
-						<a href="shop.php">My Account</a>
+						<a href="myaccount.php">My Account</a>
 					</li>
 				</ul>
 			</div>
@@ -174,6 +174,7 @@
 			</div>
 		</div>
 	</div>
+
 <!--Footer Start-->
 	<?php
 		include("include/foot.php");
