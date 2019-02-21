@@ -1853,7 +1853,7 @@ function returnCustomerId(){
 
 function USDToLKR(){
 
-	$api = "http://free.currencyconverterapi.com/api/v5/convert?q=USD_LKR&compact=ultra";
+	$api = "https://free.currencyconverterapi.com/api/v6/convert?q=USD_LKR&compact=ultra&apiKey=c03422856ac7d9b094a4";
 	$value = json_decode(file_get_contents($api),true);
 	$rate = $value['USD_LKR'];
 	return $rate;

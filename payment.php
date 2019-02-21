@@ -32,7 +32,7 @@
 					$productWarrenty = $checkCartRow['cartWarranty'];
 					$cartPrice = $checkCartRow['cartPrice'];
 					$cartColour = $checkCartRow['cartColour'];
-					$cartPriceUSD = round($cartPrice / USDToLKR());
+					$cartPriceUSD = round($cartPrice / USDToLKR(),2);
 
 					$getProductNameSql = "SELECT * FROM product WHERE productId='$productId'";
 					$getProductName = mysqli_query($conn,$getProductNameSql);
