@@ -8,5 +8,6 @@
     3. Change mysql login in details in (include/dbcon.php, admin/include/dbcon.php and customers/include/dbcon.php)
     <br>
 
+Demo View : http://azoneuwu.atwebpages.com/
 ![](https://prnt.sc/mvcheb)
 ![](https://prnt.sc/mvchgw)
