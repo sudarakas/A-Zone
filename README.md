@@ -9,5 +9,5 @@
     <br>
 
 Demo View : http://azoneuwu.atwebpages.com/
-![](https://prnt.sc/mvcheb)
-![](https://prnt.sc/mvchgw)
+![](https://github.com/sudarakas/A-Zone/blob/master/azone%20(1).png)
+![](https://raw.githubusercontent.com/sudarakas/A-Zone/master/azone%20(2).png)
